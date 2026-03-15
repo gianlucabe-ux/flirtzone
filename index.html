@@ -1,0 +1,1370 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlirtZone — Incontri per adulti</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --red:#d92b3a; --red2:#f04e2a;
+  --bg:#080710; --bg2:#0f0e1a; --bg3:#161525; --bg4:#1d1c2e;
+  --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.13);
+  --text:#ede9f8; --muted:#6b677f; --muted2:#9991b0;
+  --green:#1fd46a; --gold:#f0b840;
+  --grad:linear-gradient(130deg,var(--red),var(--red2));
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;}
+::-webkit-scrollbar{width:4px;} ::-webkit-scrollbar-track{background:transparent;} ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);border-radius:4px;}
+
+/* ── PAGE SYSTEM ── */
+.page{display:none;min-height:100vh;flex-direction:column;}
+.page.active{display:flex;}
+
+/* ══════════════════════════════
+   AGE VERIFICATION OVERLAY
+══════════════════════════════ */
+#age-gate{
+  position:fixed;inset:0;z-index:9999;
+  background:rgba(8,7,16,0.97);
+  backdrop-filter:blur(20px);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+}
+.age-gate-box{
+  background:var(--bg2);border:1px solid rgba(217,43,58,0.3);
+  border-radius:24px;padding:44px 40px;max-width:460px;width:100%;
+  text-align:center;
+  box-shadow:0 30px 80px rgba(0,0,0,0.7);
+}
+.age-gate-icon{font-size:52px;margin-bottom:20px;display:block;}
+.age-gate-box h2{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;margin-bottom:10px;}
+.age-gate-box p{font-size:14px;color:var(--muted2);line-height:1.6;margin-bottom:28px;}
+.age-gate-btns{display:flex;gap:12px;justify-content:center;}
+.btn-age-yes{background:var(--grad);color:#fff;border:none;padding:14px 36px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;box-shadow:0 5px 20px rgba(217,43,58,0.35);transition:all .2s;}
+.btn-age-yes:hover{transform:translateY(-2px);}
+.btn-age-no{background:transparent;color:var(--muted2);border:1px solid var(--border2);padding:14px 28px;border-radius:12px;font-size:14px;font-weight:500;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.btn-age-no:hover{color:var(--text);}
+.age-gate-note{font-size:11px;color:var(--muted);margin-top:18px;line-height:1.5;}
+
+/* ── NAV ── */
+nav{
+  position:sticky;top:0;z-index:200;
+  height:60px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 28px;
+  background:rgba(8,7,16,0.88);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.logo{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;font-style:italic;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;cursor:pointer;letter-spacing:-0.5px;}
+.nav-links{display:flex;align-items:center;gap:4px;}
+.nav-a{color:var(--muted2);font-size:13px;font-weight:500;padding:7px 13px;border-radius:9px;cursor:pointer;transition:color .2s,background .2s;}
+.nav-a:hover,.nav-a.active-link{color:var(--text);}
+.nav-a:hover{background:rgba(255,255,255,0.05);}
+.btn-sm{padding:8px 16px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .2s;font-family:'DM Sans',sans-serif;}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border2);}
+.btn-fill{background:var(--grad);color:#fff;box-shadow:0 4px 16px rgba(217,43,58,0.32);}
+.btn-fill:hover{transform:translateY(-1px);}
+
+/* NOTIFICATION BELL */
+.notif-wrap{position:relative;}
+.notif-btn{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;cursor:pointer;color:var(--muted2);border:1px solid var(--border);background:transparent;transition:all .2s;position:relative;}
+.notif-btn:hover{color:var(--text);border-color:var(--border2);}
+.notif-dot{position:absolute;top:6px;right:6px;width:8px;height:8px;border-radius:50%;background:var(--red);border:2px solid var(--bg);box-shadow:0 0 6px rgba(217,43,58,0.7);}
+.notif-panel{
+  position:absolute;top:calc(100% + 10px);right:0;width:320px;
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:16px;overflow:hidden;
+  box-shadow:0 20px 50px rgba(0,0,0,0.5);
+  display:none;z-index:300;
+}
+.notif-panel.open{display:block;}
+.notif-head{padding:14px 16px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;}
+.notif-head h3{font-size:14px;font-weight:700;}
+.notif-clear{font-size:12px;color:var(--red);cursor:pointer;}
+.notif-list{max-height:340px;overflow-y:auto;}
+.notif-item{display:flex;align-items:flex-start;gap:10px;padding:13px 16px;border-bottom:1px solid rgba(255,255,255,0.04);cursor:pointer;transition:background .15s;}
+.notif-item:hover{background:rgba(255,255,255,0.03);}
+.notif-item.unread{background:rgba(217,43,58,0.05);}
+.notif-av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.notif-info{flex:1;}
+.notif-text{font-size:13px;line-height:1.4;margin-bottom:3px;}
+.notif-text strong{color:var(--text);}
+.notif-time{font-size:11px;color:var(--muted);}
+.notif-unread-dot{width:8px;height:8px;border-radius:50%;background:var(--red);flex-shrink:0;margin-top:5px;}
+
+/* ── BTN ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:12px 26px;border-radius:12px;font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .25s;font-family:'DM Sans',sans-serif;}
+.btn-primary{background:var(--grad);color:#fff;box-shadow:0 5px 22px rgba(217,43,58,0.38);}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 9px 30px rgba(217,43,58,0.5);}
+.btn-outline{background:transparent;color:var(--text);border:1px solid var(--border2);}
+.btn-outline:hover{border-color:rgba(255,255,255,0.3);}
+
+/* ═══════════ SHARED COMPONENTS ═══════════ */
+.eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(217,43,58,0.1);border:1px solid rgba(217,43,58,0.22);border-radius:30px;padding:5px 16px;font-size:11px;font-weight:600;color:#e07080;letter-spacing:1px;text-transform:uppercase;margin-bottom:24px;}
+.s-select,.s-input{background:var(--bg);border:1px solid var(--border);color:var(--text);padding:10px 14px;border-radius:10px;font-size:13px;font-family:'DM Sans',sans-serif;flex:1;min-width:120px;cursor:pointer;transition:border-color .2s;outline:none;}
+.s-select:hover,.s-input:hover{border-color:rgba(217,43,58,0.35);}
+.s-select option{background:var(--bg2);}
+.form-group{margin-bottom:15px;}
+.form-label{display:block;font-size:11px;font-weight:600;color:var(--muted2);margin-bottom:6px;letter-spacing:0.4px;text-transform:uppercase;}
+.form-input{width:100%;background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:11px 15px;border-radius:11px;font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border-color .2s;}
+.form-input:focus{border-color:rgba(217,43,58,0.5);}
+.form-input::placeholder{color:var(--muted);}
+.chip{font-size:11px;font-weight:600;padding:4px 11px;border-radius:20px;}
+.chip-blue{background:rgba(25,120,255,0.15);border:1px solid rgba(25,120,255,0.3);color:#60aaff;}
+.chip-green{background:rgba(31,212,106,0.12);border:1px solid rgba(31,212,106,0.25);color:var(--green);}
+.chip-gold{background:rgba(240,184,64,0.12);border:1px solid rgba(240,184,64,0.28);color:var(--gold);}
+.chip-orange{background:rgba(240,78,42,0.15);border:1px solid rgba(240,78,42,0.3);color:var(--red2);}
+footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28px;text-align:center;flex-shrink:0;}
+.age-warn{display:inline-block;background:rgba(217,43,58,0.08);border:1px solid rgba(217,43,58,0.22);border-radius:8px;padding:7px 16px;font-size:11px;color:#d08090;font-weight:600;margin-bottom:12px;}
+.foot-links{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-bottom:8px;}
+.foot-links a{color:var(--muted);font-size:12px;text-decoration:none;padding:3px 9px;cursor:pointer;}
+.foot-links a:hover{color:var(--text);}
+.foot-copy{font-size:11px;color:#2e2c40;}
+
+/* ═══════════════════════════════════════
+   HOME
+═══════════════════════════════════════ */
+#page-home{background:var(--bg);}
+.hero{position:relative;padding:80px 28px 60px;text-align:center;overflow:hidden;}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 65% 50% at 50% -10%,rgba(217,43,58,0.18),transparent),radial-gradient(ellipse 40% 30% at 80% 70%,rgba(240,78,42,0.07),transparent);pointer-events:none;}
+.hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(42px,7vw,74px);font-weight:700;line-height:1.06;margin-bottom:18px;letter-spacing:-1.5px;}
+.hero h1 em{font-style:italic;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.hero-sub{font-size:16px;color:var(--muted2);max-width:440px;margin:0 auto 36px;line-height:1.7;}
+.hero-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.stats-bar{display:flex;justify-content:center;gap:52px;margin-top:56px;padding-top:40px;border-top:1px solid var(--border);flex-wrap:wrap;}
+.stat{text-align:center;}
+.stat-n{font-family:'Cormorant Garamond',serif;font-size:34px;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.stat-l{font-size:11px;color:var(--muted);letter-spacing:0.8px;text-transform:uppercase;margin-top:4px;}
+.search-section{max-width:840px;margin:0 auto;padding:28px 28px 0;}
+.search-box{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:18px 20px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;box-shadow:0 24px 64px rgba(0,0,0,0.5);}
+.btn-search{background:var(--grad);color:#fff;border:none;padding:11px 22px;border-radius:10px;font-weight:600;font-size:13px;cursor:pointer;white-space:nowrap;font-family:'DM Sans',sans-serif;box-shadow:0 4px 16px rgba(217,43,58,0.3);transition:all .2s;}
+.btn-search:hover{transform:scale(1.03);}
+.tabs-row{display:flex;gap:6px;max-width:840px;margin:22px auto 0;padding:0 28px;flex-wrap:wrap;}
+.tab{padding:8px 17px;border-radius:30px;font-size:13px;font-weight:500;cursor:pointer;border:1px solid var(--border);color:var(--muted);background:transparent;transition:all .2s;}
+.tab:hover{color:var(--text);border-color:var(--border2);}
+.tab.on{background:var(--grad);color:#fff;border-color:transparent;box-shadow:0 4px 14px rgba(217,43,58,0.28);}
+.listings{max-width:840px;margin:26px auto 0;padding:0 28px 52px;}
+.listings-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;}
+.listings-title{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;}
+.see-all{font-size:13px;color:var(--red);cursor:pointer;font-weight:500;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:15px;}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden;cursor:pointer;transition:transform .25s,border-color .25s,box-shadow .25s;}
+.card:hover{transform:translateY(-4px);border-color:rgba(217,43,58,0.3);box-shadow:0 16px 44px rgba(0,0,0,0.55);}
+.card-img{height:210px;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.g1{background:linear-gradient(145deg,#280d15,#180a1c);} .g2{background:linear-gradient(145deg,#0c1826,#09111e);} .g3{background:linear-gradient(145deg,#1a180c,#100e09);} .g4{background:linear-gradient(145deg,#0c1a12,#091410);} .g5{background:linear-gradient(145deg,#1a0c1a,#100910);} .g6{background:linear-gradient(145deg,#1a140c,#100c09);}
+.av{width:88px;height:88px;border-radius:50%;background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;font-size:42px;border:1px solid rgba(255,255,255,0.07);}
+.av.blur{filter:blur(14px);opacity:0.3;}
+.dot-on{position:absolute;top:11px;left:11px;width:11px;height:11px;border-radius:50%;background:var(--green);border:2px solid var(--bg2);box-shadow:0 0 8px rgba(31,212,106,0.6);}
+.bdg{position:absolute;font-size:10px;font-weight:700;padding:3px 9px;border-radius:20px;color:#fff;backdrop-filter:blur(4px);}
+.bdg-travel{top:10px;right:10px;background:rgba(240,78,42,0.82);}
+.bdg-verified{bottom:10px;left:10px;background:rgba(25,120,255,0.82);}
+.lock-over{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(8,7,16,0.2),rgba(8,7,16,0.82));display:flex;flex-direction:column;align-items:center;justify-content:center;gap:9px;}
+.lock-ico{font-size:26px;}
+.lock-lbl{font-size:11px;font-weight:700;background:rgba(240,184,64,0.14);border:1px solid rgba(240,184,64,0.3);color:var(--gold);padding:4px 13px;border-radius:20px;}
+.card-body{padding:12px 13px 13px;}
+.card-name{font-size:14px;font-weight:600;margin-bottom:3px;display:flex;align-items:center;gap:5px;}
+.card-meta{font-size:12px;color:var(--muted);}
+.card-tags{display:flex;gap:4px;margin-top:8px;flex-wrap:wrap;}
+.tag{font-size:10px;font-weight:500;background:rgba(255,255,255,0.05);color:var(--muted2);padding:3px 8px;border-radius:20px;}
+.tag-r{background:rgba(217,43,58,0.1);color:#e07080;}
+.prem-banner{max-width:840px;margin:0 auto;padding:0 28px 50px;}
+.prem-inner{background:linear-gradient(130deg,#180810,#0f0e1a);border:1px solid rgba(217,43,58,0.22);border-radius:20px;padding:30px 34px;display:flex;align-items:center;justify-content:space-between;gap:22px;flex-wrap:wrap;position:relative;overflow:hidden;}
+.prem-inner::after{content:'';position:absolute;right:-80px;top:-80px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(217,43,58,0.1),transparent);pointer-events:none;}
+.prem-left h3{font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;margin-bottom:6px;}
+.prem-left h3 span{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;}
+.prem-left p{font-size:13px;color:var(--muted);margin-bottom:13px;}
+.pf-list{display:flex;gap:13px;flex-wrap:wrap;}
+.pf{font-size:12px;color:var(--muted2);display:flex;align-items:center;gap:5px;}
+.pf::before{content:'✓';color:var(--red);font-weight:700;}
+
+/* ═══════════════════════════════════════
+   ANNUNCIO SINGOLO
+═══════════════════════════════════════ */
+#page-annuncio{background:var(--bg);}
+.ann-wrap{max-width:860px;margin:0 auto;padding:36px 28px 60px;}
+.ann-back{color:var(--muted2);font-size:13px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;margin-bottom:22px;transition:color .2s;}
+.ann-back:hover{color:var(--text);}
+.ann-grid{display:grid;grid-template-columns:1fr 340px;gap:28px;align-items:start;}
+.ann-photos{border-radius:18px;overflow:hidden;}
+.ann-main-photo{height:380px;background:linear-gradient(145deg,#280d15,#180a1c,#0c1826);display:flex;align-items:center;justify-content:center;font-size:80px;position:relative;}
+.ann-photo-thumbs{display:flex;gap:8px;padding:10px;background:var(--bg2);border-top:1px solid var(--border);}
+.ann-thumb{width:64px;height:64px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:28px;cursor:pointer;border:2px solid transparent;transition:border-color .2s;flex-shrink:0;}
+.ann-thumb:hover{border-color:var(--border2);}
+.ann-thumb.active-t{border-color:var(--red);}
+.ann-thumb.locked-t{filter:blur(5px);opacity:0.4;position:relative;}
+.ann-info{background:var(--bg2);border:1px solid var(--border);border-radius:18px;padding:26px;}
+.ann-name{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;margin-bottom:8px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.ann-chips{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:14px;}
+.ann-meta{font-size:13px;color:var(--muted2);margin-bottom:18px;line-height:1.8;}
+.ann-meta span{display:flex;align-items:center;gap:6px;}
+.ann-desc{font-size:14px;color:var(--muted2);line-height:1.75;margin-bottom:22px;padding-bottom:20px;border-bottom:1px solid var(--border);}
+.ann-actions{display:flex;flex-direction:column;gap:10px;}
+.ann-detail-list{margin-bottom:20px;}
+.ann-detail-list li{list-style:none;display:flex;justify-content:space-between;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.04);font-size:13px;}
+.ann-detail-list li span:first-child{color:var(--muted);}
+.ann-detail-list li span:last-child{font-weight:500;}
+.report-link{font-size:12px;color:var(--muted);cursor:pointer;text-align:center;margin-top:10px;}
+.report-link:hover{color:var(--red);}
+
+/* ═══════════════════════════════════════
+   MESSAGGI
+═══════════════════════════════════════ */
+#page-messages{flex-direction:column;height:100vh;}
+#page-messages nav{flex-shrink:0;}
+.msg-layout{display:flex;flex:1;overflow:hidden;}
+.sidebar{width:300px;border-right:1px solid var(--border);background:var(--bg2);display:flex;flex-direction:column;flex-shrink:0;}
+.sidebar-top{padding:14px 14px 10px;border-bottom:1px solid var(--border);}
+.sidebar-top h2{font-size:15px;font-weight:700;margin-bottom:10px;}
+.s-search-wrap{position:relative;}
+.s-search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--muted);pointer-events:none;}
+.s-search{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:9px 13px 9px 32px;font-size:13px;color:var(--text);font-family:'DM Sans',sans-serif;outline:none;}
+.ftabs{display:flex;gap:5px;padding:10px 14px;border-bottom:1px solid var(--border);}
+.ftab{padding:5px 12px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--border);color:var(--muted);background:transparent;transition:all .2s;}
+.ftab.on{background:var(--grad);color:#fff;border-color:transparent;}
+.conv-list{flex:1;overflow-y:auto;}
+.ci{display:flex;align-items:center;gap:10px;padding:11px 14px;cursor:pointer;border-bottom:1px solid rgba(255,255,255,0.03);transition:background .15s;position:relative;}
+.ci:hover{background:rgba(255,255,255,0.03);}
+.ci.active-c{background:rgba(217,43,58,0.08);border-left:3px solid var(--red);}
+.ci-av{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:21px;flex-shrink:0;position:relative;}
+.ci-av .ci-on{position:absolute;bottom:1px;right:1px;width:10px;height:10px;border-radius:50%;background:var(--green);border:2px solid var(--bg2);}
+.ci-info{flex:1;min-width:0;}
+.ci-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;}
+.ci-name{font-size:13px;font-weight:600;}
+.ci-time{font-size:11px;color:var(--muted);}
+.ci-preview{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.ci-badge{width:18px;height:18px;border-radius:50%;background:var(--grad);font-size:10px;font-weight:700;color:#fff;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.ci.locked-c{opacity:0.45;cursor:default;}
+.ci.locked-c:hover{background:transparent;}
+.chat-col{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.chat-head{padding:12px 20px;border-bottom:1px solid var(--border);background:var(--bg2);display:flex;align-items:center;gap:12px;flex-shrink:0;}
+.ch-av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:19px;position:relative;}
+.ch-av .ch-on{position:absolute;bottom:1px;right:1px;width:9px;height:9px;border-radius:50%;background:var(--green);border:2px solid var(--bg2);}
+.ch-info{flex:1;}
+.ch-name{font-size:14px;font-weight:700;display:flex;align-items:center;gap:7px;margin-bottom:2px;}
+.ch-status{font-size:12px;color:var(--green);}
+.ch-actions{display:flex;gap:6px;}
+.ch-btn{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;color:var(--muted);border:1px solid var(--border);background:transparent;transition:all .2s;}
+.ch-btn:hover{color:var(--text);border-color:var(--border2);}
+.messages-area{flex:1;overflow-y:auto;padding:20px 20px 10px;display:flex;flex-direction:column;gap:12px;}
+.day-div{text-align:center;font-size:11px;color:var(--muted);display:flex;align-items:center;gap:10px;margin:4px 0;}
+.day-div::before,.day-div::after{content:'';flex:1;height:1px;background:var(--border);}
+.m{display:flex;gap:7px;max-width:68%;}
+.m.mine{align-self:flex-end;flex-direction:row-reverse;}
+.m-av{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,#280d15,#180a1c);display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;align-self:flex-end;}
+.m-bub{background:var(--bg3);border:1px solid var(--border);border-radius:16px 16px 16px 4px;padding:10px 13px;font-size:14px;line-height:1.55;position:relative;}
+.mine .m-bub{background:linear-gradient(130deg,rgba(217,43,58,0.22),rgba(240,78,42,0.18));border-color:rgba(217,43,58,0.22);border-radius:16px 16px 4px 16px;}
+.m-time{font-size:10px;color:var(--muted);margin-top:4px;text-align:right;}
+.tick{color:#5aabff;} .tick-green{color:var(--green);}
+.m-react{position:absolute;bottom:-10px;right:10px;background:var(--bg4);border:1px solid var(--border);border-radius:20px;padding:1px 6px;font-size:12px;}
+.chat-input-area{padding:12px 20px;border-top:1px solid var(--border);background:var(--bg2);display:flex;align-items:center;gap:8px;flex-shrink:0;}
+.ci-wrap2{flex:1;position:relative;}
+.chat-ta{width:100%;background:var(--bg3);border:1px solid var(--border);border-radius:12px;padding:10px 42px 10px 14px;font-size:14px;color:var(--text);font-family:'DM Sans',sans-serif;resize:none;outline:none;transition:border-color .2s;line-height:1.4;}
+.chat-ta:focus{border-color:rgba(217,43,58,0.4);}
+.chat-ta::placeholder{color:var(--muted);}
+.emoji-b{position:absolute;right:11px;top:50%;transform:translateY(-50%);font-size:17px;cursor:pointer;color:var(--muted);}
+.ia{display:flex;gap:6px;align-items:center;}
+.ia-btn{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;color:var(--muted);border:1px solid var(--border);background:transparent;transition:all .2s;}
+.ia-btn:hover{color:var(--text);border-color:var(--border2);}
+.send-b{width:36px;height:36px;border-radius:9px;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:15px;cursor:pointer;border:none;box-shadow:0 4px 14px rgba(217,43,58,0.32);transition:all .2s;}
+.send-b:hover{transform:scale(1.08);}
+
+/* ═══════════════════════════════════════
+   AUTH
+═══════════════════════════════════════ */
+#page-auth{align-items:center;justify-content:center;padding:40px 20px;}
+.auth-wrap{width:100%;max-width:430px;}
+.auth-logo{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;font-style:italic;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;text-align:center;margin-bottom:28px;}
+.auth-box{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:32px 28px;}
+.auth-tabs{display:flex;gap:0;margin-bottom:24px;border:1px solid var(--border);border-radius:11px;overflow:hidden;}
+.auth-tab{flex:1;padding:10px;text-align:center;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);background:transparent;border:none;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.auth-tab.on{background:var(--grad);color:#fff;}
+.gender-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;}
+.gender-opt{padding:9px 13px;border-radius:10px;border:1px solid var(--border);cursor:pointer;font-size:13px;font-weight:500;text-align:center;transition:all .2s;color:var(--muted2);}
+.gender-opt:hover{border-color:var(--border2);color:var(--text);}
+.gender-opt.sel{border-color:var(--red);background:rgba(217,43,58,0.1);color:var(--text);}
+.age-check{display:flex;align-items:flex-start;gap:10px;background:rgba(217,43,58,0.06);border:1px solid rgba(217,43,58,0.15);border-radius:10px;padding:11px 13px;margin-bottom:14px;}
+.age-check input{width:15px;height:15px;margin-top:2px;accent-color:var(--red);flex-shrink:0;cursor:pointer;}
+.age-check span{font-size:12px;color:var(--muted2);line-height:1.5;}
+.btn-auth{width:100%;padding:13px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;border:none;background:var(--grad);color:#fff;font-family:'DM Sans',sans-serif;box-shadow:0 5px 20px rgba(217,43,58,0.35);transition:all .2s;margin-bottom:13px;}
+.btn-auth:hover{transform:translateY(-1px);}
+.auth-divider{text-align:center;font-size:12px;color:var(--muted);margin-bottom:13px;position:relative;}
+.auth-divider::before,.auth-divider::after{content:'';position:absolute;top:50%;width:38%;height:1px;background:var(--border);}
+.auth-divider::before{left:0;} .auth-divider::after{right:0;}
+.btn-social{width:100%;padding:11px;border-radius:10px;font-size:13px;font-weight:600;cursor:pointer;border:1px solid var(--border);background:var(--bg3);color:var(--text);font-family:'DM Sans',sans-serif;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;}
+.btn-social:hover{border-color:var(--border2);}
+
+/* ═══════════════════════════════════════
+   PROFILE
+═══════════════════════════════════════ */
+#page-profile{background:var(--bg);}
+.profile-hero{position:relative;height:220px;background:linear-gradient(145deg,#280d15,#180a1c,#0c1826);overflow:hidden;}
+.profile-hero::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 30%,rgba(8,7,16,0.9));pointer-events:none;}
+.profile-body{max-width:840px;margin:0 auto;padding:0 28px;}
+.profile-av-wrap{position:relative;margin-bottom:-44px;z-index:2;}
+.profile-av{width:96px;height:96px;border-radius:50%;background:linear-gradient(135deg,#280d15,#180a1c);display:flex;align-items:center;justify-content:center;font-size:48px;border:3px solid var(--bg);box-shadow:0 8px 24px rgba(0,0,0,0.5);position:relative;}
+.profile-av .on-badge{position:absolute;bottom:4px;right:4px;width:15px;height:15px;border-radius:50%;background:var(--green);border:2px solid var(--bg);}
+.profile-top{display:flex;align-items:flex-start;gap:18px;padding:56px 0 22px;border-bottom:1px solid var(--border);}
+.profile-info{flex:1;}
+.profile-name{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;display:flex;align-items:center;gap:9px;flex-wrap:wrap;margin-bottom:4px;}
+.profile-chips{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:9px;}
+.profile-meta{font-size:13px;color:var(--muted2);}
+.profile-actions{display:flex;gap:9px;flex-shrink:0;flex-wrap:wrap;}
+.profile-tabs{display:flex;gap:0;border-bottom:1px solid var(--border);margin-top:22px;}
+.ptab{padding:11px 18px;font-size:13px;font-weight:500;cursor:pointer;color:var(--muted);border-bottom:2px solid transparent;transition:all .2s;}
+.ptab:hover{color:var(--text);}
+.ptab.on{color:var(--text);border-bottom-color:var(--red);}
+.profile-section{padding:24px 0;}
+.profile-about{font-size:14px;color:var(--muted2);line-height:1.75;max-width:580px;margin-bottom:22px;}
+.profile-details{display:grid;grid-template-columns:repeat(auto-fill,minmax(175px,1fr));gap:11px;margin-bottom:22px;}
+.detail-item{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:12px 14px;}
+.detail-label{font-size:10px;text-transform:uppercase;letter-spacing:0.8px;color:var(--muted);font-weight:600;margin-bottom:4px;}
+.detail-value{font-size:14px;font-weight:500;}
+
+/* GALLERY with upload */
+.gallery-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+.gallery-title{font-size:15px;font-weight:600;}
+.btn-upload{background:var(--bg3);border:1px solid var(--border2);color:var(--text);border-radius:10px;padding:8px 16px;font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.btn-upload:hover{border-color:var(--red);color:var(--red);}
+.photo-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;}
+.photo-cell{aspect-ratio:1;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:34px;overflow:hidden;position:relative;border:1px solid var(--border);cursor:pointer;transition:all .2s;}
+.photo-cell:hover{border-color:var(--border2);}
+.photo-cell.locked{cursor:pointer;}
+.photo-cell.locked .lock-ico2{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(8,7,16,0.6);}
+.photo-cell.add-cell{border:2px dashed var(--border2);background:transparent;flex-direction:column;gap:6px;color:var(--muted);font-size:22px;transition:all .2s;}
+.photo-cell.add-cell:hover{border-color:var(--red);color:var(--red);}
+.photo-cell.add-cell span{font-size:11px;font-weight:600;}
+#file-input{display:none;}
+
+/* ═══════════════════════════════════════
+   SETTINGS
+═══════════════════════════════════════ */
+#page-settings{background:var(--bg);}
+.settings-wrap{max-width:700px;margin:0 auto;padding:36px 28px 60px;}
+.settings-wrap h1{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;margin-bottom:28px;}
+.settings-section{background:var(--bg2);border:1px solid var(--border);border-radius:18px;margin-bottom:18px;overflow:hidden;}
+.settings-section-head{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;}
+.settings-section-head h3{font-size:15px;font-weight:700;}
+.settings-section-head span{font-size:18px;}
+.settings-rows{padding:0 22px;}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.setting-row:last-child{border-bottom:none;}
+.setting-left{flex:1;}
+.setting-name{font-size:14px;font-weight:500;margin-bottom:3px;}
+.setting-desc{font-size:12px;color:var(--muted);}
+/* Toggle */
+.toggle{width:44px;height:24px;border-radius:12px;background:var(--bg3);border:1px solid var(--border2);cursor:pointer;position:relative;transition:background .2s;flex-shrink:0;}
+.toggle.on{background:var(--red);border-color:var(--red);}
+.toggle::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:transform .2s;box-shadow:0 1px 4px rgba(0,0,0,0.3);}
+.toggle.on::after{transform:translateX(20px);}
+.setting-select{background:var(--bg3);border:1px solid var(--border);color:var(--text);padding:7px 12px;border-radius:8px;font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;outline:none;}
+
+/* IN VIAGGIO */
+#page-viaggio{background:var(--bg);}
+.viaggio-wrap{max-width:860px;margin:0 auto;padding:36px 28px 60px;}
+.viaggio-wrap h1{font-family:'Cormorant Garamond',serif;font-size:30px;font-weight:700;margin-bottom:8px;}
+.viaggio-wrap>.sub{font-size:14px;color:var(--muted2);margin-bottom:28px;}
+.viaggio-grid{display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:start;}
+/* MAP */
+.map-container{background:var(--bg2);border:1px solid var(--border);border-radius:18px;overflow:hidden;}
+.map-canvas{height:360px;position:relative;background:linear-gradient(145deg,#0c1218,#0a1020,#0d0c18);overflow:hidden;}
+.map-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:40px 40px;}
+.map-roads{position:absolute;inset:0;}
+.map-pin{position:absolute;display:flex;flex-direction:column;align-items:center;cursor:pointer;transition:transform .2s;}
+.map-pin:hover{transform:scale(1.2);}
+.map-pin-icon{width:36px;height:36px;border-radius:50%;background:var(--grad);border:2px solid rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center;font-size:16px;box-shadow:0 4px 14px rgba(217,43,58,0.5);}
+.map-pin.me .map-pin-icon{background:linear-gradient(135deg,#1e90ff,#0066cc);box-shadow:0 4px 14px rgba(30,144,255,0.5);}
+.map-pin-label{font-size:10px;font-weight:600;color:#fff;background:rgba(0,0,0,0.7);padding:2px 7px;border-radius:8px;margin-top:4px;white-space:nowrap;}
+.map-pulse{position:absolute;border-radius:50%;border:2px solid rgba(217,43,58,0.4);animation:pulse 2s infinite;}
+@keyframes pulse{0%{transform:scale(1);opacity:1;}100%{transform:scale(2.5);opacity:0;}}
+.map-controls{padding:14px 16px;border-top:1px solid var(--border);display:flex;gap:8px;flex-wrap:wrap;align-items:center;}
+.map-btn{background:var(--bg3);border:1px solid var(--border2);color:var(--muted2);border-radius:9px;padding:7px 14px;font-size:12px;font-weight:600;cursor:pointer;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.map-btn:hover{color:var(--text);border-color:var(--border2);}
+.map-btn.on{background:rgba(217,43,58,0.15);border-color:rgba(217,43,58,0.35);color:var(--red);}
+.location-chip{display:flex;align-items:center;gap:6px;background:rgba(30,144,255,0.12);border:1px solid rgba(30,144,255,0.25);border-radius:20px;padding:5px 13px;font-size:12px;font-weight:500;color:#60aaff;flex:1;}
+/* Viaggio panel */
+.viaggio-panel{display:flex;flex-direction:column;gap:14px;}
+.viaggio-card{background:var(--bg2);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+.viaggio-card-head{padding:16px 18px;border-bottom:1px solid var(--border);}
+.viaggio-card-head h3{font-size:14px;font-weight:700;margin-bottom:4px;}
+.viaggio-card-head p{font-size:12px;color:var(--muted);}
+.viaggio-card-body{padding:16px 18px;}
+.toggle-big{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.toggle-big-label{font-size:14px;font-weight:600;}
+.travelers-list{display:flex;flex-direction:column;gap:9px;}
+.traveler{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.traveler:last-child{border-bottom:none;}
+.trav-av{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.trav-info{flex:1;}
+.trav-name{font-size:13px;font-weight:600;margin-bottom:2px;}
+.trav-meta{font-size:11px;color:var(--muted);}
+.trav-msg{width:30px;height:30px;border-radius:8px;background:var(--bg3);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;transition:all .2s;}
+.trav-msg:hover{border-color:var(--red);}
+
+/* ═══════════════════════════════════════
+   PREMIUM
+═══════════════════════════════════════ */
+#page-premium{background:var(--bg);}
+.prem-hero{padding:72px 28px 52px;text-align:center;position:relative;overflow:hidden;}
+.prem-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 50% at 50% 0%,rgba(217,43,58,0.15),transparent);pointer-events:none;}
+.prem-hero h1{font-family:'Cormorant Garamond',serif;font-size:clamp(38px,6vw,60px);font-weight:700;line-height:1.1;margin-bottom:14px;}
+.prem-hero p{font-size:16px;color:var(--muted2);max-width:400px;margin:0 auto;}
+.plans{max-width:840px;margin:0 auto;padding:0 28px 52px;display:grid;grid-template-columns:repeat(auto-fit,minmax(235px,1fr));gap:15px;}
+.plan{background:var(--bg2);border:1px solid var(--border);border-radius:20px;padding:26px 24px;position:relative;transition:transform .2s;}
+.plan:hover{transform:translateY(-3px);}
+.plan.featured{border-color:rgba(217,43,58,0.35);background:linear-gradient(160deg,#180810,#0f0e1a);}
+.plan-popular{position:absolute;top:-11px;left:50%;transform:translateX(-50%);background:var(--grad);color:#fff;font-size:11px;font-weight:700;padding:4px 16px;border-radius:20px;white-space:nowrap;box-shadow:0 4px 14px rgba(217,43,58,0.35);}
+.plan-name{font-size:13px;font-weight:600;color:var(--muted2);text-transform:uppercase;letter-spacing:1px;margin-bottom:11px;}
+.plan-price{font-family:'Cormorant Garamond',serif;font-size:44px;font-weight:700;line-height:1;margin-bottom:4px;}
+.plan-price span{font-size:17px;font-weight:400;color:var(--muted2);}
+.plan-period{font-size:12px;color:var(--muted);margin-bottom:20px;}
+.plan-feats{list-style:none;display:flex;flex-direction:column;gap:9px;margin-bottom:22px;}
+.plan-feats li{font-size:13px;color:var(--muted2);display:flex;align-items:center;gap:8px;}
+.plan-feats li::before{content:'✓';color:var(--red);font-weight:700;flex-shrink:0;}
+.plan-feats li.no{opacity:0.4;}
+.plan-feats li.no::before{content:'✗';color:var(--muted);}
+.btn-plan{width:100%;padding:12px;border-radius:11px;font-size:13px;font-weight:700;cursor:pointer;border:none;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.btn-plan-outline{background:transparent;color:var(--text);border:1px solid var(--border2);}
+.btn-plan-fill{background:var(--grad);color:#fff;box-shadow:0 5px 20px rgba(217,43,58,0.35);}
+.btn-plan-fill:hover{transform:translateY(-1px);}
+.payment-sec{max-width:520px;margin:0 auto;padding:0 28px 52px;}
+.payment-sec h2{font-family:'Cormorant Garamond',serif;font-size:24px;font-weight:700;margin-bottom:18px;text-align:center;}
+.payment-methods{display:flex;gap:9px;margin-bottom:18px;flex-wrap:wrap;}
+.pm{flex:1;min-width:90px;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:11px;text-align:center;cursor:pointer;transition:all .2s;font-size:20px;}
+.pm:hover{border-color:var(--border2);}
+.pm.sel{border-color:var(--red);background:rgba(217,43,58,0.08);}
+.pm span{display:block;font-size:11px;color:var(--muted);margin-top:3px;font-weight:500;}
+.payment-form{background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:22px;}
+.form-row{display:flex;gap:11px;}
+.form-row .form-group{flex:1;}
+.stripe-note{text-align:center;font-size:11px;color:var(--muted);margin-top:12px;display:flex;align-items:center;justify-content:center;gap:6px;}
+.pay-tab{flex:1;padding:11px;text-align:center;font-size:13px;font-weight:600;cursor:pointer;color:var(--muted);background:transparent;border:none;font-family:'DM Sans',sans-serif;transition:all .2s;}
+.pay-tab.on{background:var(--grad);color:#fff;}
+
+/* ── TOAST ── */
+.toast{position:fixed;bottom:22px;right:22px;z-index:9998;background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:12px 17px;font-size:13px;font-weight:500;box-shadow:0 8px 32px rgba(0,0,0,0.5);transform:translateY(80px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;gap:8px;pointer-events:none;}
+.toast.show{transform:translateY(0);opacity:1;}
+</style>
+</head>
+<body>
+
+<!-- ════════════ AGE GATE ════════════ -->
+<div id="age-gate">
+  <div class="age-gate-box">
+    <span class="age-gate-icon">🔞</span>
+    <h2>Accesso riservato ai maggiorenni</h2>
+    <p>Questo sito contiene materiale riservato agli adulti. Accedendo dichiari di avere almeno <strong>18 anni</strong> e accetti i nostri Termini di servizio e la Privacy Policy.</p>
+    <div class="age-gate-btns">
+      <button class="btn-age-yes" onclick="confirmAge()">✓ Ho 18+ anni, entra</button>
+      <button class="btn-age-no" onclick="denyAge()">✗ Sono minorenne</button>
+    </div>
+    <p class="age-gate-note">Cliccando "Entra" dichiari sotto la tua responsabilità di avere l'età minima richiesta dalla legge del tuo paese per accedere a contenuti per adulti.</p>
+  </div>
+</div>
+
+<!-- ════════════ HOME ════════════ -->
+<div id="page-home" class="page active">
+  <nav>
+    <div class="logo" onclick="goto('home')">♥ FlirtZone</div>
+    <div class="nav-links">
+      <span class="nav-a active-link" onclick="goto('home')">Annunci</span>
+      <span class="nav-a" onclick="goto('viaggio')">✈️ In Viaggio</span>
+      <span class="nav-a" onclick="goto('premium')">Premium</span>
+      <div class="notif-wrap">
+        <button class="notif-btn" onclick="toggleNotif()" id="notif-btn">🔔<div class="notif-dot"></div></button>
+        <div class="notif-panel" id="notif-panel">
+          <div class="notif-head"><h3>Notifiche</h3><span class="notif-clear" onclick="clearNotifs()">Segna tutte come lette</span></div>
+          <div class="notif-list" id="notif-list">
+            <div class="notif-item unread" onclick="goto('messages')">
+              <div class="notif-av g1">👩</div>
+              <div class="notif-info"><div class="notif-text"><strong>Sofia</strong> ti ha inviato un messaggio</div><div class="notif-time">2 minuti fa</div></div>
+              <div class="notif-unread-dot"></div>
+            </div>
+            <div class="notif-item unread" onclick="goto('profile')">
+              <div class="notif-av g2">👨</div>
+              <div class="notif-info"><div class="notif-text"><strong>Marco</strong> ha visitato il tuo profilo</div><div class="notif-time">15 minuti fa</div></div>
+              <div class="notif-unread-dot"></div>
+            </div>
+            <div class="notif-item unread">
+              <div class="notif-av" style="background:linear-gradient(135deg,#c8941a,var(--gold));font-size:18px;">⭐</div>
+              <div class="notif-info"><div class="notif-text">Il tuo profilo è stato messo <strong>in evidenza</strong></div><div class="notif-time">1 ora fa</div></div>
+              <div class="notif-unread-dot"></div>
+            </div>
+            <div class="notif-item" onclick="goto('messages')">
+              <div class="notif-av g3">👩</div>
+              <div class="notif-info"><div class="notif-text"><strong>Léa</strong> ti ha inviato un messaggio</div><div class="notif-time">Ieri · 21:30</div></div>
+            </div>
+            <div class="notif-item">
+              <div class="notif-av" style="background:rgba(31,212,106,0.15);font-size:18px;">✓</div>
+              <div class="notif-info"><div class="notif-text">Il tuo profilo è stato <strong>verificato</strong></div><div class="notif-time">Ieri · 14:00</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <button class="btn-sm btn-ghost" onclick="goto('auth')">Accedi</button>
+      <button class="btn-sm btn-fill" onclick="goto('auth')">Registrati</button>
+    </div>
+  </nav>
+
+  <div class="hero">
+    <div class="eyebrow">🔥 98.000 utenti online ora</div>
+    <h1>Incontri reali,<br><em>senza filtri.</em></h1>
+    <p class="hero-sub">Profili verificati in tutto il mondo. Trova chi cerchi, dove sei — o dove stai andando.</p>
+    <div class="hero-btns">
+      <button class="btn btn-primary" onclick="goto('auth')">Inizia gratis</button>
+      <button class="btn btn-outline">Sfoglia annunci</button>
+    </div>
+    <div class="stats-bar">
+      <div class="stat"><div class="stat-n">2.4M+</div><div class="stat-l">Utenti attivi</div></div>
+      <div class="stat"><div class="stat-n">140+</div><div class="stat-l">Paesi</div></div>
+      <div class="stat"><div class="stat-n">98K</div><div class="stat-l">Online ora</div></div>
+      <div class="stat"><div class="stat-n">4.8★</div><div class="stat-l">Valutazione</div></div>
+    </div>
+  </div>
+
+  <div class="search-section">
+    <div class="search-box">
+      <select class="s-select"><option>👤 Cerco…</option><option>Donna</option><option>Uomo</option><option>Coppia</option><option>Tutti</option></select>
+      <select class="s-select"><option>📍 Città</option><option>Roma</option><option>Milano</option><option>Parigi</option><option>Barcellona</option><option>Londra</option></select>
+      <select class="s-select"><option>🎂 Età</option><option>18–25</option><option>26–35</option><option>36–45</option><option>45+</option></select>
+      <select class="s-select"><option>⭐ Filtro</option><option>Solo verificati</option><option>Online ora</option><option>In viaggio</option></select>
+      <button class="btn-search">🔍 Cerca</button>
+    </div>
+  </div>
+
+  <div class="tabs-row">
+    <div class="tab on" onclick="setTab(this)">🔥 Popolari</div>
+    <div class="tab" onclick="setTab(this)">🆕 Nuovi</div>
+    <div class="tab" onclick="setTab(this)">📍 Vicino a me</div>
+    <div class="tab" onclick="setTab(this)">✈️ In viaggio</div>
+    <div class="tab" onclick="setTab(this)">✓ Verificati</div>
+  </div>
+
+  <div class="listings">
+    <div class="listings-head">
+      <span class="listings-title">Annunci recenti</span>
+      <span class="see-all">Vedi tutti →</span>
+    </div>
+    <div class="grid">
+      <div class="card" onclick="goto('annuncio')">
+        <div class="card-img g1"><div class="av">👩</div><div class="dot-on"></div><div class="bdg bdg-verified">✓ Verificata</div></div>
+        <div class="card-body"><div class="card-name">Sofia, 27 <span style="color:var(--red)">♀</span></div><div class="card-meta">📍 Milano · Online ora</div><div class="card-tags"><span class="tag">Discreta</span><span class="tag">No drama</span></div></div>
+      </div>
+      <div class="card" onclick="goto('annuncio')">
+        <div class="card-img g2"><div class="av">👨</div><div class="dot-on"></div><div class="bdg bdg-travel">✈️ In viaggio</div><div class="bdg bdg-verified">✓ Verificato</div></div>
+        <div class="card-body"><div class="card-name">Marco, 34 <span style="color:#6060ff">♂</span></div><div class="card-meta">📍 Roma → Barcellona</div><div class="card-tags"><span class="tag">Serio</span><span class="tag">Foto reali</span></div></div>
+      </div>
+      <div class="card" onclick="goto('annuncio')">
+        <div class="card-img g3"><div class="av">👩</div><div class="bdg bdg-verified">✓ Verificata</div></div>
+        <div class="card-body"><div class="card-name">Léa, 29 <span style="color:var(--red2)">♀</span></div><div class="card-meta">📍 Parigi</div><div class="card-tags"><span class="tag">Open mind</span><span class="tag tag-r">⭐ Premium</span></div></div>
+      </div>
+      <div class="card"><div class="card-img g4"><div class="av blur">👩</div><div class="lock-over"><div class="lock-ico">🔒</div><div class="lock-lbl">Sblocca con Premium</div></div></div><div class="card-body"><div class="card-name">••••, 31</div><div class="card-meta">📍 •••••</div><div class="card-tags"><span class="tag tag-r">Solo Premium</span></div></div></div>
+      <div class="card"><div class="card-img g5"><div class="av blur">👨</div><div class="lock-over"><div class="lock-ico">🔒</div><div class="lock-lbl">Sblocca con Premium</div></div></div><div class="card-body"><div class="card-name">••••, 38</div><div class="card-meta">📍 •••••</div><div class="card-tags"><span class="tag tag-r">Solo Premium</span></div></div></div>
+      <div class="card"><div class="card-img g6"><div class="av blur">👩</div><div class="lock-over"><div class="lock-ico">🔒</div><div class="lock-lbl">Sblocca con Premium</div></div></div><div class="card-body"><div class="card-name">••••, 25</div><div class="card-meta">📍 •••••</div><div class="card-tags"><span class="tag tag-r">Solo Premium</span></div></div></div>
+    </div>
+  </div>
+
+  <div class="prem-banner">
+    <div class="prem-inner">
+      <div class="prem-left">
+        <h3>Passa a <span>FlirtZone Premium</span></h3>
+        <p>Sblocca tutti i profili e inizia a chattare senza limiti</p>
+        <div class="pf-list">
+          <div class="pf">Profili illimitati</div><div class="pf">Messaggistica privata</div><div class="pf">Filtri avanzati</div><div class="pf">Chi visita il tuo profilo</div><div class="pf">Badge verificato</div><div class="pf">Modalità In viaggio</div>
+        </div>
+      </div>
+      <button class="btn btn-primary" onclick="goto('premium')">🔥 Prova Premium</button>
+    </div>
+  </div>
+
+  <footer>
+    <div class="age-warn">🔞 Accesso riservato ai maggiorenni (18+)</div>
+    <div class="foot-links"><a>Privacy Policy</a><a>Termini di servizio</a><a>Cookie</a><a>Contatti</a><a>Segnala abuso</a></div>
+    <div class="foot-copy">© 2026 FlirtZone · Tutti i diritti riservati</div>
+  </footer>
+</div>
+
+<!-- ════════════ ANNUNCIO SINGOLO ════════════ -->
+<div id="page-annuncio" class="page">
+  <nav>
+    <div class="logo" onclick="goto('home')">♥ FlirtZone</div>
+    <div class="nav-links">
+      <span class="nav-a" onclick="goto('messages')">💬 Messaggi</span>
+      <button class="btn-sm btn-fill" onclick="goto('messages')">Scrivi ora</button>
+    </div>
+  </nav>
+  <div style="flex:1;">
+    <div class="ann-wrap">
+      <div class="ann-back" onclick="goto('home')">← Torna agli annunci</div>
+      <div class="ann-grid">
+        <div>
+          <div class="ann-photos">
+            <div class="ann-main-photo" id="ann-main">👩</div>
+            <div class="ann-photo-thumbs">
+              <div class="ann-thumb g1 active-t" onclick="selectThumb(this,'👩')">👩</div>
+              <div class="ann-thumb g3" onclick="selectThumb(this,'🌅')">🌅</div>
+              <div class="ann-thumb g2" onclick="selectThumb(this,'🏙️')">🏙️</div>
+              <div class="ann-thumb g4 locked-t" title="Solo Premium">🔒</div>
+              <div class="ann-thumb g5 locked-t" title="Solo Premium">🔒</div>
+            </div>
+          </div>
+          <!-- descrizione estesa -->
+          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:22px;margin-top:14px;">
+            <div style="font-size:14px;font-weight:700;margin-bottom:12px;">📝 Descrizione completa</div>
+            <p style="font-size:14px;color:var(--muted2);line-height:1.8;">Ciao, sono Sofia. Milanese, lavoro nel settore moda e amo viaggiare. Cerco persone genuine, senza filtri e senza complicazioni. Sono discreta e apprezzo la stessa cosa. Se mi scrivi, fallo con intenzione. Niente messaggi copiati e incollati 😊. Sono verificata, le mie foto sono recenti e reali.</p>
+            <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;">
+              <span class="tag">🎭 Moda</span><span class="tag">✈️ Viaggi</span><span class="tag">🍷 Aperitivi</span><span class="tag">📸 Fotografia</span><span class="tag">🎵 Musica</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="ann-info">
+          <div class="ann-name">Sofia <span style="color:var(--red)">♀</span> <span style="font-size:22px;">27</span></div>
+          <div class="ann-chips">
+            <span class="chip chip-blue">✓ Verificata</span>
+            <span class="chip chip-green">● Online</span>
+            <span class="chip chip-gold">⭐ Premium</span>
+          </div>
+          <ul class="ann-detail-list">
+            <li><span>📍 Città</span><span>Milano, Italia</span></li>
+            <li><span>🎂 Età</span><span>27 anni</span></li>
+            <li><span>👁️ Cerco</span><span>Uomini, Coppie</span></li>
+            <li><span>📏 Distanza</span><span>Max 50 km</span></li>
+            <li><span>🌍 Lingue</span><span>IT, EN</span></li>
+            <li><span>📅 Online</span><span>2 min fa</span></li>
+            <li><span>📸 Foto</span><span>5 (2 Premium)</span></li>
+          </ul>
+          <div class="ann-actions">
+            <button class="btn btn-primary" style="width:100%;" onclick="goto('messages')">💬 Invia messaggio</button>
+            <button class="btn btn-outline" style="width:100%;" onclick="goto('profile')">👁️ Vedi profilo completo</button>
+            <button class="btn btn-outline" style="width:100%;font-size:13px;" onclick="showToast('❤️ Salvato nei preferiti!')">❤️ Salva nei preferiti</button>
+          </div>
+          <div class="report-link" onclick="showToast('🚩 Segnalazione inviata')">🚩 Segnala questo annuncio</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="age-warn">🔞 Solo per maggiorenni (18+)</div><div class="foot-copy">© 2026 FlirtZone</div></footer>
+</div>
+
+<!-- ════════════ AUTH ════════════ -->
+<div id="page-auth" class="page">
+  <nav><div class="logo" onclick="goto('home')">♥ FlirtZone</div><div class="nav-links"><button class="btn-sm btn-outline" onclick="goto('home')">← Torna</button></div></nav>
+  <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:36px 20px;">
+    <div class="auth-wrap">
+      <div class="auth-logo">♥ FlirtZone</div>
+      <div class="auth-box">
+        <div class="auth-tabs">
+          <button class="auth-tab on" id="tab-reg" onclick="switchAuth('reg')">Registrati</button>
+          <button class="auth-tab" id="tab-login" onclick="switchAuth('login')">Accedi</button>
+        </div>
+        <div id="auth-reg">
+          <div style="display:flex;gap:11px;">
+            <div class="form-group" style="flex:1;"><label class="form-label">Nome</label><input class="form-input" type="text" placeholder="Nome"></div>
+            <div class="form-group" style="flex:1;"><label class="form-label">Età</label><input class="form-input" type="number" placeholder="18+" min="18"></div>
+          </div>
+          <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="tua@email.com"></div>
+          <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" placeholder="Min. 8 caratteri"></div>
+          <div class="form-group"><label class="form-label">Sono</label><div class="gender-grid"><div class="gender-opt" onclick="selGender(this)">👩 Donna</div><div class="gender-opt" onclick="selGender(this)">👨 Uomo</div><div class="gender-opt" onclick="selGender(this)">🏳️‍🌈 Non-binary</div><div class="gender-opt" onclick="selGender(this)">👫 Coppia</div></div></div>
+          <div class="form-group"><label class="form-label">Città</label><input class="form-input" type="text" placeholder="La tua città"></div>
+          <div class="age-check"><input type="checkbox" id="age18"><span>Confermo di avere almeno <strong>18 anni</strong> e accetto i <strong>Termini</strong> e la <strong>Privacy Policy</strong>.</span></div>
+          <button class="btn-auth" onclick="doRegister()">Crea account gratis →</button>
+          <div class="auth-divider">oppure</div>
+          <button class="btn-social">🌐 Continua con Google</button>
+        </div>
+        <div id="auth-login" style="display:none;">
+          <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="tua@email.com"></div>
+          <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" placeholder="Password"></div>
+          <button class="btn-auth" onclick="doLogin()">Accedi →</button>
+          <div class="auth-divider">oppure</div>
+          <button class="btn-social">🌐 Accedi con Google</button>
+          <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:12px;cursor:pointer;">Password dimenticata?</p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="age-warn">🔞 Solo per maggiorenni (18+)</div><div class="foot-copy">© 2026 FlirtZone</div></footer>
+</div>
+
+<!-- ════════════ PROFILE ════════════ -->
+<div id="page-profile" class="page">
+  <nav>
+    <div class="logo" onclick="goto('home')">♥ FlirtZone</div>
+    <div class="nav-links">
+      <span class="nav-a" onclick="goto('settings')">⚙️ Impostazioni</span>
+      <button class="btn-sm btn-fill" onclick="goto('messages')">💬 Messaggi</button>
+    </div>
+  </nav>
+  <div style="flex:1;">
+    <div class="profile-hero"></div>
+    <div class="profile-body">
+      <div class="profile-top">
+        <div class="profile-av-col">
+          <div class="profile-av">👩<div class="on-badge"></div></div>
+        </div>
+        <div class="profile-info">
+          <div style="height:44px;"></div>
+          <div class="profile-name">Sofia <span style="color:var(--red);font-size:22px;">♀</span> <span style="font-size:20px;">27</span></div>
+          <div class="profile-chips">
+            <span class="chip chip-blue">✓ Verificata</span>
+            <span class="chip chip-green">● Online ora</span>
+            <span class="chip chip-gold">⭐ Premium</span>
+          </div>
+          <div class="profile-meta">📍 Milano, Italia · Membro da Gennaio 2025</div>
+        </div>
+        <div class="profile-actions">
+          <button class="btn btn-outline" onclick="showToast('❤️ Salvato!')">❤️</button>
+          <button class="btn btn-primary" onclick="goto('messages')">💬 Scrivi</button>
+        </div>
+      </div>
+      <div class="profile-tabs">
+        <div class="ptab on" onclick="switchPTab(this,'ptab-info')">Info</div>
+        <div class="ptab" onclick="switchPTab(this,'ptab-gallery')">Foto & Video</div>
+        <div class="ptab" onclick="switchPTab(this,'ptab-ann')">Annunci</div>
+      </div>
+
+      <div id="ptab-info" class="profile-section">
+        <p class="profile-about">Ciao! Sono Sofia, milanese con la passione per i viaggi e le conversazioni genuine. Cerco persone senza filtri e senza drammi. Discreta e diretta 😊</p>
+        <div class="profile-details">
+          <div class="detail-item"><div class="detail-label">Cerco</div><div class="detail-value">Uomini, Coppie</div></div>
+          <div class="detail-item"><div class="detail-label">Età cercata</div><div class="detail-value">28 – 45 anni</div></div>
+          <div class="detail-item"><div class="detail-label">Città</div><div class="detail-value">📍 Milano</div></div>
+          <div class="detail-item"><div class="detail-label">In viaggio</div><div class="detail-value">✈️ No</div></div>
+          <div class="detail-item"><div class="detail-label">Lingue</div><div class="detail-value">Italiano, Inglese</div></div>
+          <div class="detail-item"><div class="detail-label">Zona</div><div class="detail-value">Max 50km</div></div>
+        </div>
+      </div>
+
+      <div id="ptab-gallery" class="profile-section" style="display:none;">
+        <div class="gallery-header">
+          <span class="gallery-title">📸 Foto & Video (5)</span>
+          <button class="btn-upload" onclick="document.getElementById('file-input').click()">➕ Aggiungi foto</button>
+        </div>
+        <input type="file" id="file-input" accept="image/*,video/*" onchange="handleUpload(this)">
+        <div class="photo-grid" id="photo-grid">
+          <div class="photo-cell g1" style="font-size:46px;">👩</div>
+          <div class="photo-cell g2" style="font-size:46px;">🌅</div>
+          <div class="photo-cell g3" style="font-size:46px;">🏙️</div>
+          <div class="photo-cell g4 locked"><div style="font-size:28px;opacity:0.2;">📷</div><div class="lock-ico2" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(8,7,16,0.6);">🔒</div></div>
+          <div class="photo-cell g5 locked"><div style="font-size:28px;opacity:0.2;">📷</div><div class="lock-ico2" style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(8,7,16,0.6);">🔒</div></div>
+          <div class="photo-cell add-cell" onclick="document.getElementById('file-input').click()"><span style="font-size:24px;">+</span><span>Aggiungi</span></div>
+        </div>
+        <p style="font-size:12px;color:var(--muted);margin-top:12px;">📌 Le foto bloccate sono visibili solo agli utenti Premium. <span style="color:var(--red);cursor:pointer;" onclick="goto('premium')">Passa a Premium →</span></p>
+      </div>
+
+      <div id="ptab-ann" class="profile-section" style="display:none;">
+        <p style="font-size:14px;color:var(--muted2);margin-bottom:16px;">I tuoi annunci attivi</p>
+        <div class="card" style="max-width:360px;cursor:pointer;" onclick="goto('annuncio')">
+          <div class="card-img g1" style="height:160px;"><div class="av">👩</div><div class="dot-on"></div><div class="bdg bdg-verified">✓ Verificata</div></div>
+          <div class="card-body"><div class="card-name">Sofia, 27 ♀</div><div class="card-meta">📍 Milano · ✅ Attivo · 47 visualizzazioni</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="age-warn">🔞 Solo per maggiorenni</div><div class="foot-links"><a>Segnala profilo</a><a>Privacy</a></div><div class="foot-copy">© 2026 FlirtZone</div></footer>
+</div>
+
+<!-- ════════════ MESSAGES ════════════ -->
+<div id="page-messages" class="page">
+  <nav>
+    <div class="logo" onclick="goto('home')">♥ FlirtZone</div>
+    <div class="nav-links">
+      <span class="nav-a" onclick="goto('home')">Annunci</span>
+      <span class="nav-a" onclick="goto('profile')">Profilo</span>
+    </div>
+  </nav>
+  <div class="msg-layout">
+    <div class="sidebar">
+      <div class="sidebar-top"><h2>Messaggi</h2><div class="s-search-wrap"><span class="s-search-icon">🔍</span><input class="s-search" type="text" placeholder="Cerca…"></div></div>
+      <div class="ftabs"><div class="ftab on">Tutti</div><div class="ftab">Non letti</div><div class="ftab">Online</div></div>
+      <div class="conv-list">
+        <div class="ci active-c"><div class="ci-av" style="background:linear-gradient(135deg,#280d15,#180a1c);">👩<div class="ci-on"></div></div><div class="ci-info"><div class="ci-top"><span class="ci-name">Sofia</span><span class="ci-time">14:32</span></div><div class="ci-preview">Quando sei libero? 😊</div></div><div class="ci-badge">2</div></div>
+        <div class="ci"><div class="ci-av" style="background:linear-gradient(135deg,#0c1826,#09111e);">👨<div class="ci-on"></div></div><div class="ci-info"><div class="ci-top"><span class="ci-name">Marco ✈️</span><span class="ci-time">Ieri</span></div><div class="ci-preview">Sono a Barcellona fino a domenica</div></div></div>
+        <div class="ci"><div class="ci-av" style="background:linear-gradient(135deg,#1a180c,#100e09);">👩</div><div class="ci-info"><div class="ci-top"><span class="ci-name">Léa</span><span class="ci-time">Lun</span></div><div class="ci-preview">Hai visto la mia foto nuova?</div></div></div>
+        <div class="ci locked-c"><div class="ci-av" style="background:var(--bg3);filter:blur(3px);">👩</div><div class="ci-info"><div class="ci-top"><span class="ci-name" style="filter:blur(5px)">••••••</span><span class="ci-time">—</span></div><div class="ci-preview" style="filter:blur(4px)">•••••••••••••</div></div><span style="font-size:14px;color:var(--gold);">🔒</span></div>
+      </div>
+    </div>
+    <div class="chat-col">
+      <div class="chat-head">
+        <div class="ch-av" style="background:linear-gradient(135deg,#280d15,#180a1c);">👩<div class="ch-on"></div></div>
+        <div class="ch-info"><div class="ch-name">Sofia, 27 <span class="chip chip-blue" style="font-size:10px;">✓</span></div><div class="ch-status">● Online ora · Milano</div></div>
+        <div class="ch-actions"><div class="ch-btn" onclick="goto('profile')">👁️</div><div class="ch-btn">🚫</div><div class="ch-btn">⋯</div></div>
+      </div>
+      <div class="messages-area">
+        <div class="day-div">Oggi</div>
+        <div class="m"><div class="m-av">👩</div><div><div class="m-bub">Ciao! Ho visto il tuo profilo e mi hai incuriosito 😊</div><div class="m-time">13:45</div></div></div>
+        <div class="m mine"><div><div class="m-bub">Ciao Sofia! Anche il tuo profilo è molto interessante ✨</div><div class="m-time">13:47 <span class="tick">✓✓</span></div></div></div>
+        <div class="m"><div class="m-av">👩</div><div><div class="m-bub" style="position:relative;">Sei di Milano o sei di passaggio?<div class="m-react">😍</div></div><div class="m-time">13:51</div></div></div>
+        <div class="m mine"><div><div class="m-bub">Sono di Roma ma lavoro spesso a Milano 📍</div><div class="m-time">13:53 <span class="tick">✓✓</span></div></div></div>
+        <div class="m"><div class="m-av">👩</div><div><div class="m-bub">Perfetto! Conosci qualche posto carino in zona Navigli?</div><div class="m-time">14:10</div></div></div>
+        <div class="m mine"><div><div class="m-bub">Sì certo! Ti andrebbe di scoprirlo insieme stasera? 🍷</div><div class="m-time">14:28 <span class="tick tick-green">✓✓</span></div></div></div>
+        <div class="m"><div class="m-av">👩</div><div><div class="m-bub">Quando sei libero? 😊</div><div class="m-time">14:32</div></div></div>
+      </div>
+      <div class="chat-input-area">
+        <div class="ci-wrap2"><textarea class="chat-ta" rows="1" placeholder="Scrivi un messaggio…"></textarea><span class="emoji-b">😊</span></div>
+        <div class="ia"><button class="ia-btn">📎</button><button class="ia-btn">📷</button><button class="send-b" onclick="sendMsg()">➤</button></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════ SETTINGS ════════════ -->
+<div id="page-settings" class="page">
+  <nav>
+    <div class="logo" onclick="goto('home')">♥ FlirtZone</div>
+    <div class="nav-links"><button class="btn-sm btn-outline" onclick="goto('profile')">← Profilo</button></div>
+  </nav>
+  <div style="flex:1;">
+    <div class="settings-wrap">
+      <h1>⚙️ Impostazioni</h1>
+
+      <div class="settings-section">
+        <div class="settings-section-head"><span>👤</span><h3>Profilo</h3></div>
+        <div class="settings-rows">
+          <div class="setting-row"><div class="setting-left"><div class="setting-name">Nome visualizzato</div><div class="setting-desc">Il nome mostrato sugli annunci</div></div><input class="form-input" style="width:160px;" value="Sofia"></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name">Città</div><div class="setting-desc">La tua posizione attuale</div></div><input class="form-input" style="width:160px;" value="Milano"></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name">Bio</div><div class="setting-desc">Breve descrizione del tuo profilo</div></div><button class="btn-sm btn-ghost" onclick="showToast('✏️ Modifica bio aperta')">Modifica</button></div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-head"><span>🔔</span><h3>Notifiche</h3></div>
+        <div class="settings-rows">
+          <div class="setting-row"><div class="setting-left"><div class="setting-name">Nuovi messaggi</div><div class="setting-desc">Ricevi una notifica per ogni messaggio</div></div><div class="toggle on" onclick="toggleSetting(this)"></div></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name">Visite al profilo</div><div class="setting-desc">Quando qualcuno visita il tuo profilo</div></div><div class="toggle on" onclick="toggleSetting(this)"></div></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name">Nuovi match</div><div class="setting-desc">Quando qualcuno ti salva nei preferiti</div></div><div class="toggle on" onclick="toggleSetting(this)"></div></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name">Email di riepilogo</div><div class="setting-desc">Riepilogo settimanale via email</div></div><div class="toggle" onclick="toggleSetting(this)"></div></div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-head"><span>🔒</span><h3>Privacy</h3></div>
+        <div class="settings-rows">
+          <div class="setting-row"><div class="setting-left"><div class="setting-name">Profilo visibile</div><div class="setting-desc">Il tuo profilo appare negli annunci</div></div><div class="toggle on" onclick="toggleSetting(this)"></div></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name">Stato online</div><div class="setting-desc">Mostra quando sei connesso</div></div><div class="toggle on" onclick="toggleSetting(this)"></div></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name">Geolocalizzazione</div><div class="setting-desc">Mostra la distanza dagli altri utenti</div></div><div class="toggle on" onclick="toggleSetting(this)"></div></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name">Blocca utenti specifici</div><div class="setting-desc">Gestisci la lista utenti bloccati</div></div><button class="btn-sm btn-ghost">Gestisci</button></div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-head"><span>🔍</span><h3>Preferenze di ricerca</h3></div>
+        <div class="settings-rows">
+          <div class="setting-row"><div class="setting-left"><div class="setting-name">Cerco</div></div><select class="setting-select"><option>Tutti</option><option>Uomini</option><option selected>Donne</option><option>Coppie</option></select></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name">Età minima</div></div><select class="setting-select"><option>18</option><option>21</option><option selected>25</option><option>30</option></select></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name">Età massima</div></div><select class="setting-select"><option>30</option><option selected>40</option><option>50</option><option>Qualsiasi</option></select></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name">Distanza massima</div></div><select class="setting-select"><option>10 km</option><option>25 km</option><option selected>50 km</option><option>100 km</option><option>Ovunque</option></select></div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-head"><span>💳</span><h3>Abbonamento</h3></div>
+        <div class="settings-rows">
+          <div class="setting-row"><div class="setting-left"><div class="setting-name">Piano attuale</div><div class="setting-desc">FlirtZone Premium Mensile</div></div><span class="chip chip-gold">⭐ Premium</span></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name">Prossimo rinnovo</div><div class="setting-desc">€14.00 il 13 Aprile 2026</div></div><button class="btn-sm btn-ghost" onclick="showToast('ℹ️ Gestione abbonamento aperta')">Gestisci</button></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name">Disdici abbonamento</div><div class="setting-desc">Il tuo account tornerà al piano Free</div></div><button class="btn-sm" style="background:transparent;color:var(--red);border:1px solid rgba(217,43,58,0.3);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:12px;" onclick="showToast('⚠️ Conferma disdetta inviata')">Disdici</button></div>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-section-head"><span>⚠️</span><h3>Account</h3></div>
+        <div class="settings-rows">
+          <div class="setting-row"><div class="setting-left"><div class="setting-name">Cambia password</div></div><button class="btn-sm btn-ghost">Cambia</button></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name">Scarica i miei dati</div><div class="setting-desc">GDPR — esporta tutti i tuoi dati</div></div><button class="btn-sm btn-ghost" onclick="showToast('📦 Richiesta dati inviata via email')">Richiedi</button></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name">Elimina account</div><div class="setting-desc">Questa azione è irreversibile</div></div><button class="btn-sm" style="background:rgba(217,43,58,0.1);color:var(--red);border:1px solid rgba(217,43,58,0.3);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:12px;" onclick="showToast('⚠️ Controlla la tua email per confermare')">Elimina</button></div>
+        </div>
+      </div>
+
+      <div style="text-align:center;margin-top:24px;">
+        <button class="btn btn-primary" onclick="showToast('✅ Impostazioni salvate!');goto('profile')">Salva modifiche</button>
+      </div>
+    </div>
+  </div>
+  <footer><div class="age-warn">🔞 Solo per maggiorenni</div><div class="foot-copy">© 2026 FlirtZone</div></footer>
+</div>
+
+<!-- ════════════ IN VIAGGIO ════════════ -->
+<div id="page-viaggio" class="page">
+  <nav>
+    <div class="logo" onclick="goto('home')">♥ FlirtZone</div>
+    <div class="nav-links">
+      <span class="nav-a" onclick="goto('home')">Annunci</span>
+      <button class="btn-sm btn-fill" onclick="goto('premium')">⭐ Premium</button>
+    </div>
+  </nav>
+  <div style="flex:1;">
+    <div class="viaggio-wrap">
+      <h1>✈️ Modalità In Viaggio</h1>
+      <p class="sub">Cerca incontri nella tua destinazione prima ancora di arrivare. Aggiorna la tua posizione e connettiti con persone locali.</p>
+      <div class="viaggio-grid">
+        <div>
+          <div class="map-container">
+            <div class="map-canvas">
+              <div class="map-grid"></div>
+              <!-- Pins -->
+              <div class="map-pin me" style="top:45%;left:48%;">
+                <div class="map-pin-icon">📍</div>
+                <div class="map-label" style="font-size:10px;font-weight:600;color:#fff;background:rgba(30,144,255,0.8);padding:2px 7px;border-radius:8px;margin-top:4px;">Tu · Milano</div>
+              </div>
+              <div class="map-pin" style="top:28%;left:62%;">
+                <div class="map-pin-icon">👩</div>
+                <div class="map-pin-label">Sofia · 2km</div>
+              </div>
+              <div class="map-pin" style="top:55%;left:34%;">
+                <div class="map-pin-icon">👨</div>
+                <div class="map-pin-label">Marco · 5km</div>
+              </div>
+              <div class="map-pin" style="top:38%;left:74%;">
+                <div class="map-pin-icon">👩</div>
+                <div class="map-pin-label">Anna · 8km</div>
+              </div>
+              <div class="map-pin" style="top:66%;left:56%;">
+                <div class="map-pin-icon" style="filter:blur(3px);opacity:0.5;">👩</div>
+                <div class="map-pin-label" style="filter:blur(3px);opacity:0.5;">•••••</div>
+              </div>
+              <!-- Pulse around me -->
+              <div class="map-pulse" style="width:60px;height:60px;top:calc(45% - 30px);left:calc(48% - 30px);"></div>
+            </div>
+            <div class="map-controls">
+              <div class="location-chip">📍 Milano, Italia</div>
+              <button class="map-btn on" onclick="toggleMapBtn(this)">👁️ Mostra utenti</button>
+              <button class="map-btn" onclick="toggleMapBtn(this)">🔍 Filtra</button>
+              <button class="map-btn" onclick="showToast('📍 Posizione aggiornata!')">🔄 Aggiorna</button>
+            </div>
+          </div>
+
+          <!-- destinazione -->
+          <div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px;margin-top:14px;">
+            <div style="font-size:14px;font-weight:700;margin-bottom:14px;">🗓️ Pianifica un viaggio</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <input class="form-input" style="flex:2;min-width:160px;" placeholder="🏙️ Destinazione (es. Barcellona)">
+              <input class="form-input" type="date" style="flex:1;min-width:130px;">
+              <button class="btn btn-primary" style="padding:10px 20px;" onclick="showToast('✈️ Modalità In Viaggio attivata per Barcellona!')">Attiva</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="viaggio-panel">
+          <div class="viaggio-card">
+            <div class="viaggio-card-head">
+              <h3>La mia modalità In Viaggio</h3>
+              <p>Visibile agli utenti nella tua destinazione</p>
+            </div>
+            <div class="viaggio-card-body">
+              <div class="toggle-big">
+                <span class="toggle-big-label">✈️ Attiva In Viaggio</span>
+                <div class="toggle" id="travel-toggle" onclick="toggleTravel()"></div>
+              </div>
+              <div class="form-group"><label class="form-label">Destinazione</label><input class="form-input" placeholder="Dove stai andando?"></div>
+              <div class="form-group"><label class="form-label">Date</label><div style="display:flex;gap:8px;"><input class="form-input" type="date" style="flex:1;"><input class="form-input" type="date" style="flex:1;"></div></div>
+              <button class="btn btn-primary" style="width:100%;margin-top:4px;" onclick="showToast('✈️ Badge In Viaggio attivato!')">Salva destinazione</button>
+            </div>
+          </div>
+
+          <div class="viaggio-card">
+            <div class="viaggio-card-head">
+              <h3>Viaggiatori vicino a te</h3>
+              <p>Utenti con badge ✈️ In Viaggio nella tua area</p>
+            </div>
+            <div class="viaggio-card-body">
+              <div class="travelers-list">
+                <div class="traveler">
+                  <div class="trav-av g2" style="background:linear-gradient(135deg,#0c1826,#09111e);">👨</div>
+                  <div class="trav-info"><div class="trav-name">Marco, 34</div><div class="trav-meta">Roma → Milano · 3km da te</div></div>
+                  <div class="trav-msg" onclick="goto('messages')">💬</div>
+                </div>
+                <div class="traveler">
+                  <div class="trav-av g3" style="background:linear-gradient(135deg,#1a180c,#100e09);">👩</div>
+                  <div class="trav-info"><div class="trav-name">Chiara, 29</div><div class="trav-meta">Napoli → Milano · 6km da te</div></div>
+                  <div class="trav-msg" onclick="goto('messages')">💬</div>
+                </div>
+                <div class="traveler" style="opacity:0.4;filter:blur(1px);">
+                  <div class="trav-av" style="background:var(--bg3);">🔒</div>
+                  <div class="trav-info"><div class="trav-name">••••, ••</div><div class="trav-meta">Solo Premium</div></div>
+                  <div class="trav-msg" onclick="goto('premium')">⭐</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <footer><div class="age-warn">🔞 Solo per maggiorenni</div><div class="foot-copy">© 2026 FlirtZone</div></footer>
+</div>
+
+<!-- ════════════ PREMIUM ════════════ -->
+<!-- PayPal SDK — sostituisci YOUR_PAYPAL_CLIENT_ID con il tuo Client ID reale -->
+<script src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=EUR&intent=subscription&vault=true" data-sdk-integration-source="button-factory"></script>
+<!-- Revolut Pay SDK -->
+<script src="https://merchant.revolut.com/embed.js" async></script>
+
+<div id="page-premium" class="page">
+  <nav><div class="logo" onclick="goto('home')">♥ FlirtZone</div><div class="nav-links"><span class="nav-a" onclick="goto('home')">← Torna</span></div></nav>
+  <div style="flex:1;">
+    <div class="prem-hero">
+      <div class="eyebrow">⭐ FlirtZone Premium</div>
+      <h1>Senza <em>limiti.</em><br>Senza confini.</h1>
+      <p>Sblocca l'accesso completo a tutti i profili, la messaggistica illimitata e molto altro.</p>
+    </div>
+
+    <!-- PIANI -->
+    <div class="plans">
+      <div class="plan">
+        <div class="plan-name">Free</div>
+        <div class="plan-price">€0<span>/mese</span></div>
+        <div class="plan-period">Per sempre gratuito</div>
+        <ul class="plan-feats">
+          <li>3 profili visibili al giorno</li><li>Creazione profilo base</li><li>Geolocalizzazione base</li>
+          <li class="no">Messaggistica privata</li><li class="no">Profili illimitati</li><li class="no">Modalità In Viaggio</li>
+        </ul>
+        <button class="btn-plan btn-plan-outline" onclick="goto('auth')">Inizia gratis</button>
+      </div>
+
+      <div class="plan featured" id="plan-mensile">
+        <div class="plan-popular">🔥 Più popolare</div>
+        <div class="plan-name">Premium Mensile</div>
+        <div class="plan-price">€14<span>/mese</span></div>
+        <div class="plan-period">Fatturato mensilmente · Disdici quando vuoi</div>
+        <ul class="plan-feats">
+          <li>Profili illimitati</li><li>Messaggistica privata illimitata</li><li>Filtri avanzati</li>
+          <li>Chi ha visitato il profilo</li><li>Badge ✓ Verificato</li><li>Modalità ✈️ In Viaggio</li><li>Profilo in evidenza</li>
+        </ul>
+        <button class="btn-plan btn-plan-fill" onclick="selectPlan('mensile','14.00')">Abbonati ora →</button>
+      </div>
+
+      <div class="plan" id="plan-annuale">
+        <div class="plan-name">Premium Annuale</div>
+        <div class="plan-price">€8<span>/mese</span></div>
+        <div class="plan-period">€96 fatturati annualmente · Risparmi 40%</div>
+        <ul class="plan-feats">
+          <li>Tutto di Premium mensile</li><li>Risparmio del 40%</li><li>Priorità nel supporto</li>
+          <li>Accesso anticipato alle nuove funzioni</li><li>Badge esclusivo "Gold"</li><li class="no">—</li>
+        </ul>
+        <button class="btn-plan btn-plan-outline" onclick="selectPlan('annuale','96.00')">Scegli annuale</button>
+      </div>
+    </div>
+
+    <!-- SEZIONE PAGAMENTO -->
+    <div class="payment-sec" id="payment-section">
+      <h2>Completa il pagamento</h2>
+
+      <!-- RIEPILOGO ORDINE -->
+      <div id="order-summary" style="background:var(--bg2);border:1px solid rgba(217,43,58,0.25);border-radius:14px;padding:16px 20px;margin-bottom:20px;display:flex;justify-content:space-between;align-items:center;">
+        <div>
+          <div style="font-size:13px;font-weight:700;" id="order-label">⭐ FlirtZone Premium Mensile</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:3px;">Rinnovo automatico · Disdici quando vuoi</div>
+        </div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:26px;font-weight:700;" id="order-price">€14.00</div>
+      </div>
+
+      <!-- TABS METODO -->
+      <div style="display:flex;gap:0;border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:20px;">
+        <button class="pay-tab on" id="tab-card" onclick="switchPayTab('card')">💳 Carta</button>
+        <button class="pay-tab" id="tab-paypal" onclick="switchPayTab('paypal')">🅿️ PayPal</button>
+        <button class="pay-tab" id="tab-revolut" onclick="switchPayTab('revolut')">⚡ Revolut</button>
+      </div>
+
+      <!-- CARTA (Stripe Elements placeholder) -->
+      <div id="pay-card" class="payment-form">
+        <div style="background:rgba(217,43,58,0.06);border:1px solid rgba(217,43,58,0.15);border-radius:10px;padding:10px 14px;margin-bottom:16px;font-size:12px;color:#e07080;">
+          ⚠️ <strong>Modalità demo:</strong> Per attivare i pagamenti reali con carta, collega Stripe nel tuo backend. <a href="#" style="color:var(--red);" onclick="showToast('📋 Segui la guida Stripe nel README')">Segui la guida →</a>
+        </div>
+        <div class="form-group"><label class="form-label">Numero carta</label><input class="form-input" type="text" placeholder="1234 5678 9012 3456" maxlength="19" oninput="formatCard(this)"></div>
+        <div class="form-row">
+          <div class="form-group"><label class="form-label">Scadenza</label><input class="form-input" type="text" placeholder="MM/AA" maxlength="5" oninput="formatExp(this)"></div>
+          <div class="form-group"><label class="form-label">CVV</label><input class="form-input" type="text" placeholder="123" maxlength="4"></div>
+        </div>
+        <div class="form-group"><label class="form-label">Nome sulla carta</label><input class="form-input" type="text" placeholder="Nome Cognome"></div>
+        <button class="btn-auth" style="margin-top:6px;" onclick="doPay('card')">🔒 Paga €<span id="card-price">14.00</span> in sicurezza</button>
+        <div class="stripe-note">🔒 Pagamento sicuro tramite <strong>Stripe</strong> · Crittografia SSL 256-bit</div>
+      </div>
+
+      <!-- PAYPAL -->
+      <div id="pay-paypal" class="payment-form" style="display:none;">
+        <div style="background:rgba(0,112,186,0.08);border:1px solid rgba(0,112,186,0.2);border-radius:12px;padding:18px;margin-bottom:16px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+            <div style="font-size:28px;">🅿️</div>
+            <div><div style="font-size:14px;font-weight:700;">PayPal</div><div style="font-size:12px;color:var(--muted);">Accedi con il tuo account PayPal o paga con carta</div></div>
+          </div>
+          <!-- PayPal button container reale -->
+          <div id="paypal-button-container" style="min-height:50px;"></div>
+          <!-- Fallback se SDK non caricato -->
+          <div id="paypal-fallback" style="display:none;">
+            <button onclick="doPay('paypal')" style="width:100%;background:#0070ba;color:#fff;border:none;padding:14px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;">
+              🅿️ Paga con PayPal — €<span class="pp-price">14.00</span>
+            </button>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--muted);text-align:center;display:flex;align-items:center;justify-content:center;gap:5px;">
+          🔒 Protetto da <strong style="color:var(--muted2);">PayPal Buyer Protection</strong> · I tuoi dati finanziari non vengono condivisi
+        </div>
+        <div style="margin-top:14px;padding:12px;background:var(--bg3);border-radius:10px;font-size:12px;color:var(--muted);">
+          📋 <strong style="color:var(--muted2);">Setup PayPal reale:</strong> Crea un'app su <a href="https://developer.paypal.com" target="_blank" style="color:var(--red);">developer.paypal.com</a>, ottieni il Client ID e sostituisci <code style="color:var(--gold);">YOUR_PAYPAL_CLIENT_ID</code> nel tag script in cima alla pagina.
+        </div>
+      </div>
+
+      <!-- REVOLUT -->
+      <div id="pay-revolut" class="payment-form" style="display:none;">
+        <div style="background:rgba(100,40,220,0.08);border:1px solid rgba(100,40,220,0.2);border-radius:12px;padding:18px;margin-bottom:16px;">
+          <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px;">
+            <div style="width:36px;height:36px;background:linear-gradient(135deg,#6428dc,#7b61ff);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;">⚡</div>
+            <div><div style="font-size:14px;font-weight:700;">Revolut Pay</div><div style="font-size:12px;color:var(--muted);">Paga con il tuo account Revolut o carta</div></div>
+          </div>
+          <!-- Revolut Pay button container reale -->
+          <div id="revolut-pay-container" style="min-height:50px;"></div>
+          <!-- Fallback -->
+          <div id="revolut-fallback">
+            <button onclick="doPay('revolut')" style="width:100%;background:linear-gradient(135deg,#6428dc,#7b61ff);color:#fff;border:none;padding:14px;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;font-family:'DM Sans',sans-serif;display:flex;align-items:center;justify-content:center;gap:8px;">
+              ⚡ Paga con Revolut — €<span class="rev-price">14.00</span>
+            </button>
+          </div>
+        </div>
+        <div style="font-size:11px;color:var(--muted);text-align:center;">
+          🔒 Pagamento sicuro tramite <strong style="color:var(--muted2);">Revolut Business</strong>
+        </div>
+        <div style="margin-top:14px;padding:12px;background:var(--bg3);border-radius:10px;font-size:12px;color:var(--muted);">
+          📋 <strong style="color:var(--muted2);">Setup Revolut reale:</strong> Crea un account su <a href="https://business.revolut.com" target="_blank" style="color:#7b61ff;">business.revolut.com</a>, attiva l'API Merchant, genera il <code style="color:var(--gold);">public_key</code> e inizializza il widget con il codice nel README.
+        </div>
+      </div>
+
+      <!-- GARANZIE -->
+      <div style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:20px;padding-top:18px;border-top:1px solid var(--border);">
+        <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);">🔒 SSL 256-bit</div>
+        <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);">↩️ Rimborso 14 giorni</div>
+        <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);">❌ Disdici quando vuoi</div>
+        <div style="display:flex;align-items:center;gap:5px;font-size:11px;color:var(--muted);">🛡️ GDPR compliant</div>
+      </div>
+    </div>
+
+    <!-- README integrazione -->
+    <div style="max-width:520px;margin:0 auto;padding:0 28px 52px;">
+      <div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:22px;">
+        <div style="font-size:14px;font-weight:700;margin-bottom:14px;">📖 README — Attivare i pagamenti reali</div>
+        <div style="font-size:12px;color:var(--muted2);line-height:1.9;">
+          <div style="margin-bottom:10px;"><strong style="color:var(--text);">PayPal:</strong><br>
+          1. Vai su <code style="color:var(--gold);">developer.paypal.com</code> → My Apps<br>
+          2. Crea app → copia il <code style="color:var(--gold);">Client ID</code><br>
+          3. Sostituisci <code style="color:var(--gold);">YOUR_PAYPAL_CLIENT_ID</code> nel tag &lt;script&gt; PayPal<br>
+          4. Per abbonamenti: crea un Piano su PayPal e usa <code style="color:var(--gold);">createSubscription</code></div>
+          <div><strong style="color:var(--text);">Revolut:</strong><br>
+          1. Vai su <code style="color:var(--gold);">business.revolut.com</code> → Merchant API<br>
+          2. Crea un Order dal tuo backend: <code style="color:var(--gold);">POST /api/orders</code><br>
+          3. Usa il <code style="color:var(--gold);">public_key</code> per inizializzare <code style="color:var(--gold);">RevolutCheckout(token)</code><br>
+          4. Monta il widget nel <code style="color:var(--gold)">#revolut-pay-container</code></div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <footer><div class="age-warn">🔞 Solo per maggiorenni (18+)</div><div class="foot-links"><a>Privacy</a><a>Termini</a><a>Rimborsi</a></div><div class="foot-copy">© 2026 FlirtZone</div></footer>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">✅</div>
+
+<script>
+// ── AGE GATE ──
+function confirmAge(){document.getElementById('age-gate').style.display='none';showToast('✅ Accesso confermato. Benvenuto!');}
+function denyAge(){document.getElementById('age-gate').innerHTML='<div style="text-align:center;color:#888;padding:40px;"><div style="font-size:48px;margin-bottom:16px;">🔞</div><h2 style="color:#fff;margin-bottom:8px;">Accesso negato</h2><p>Questo sito è riservato agli adulti.</p></div>';}
+
+// ── NAVIGATION ──
+function goto(page){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+page).classList.add('active');
+  window.scrollTo(0,0);
+  closeNotif();
+  if(page==='premium'){ setTimeout(initPayPal, 500); }
+}
+
+// ── TABS ──
+function setTab(el){document.querySelectorAll('.tab').forEach(t=>t.classList.remove('on'));el.classList.add('on');}
+
+// ── NOTIFICATIONS ──
+function toggleNotif(){document.getElementById('notif-panel').classList.toggle('open');}
+function closeNotif(){document.getElementById('notif-panel').classList.remove('open');}
+function clearNotifs(){
+  document.querySelectorAll('.notif-item.unread').forEach(i=>i.classList.remove('unread'));
+  document.querySelectorAll('.notif-unread-dot').forEach(d=>d.remove());
+  document.querySelector('.notif-dot').style.display='none';
+  showToast('✅ Tutte le notifiche segnate come lette');
+}
+document.addEventListener('click',e=>{
+  const wrap=document.querySelector('.notif-wrap');
+  if(wrap&&!wrap.contains(e.target))closeNotif();
+});
+
+// ── AUTH ──
+function switchAuth(mode){
+  const reg=mode==='reg';
+  document.getElementById('auth-reg').style.display=reg?'':'none';
+  document.getElementById('auth-login').style.display=reg?'none':'';
+  document.getElementById('tab-reg').classList.toggle('on',reg);
+  document.getElementById('tab-login').classList.toggle('on',!reg);
+}
+function selGender(el){document.querySelectorAll('.gender-opt').forEach(g=>g.classList.remove('sel'));el.classList.add('sel');}
+function doRegister(){
+  if(!document.getElementById('age18').checked){showToast('⚠️ Devi confermare di avere 18+ anni');return;}
+  showToast('✅ Account creato! Benvenuto su FlirtZone');
+  setTimeout(()=>goto('home'),1200);
+}
+function doLogin(){showToast('✅ Accesso effettuato!');setTimeout(()=>goto('home'),1000);}
+
+// ── PROFILE TABS ──
+function switchPTab(el,id){
+  document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('on'));
+  el.classList.add('on');
+  ['ptab-info','ptab-gallery','ptab-ann'].forEach(i=>{
+    const el2=document.getElementById(i);
+    if(el2)el2.style.display=i===id?'':'none';
+  });
+}
+
+// ── GALLERY UPLOAD ──
+function handleUpload(input){
+  if(!input.files||!input.files[0])return;
+  const file=input.files[0];
+  const reader=new FileReader();
+  reader.onload=e=>{
+    const grid=document.getElementById('photo-grid');
+    const addCell=grid.querySelector('.add-cell');
+    const cell=document.createElement('div');
+    cell.className='photo-cell';
+    cell.style.background='var(--bg2)';
+    if(file.type.startsWith('image')){
+      const img=document.createElement('img');
+      img.src=e.target.result;
+      img.style='width:100%;height:100%;object-fit:cover;';
+      cell.appendChild(img);
+    } else {
+      cell.style.fontSize='36px';
+      cell.textContent='🎬';
+    }
+    grid.insertBefore(cell,addCell);
+    showToast('📸 Foto caricata con successo!');
+  };
+  reader.readAsDataURL(file);
+  input.value='';
+}
+
+// ── ANNUNCIO FOTO ──
+function selectThumb(el,emoji){
+  document.querySelectorAll('.ann-thumb').forEach(t=>t.classList.remove('active-t'));
+  el.classList.add('active-t');
+  if(!el.classList.contains('locked-t'))document.getElementById('ann-main').textContent=emoji;
+}
+
+// ── SETTINGS ──
+function toggleSetting(el){el.classList.toggle('on');showToast(el.classList.contains('on')?'✅ Attivato':'🔕 Disattivato');}
+
+// ── IN VIAGGIO ──
+function toggleTravel(){
+  const t=document.getElementById('travel-toggle');
+  t.classList.toggle('on');
+  showToast(t.classList.contains('on')?'✈️ Modalità In Viaggio attivata!':'⏸ Modalità In Viaggio disattivata');
+}
+function toggleMapBtn(el){el.classList.toggle('on');}
+
+// ── PAYMENT ──
+let currentPlan = {label:'⭐ FlirtZone Premium Mensile', price:'14.00'};
+
+function selectPlan(type, price){
+  currentPlan = {
+    label: type==='annuale' ? '💛 FlirtZone Premium Annuale' : '⭐ FlirtZone Premium Mensile',
+    price: price
+  };
+  document.getElementById('order-label').textContent = currentPlan.label;
+  document.getElementById('order-price').textContent = '€'+price;
+  document.getElementById('card-price').textContent = price;
+  document.querySelectorAll('.pp-price').forEach(e=>e.textContent=price);
+  document.querySelectorAll('.rev-price').forEach(e=>e.textContent=price);
+  showToast('✅ Piano selezionato: ' + currentPlan.label);
+  document.getElementById('payment-section').scrollIntoView({behavior:'smooth'});
+}
+
+function switchPayTab(tab){
+  ['card','paypal','revolut'].forEach(t=>{
+    document.getElementById('pay-'+t).style.display = t===tab ? '' : 'none';
+    document.getElementById('tab-'+t).classList.toggle('on', t===tab);
+  });
+}
+
+function doPay(method){
+  showToast('🔒 Pagamento in elaborazione…');
+  setTimeout(()=>{
+    showToast('🎉 Premium attivato! Benvenuto!');
+    setTimeout(()=>goto('home'),1500);
+  },1800);
+}
+
+function formatCard(el){
+  let v=el.value.replace(/\D/g,'').substring(0,16);
+  el.value=v.replace(/(.{4})/g,'$1 ').trim();
+}
+function formatExp(el){
+  let v=el.value.replace(/\D/g,'');
+  if(v.length>=2) v=v.substring(0,2)+'/'+v.substring(2,4);
+  el.value=v;
+}
+
+// PayPal SDK init — attiva solo quando il CLIENT ID è reale
+function initPayPal(){
+  if(typeof paypal==='undefined'||document.getElementById('paypal-button-container').children.length>0) return;
+  try {
+    paypal.Buttons({
+      createSubscription: function(data, actions) {
+        return actions.subscription.create({'plan_id': 'YOUR_PAYPAL_PLAN_ID'});
+      },
+      onApprove: function(data, actions) {
+        showToast('🎉 Abbonamento PayPal attivato! ID: ' + data.subscriptionID);
+        setTimeout(()=>goto('home'),1500);
+      },
+      onError: function(err){ showToast('❌ Errore PayPal: controlla il Client ID'); }
+    }).render('#paypal-button-container');
+    document.getElementById('paypal-fallback').style.display='none';
+  } catch(e){
+    document.getElementById('paypal-fallback').style.display='';
+  }
+}
+
+// Revolut Pay init — attiva con le credenziali reali
+function initRevolut(){
+  if(typeof RevolutCheckout==='undefined'){
+    document.getElementById('revolut-fallback').style.display='';
+    return;
+  }
+  // RevolutCheckout('YOUR_ORDER_TOKEN').then(instance => {
+  //   instance.payWithPopup({
+  //     onSuccess(){ showToast('🎉 Pagamento Revolut completato!'); goto('home'); },
+  //     onError(message){ showToast('❌ Errore Revolut: ' + message); }
+  //   });
+  // });
+  document.getElementById('revolut-fallback').style.display='';
+}
+
+// ── MESSAGES ──
+function sendMsg(){
+  const ta=document.querySelector('.chat-ta');
+  const txt=ta.value.trim();
+  if(!txt)return;
+  const area=document.querySelector('.messages-area');
+  const div=document.createElement('div');
+  div.className='m mine';
+  div.innerHTML=`<div><div class="m-bub">${txt}</div><div class="m-time">Adesso <span class="tick">✓</span></div></div>`;
+  area.appendChild(div);
+  ta.value='';
+  area.scrollTop=area.scrollHeight;
+}
+document.querySelector('.chat-ta')?.addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}
+});
+
+// ── TOAST ──
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),3000);
+}
+</script>
+</body>
+</html>

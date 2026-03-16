@@ -48,6 +48,22 @@ html,body{height:100%;font-family:'DM Sans',sans-serif;background:var(--bg);colo
 .btn-age-no:hover{color:var(--text);}
 .age-gate-note{font-size:11px;color:var(--muted);margin-top:18px;line-height:1.5;}
 
+/* LANG PICKER inside age gate */
+.age-lang-picker{
+  display:flex;flex-wrap:wrap;justify-content:center;
+  gap:8px;margin-top:22px;padding-top:18px;
+  border-top:1px solid var(--border);
+}
+.age-lang-btn{
+  display:flex;align-items:center;gap:5px;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:20px;padding:6px 13px;
+  font-size:12px;font-weight:500;color:var(--muted2);
+  cursor:pointer;transition:all .2s;font-family:'DM Sans',sans-serif;
+}
+.age-lang-btn:hover{border-color:var(--border2);color:var(--text);}
+.age-lang-btn.active{border-color:rgba(217,43,58,0.5);background:rgba(217,43,58,0.1);color:var(--text);}
+
 /* ── NAV ── */
 nav{
   position:sticky;top:0;z-index:200;
@@ -537,13 +553,23 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
 <div id="age-gate">
   <div class="age-gate-box">
     <span class="age-gate-icon">🔞</span>
-    <h2>Accesso riservato ai maggiorenni</h2>
-    <p>Questo sito contiene materiale riservato agli adulti. Accedendo dichiari di avere almeno <strong>18 anni</strong> e accetti i nostri Termini di servizio e la Privacy Policy.</p>
+    <h2 data-i18n="age_title">Accesso riservato ai maggiorenni</h2>
+    <p data-i18n="age_desc"><span data-i18n="age_text">Questo sito contiene materiale riservato agli adulti. Accedendo dichiari di avere almeno 18 anni e accetti i nostri Termini di servizio e la Privacy Policy.</span></p>
     <div class="age-gate-btns">
-      <button class="btn-age-yes" onclick="confirmAge()">✓ Ho 18+ anni, entra</button>
-      <button class="btn-age-no" onclick="denyAge()">✗ Sono minorenne</button>
+      <button class="btn-age-yes" onclick="confirmAge()" data-i18n="age_yes"><span data-i18n="age_yes">✓ Ho 18+ anni, entra</span></button>
+      <button class="btn-age-no" onclick="denyAge()" data-i18n="age_no"><span data-i18n="age_no">✗ Sono minorenne</span></button>
     </div>
-    <p class="age-gate-note">Cliccando "Entra" dichiari sotto la tua responsabilità di avere l'età minima richiesta dalla legge del tuo paese per accedere a contenuti per adulti.</p>
+    <p class="age-gate-note" data-i18n="age_note"><span data-i18n="age_note">Cliccando "Entra" dichiari sotto la tua responsabilità di avere l'età minima richiesta dalla legge del tuo paese.</span></p>
+    <!-- LANGUAGE PICKER -->
+    <div class="age-lang-picker">
+      <button class="age-lang-btn active" onclick="setLangFull('it','🇮🇹','IT',this)">🇮🇹 IT</button>
+      <button class="age-lang-btn" onclick="setLangFull('en','🇬🇧','EN',this)">🇬🇧 EN</button>
+      <button class="age-lang-btn" onclick="setLangFull('fr','🇫🇷','FR',this)">🇫🇷 FR</button>
+      <button class="age-lang-btn" onclick="setLangFull('es','🇪🇸','ES',this)">🇪🇸 ES</button>
+      <button class="age-lang-btn" onclick="setLangFull('pt','🇧🇷','PT',this)">🇧🇷 PT</button>
+      <button class="age-lang-btn" onclick="setLangFull('ru','🇷🇺','RU',this)">🇷🇺 RU</button>
+      <button class="age-lang-btn" onclick="setLangFull('zh','🇨🇳','CN',this)">🇨🇳 中文</button>
+    </div>
   </div>
 </div>
 
@@ -552,9 +578,9 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
   <nav>
     <div class="logo" onclick="goto('home')">♥ Silk Dates</div>
     <div class="nav-links">
-      <span class="nav-a active-link" onclick="goto('home')">Annunci</span>
-      <span class="nav-a" onclick="goto('viaggio')">✈️ In Viaggio</span>
-      <span class="nav-a" onclick="goto('premium')">Premium</span>
+      <span class="nav-a active-link" onclick="goto('home')" data-i18n="nav_annunci"><span data-i18n="nav_listings">Annunci</span></span>
+      <span class="nav-a" onclick="goto('viaggio')" data-i18n="nav_viaggio"><span data-i18n="nav_travel">✈️ In Viaggio</span></span>
+      <span class="nav-a" onclick="goto('premium')" data-i18n="nav_premium"><span data-i18n="nav_premium">Premium</span></span>
       <!-- LANGUAGE SELECTOR -->
       <div class="lang-wrap" id="lang-wrap">
         <button class="lang-btn" onclick="toggleLang()">
@@ -576,7 +602,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
       <div class="notif-wrap">
         <button class="notif-btn" onclick="toggleNotif()" id="notif-btn">🔔<div class="notif-dot"></div></button>
         <div class="notif-panel" id="notif-panel">
-          <div class="notif-head"><h3>Notifiche</h3><span class="notif-clear" onclick="clearNotifs()">Segna tutte come lette</span></div>
+          <div class="notif-head"><h3 data-i18n="notif_title">Notifiche</h3><span class="notif-clear" data-i18n="notif_clear" onclick="clearNotifs()">Segna tutte come lette</span></div>
           <div class="notif-list" id="notif-list">
             <div class="notif-item unread" onclick="goto('messages')">
               <div class="notif-av g1">👩</div>
@@ -604,24 +630,27 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
           </div>
         </div>
       </div>
-      <button class="btn-sm btn-ghost" onclick="goto('auth')">Accedi</button>
-      <button class="btn-sm btn-fill" onclick="goto('auth')">Registrati</button>
+      <button class="btn-sm btn-ghost" onclick="goto('auth')" data-i18n="nav_accedi"><span data-i18n="nav_login"><span data-i18n="auth_login">Accedi</span></span></button>
+      <button class="btn-sm btn-fill" onclick="goto('auth')" data-i18n="nav_registrati"><span data-i18n="nav_signup"><span data-i18n="auth_reg">Registrati</span></span></button>
     </div>
   </nav>
 
   <div class="hero">
-    <div class="eyebrow">🔥 98.000 utenti online ora</div>
-    <h1>Incontri reali,<br><em>senza filtri.</em></h1>
-    <p class="hero-sub">Profili verificati in tutto il mondo. Trova chi cerchi, dove sei — o dove stai andando.</p>
+    <div class="eyebrow" data-i18n="hero_badge">🔥 98.000 utenti online ora</div>
+    <h1>
+      <span data-i18n="hero_h1">Incontri reali,</span><br>
+      <em data-i18n="hero_h1_em">senza filtri.</em>
+    </h1>
+    <p class="hero-sub" data-i18n="hero_sub">Profili verificati in tutto il mondo. Trova chi cerchi, dove sei — o dove stai andando.</p>
     <div class="hero-btns">
-      <button class="btn btn-primary" onclick="goto('auth')">Inizia gratis</button>
-      <button class="btn btn-outline">Sfoglia annunci</button>
+      <button class="btn btn-primary" onclick="goto('auth')" data-i18n="hero_cta"><span data-i18n="hero_cta">Inizia gratis</span></button>
+      <button class="btn btn-outline" data-i18n="hero_browse"><span data-i18n="hero_browse">Sfoglia annunci</span></button>
     </div>
     <div class="stats-bar">
-      <div class="stat"><div class="stat-n">2.4M+</div><div class="stat-l">Utenti attivi</div></div>
-      <div class="stat"><div class="stat-n">140+</div><div class="stat-l">Paesi</div></div>
-      <div class="stat"><div class="stat-n">98K</div><div class="stat-l">Online ora</div></div>
-      <div class="stat"><div class="stat-n">4.8★</div><div class="stat-l">Valutazione</div></div>
+      <div class="stat"><div class="stat-n">2.4M+</div><div class="stat-l" data-i18n="stat_utenti">Utenti attivi</div></div>
+      <div class="stat"><div class="stat-n">140+</div><div class="stat-l" data-i18n="stat_paesi">Paesi</div></div>
+      <div class="stat"><div class="stat-n">98K</div><div class="stat-l" data-i18n="stat_online">Online ora</div></div>
+      <div class="stat"><div class="stat-n">4.8★</div><div class="stat-l" data-i18n="stat_rating">Valutazione</div></div>
     </div>
   </div>
 
@@ -631,37 +660,37 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
       <select class="s-select"><option>📍 Città</option><option>Roma</option><option>Milano</option><option>Parigi</option><option>Barcellona</option><option>Londra</option></select>
       <select class="s-select"><option>🎂 Età</option><option>18–25</option><option>26–35</option><option>36–45</option><option>45+</option></select>
       <select class="s-select"><option>⭐ Filtro</option><option>Solo verificati</option><option>Online ora</option><option>In viaggio</option></select>
-      <button class="btn-search">🔍 Cerca</button>
+      <button class="btn-search" data-i18n="search_btn"><span data-i18n="btn_search">🔍 Cerca</span></button>
     </div>
   </div>
 
   <div class="tabs-row">
-    <div class="tab on" onclick="setTab(this)">🔥 Popolari</div>
-    <div class="tab" onclick="setTab(this)">🆕 Nuovi</div>
-    <div class="tab" onclick="setTab(this)">📍 Vicino a me</div>
-    <div class="tab" onclick="setTab(this)">✈️ In viaggio</div>
-    <div class="tab" onclick="setTab(this)">✓ Verificati</div>
+    <div class="tab on" onclick="setTab(this)" data-i18n="tab_popolari"><span data-i18n="tab_popular">🔥 Popolari</span></div>
+    <div class="tab" onclick="setTab(this)" data-i18n="tab_nuovi"><span data-i18n="tab_new">🆕 Nuovi</span></div>
+    <div class="tab" onclick="setTab(this)" data-i18n="tab_vicino"><span data-i18n="tab_near">📍 Vicino a me</span></div>
+    <div class="tab" onclick="setTab(this)" data-i18n="tab_viaggio"><span data-i18n="tab_travelling">✈️ In viaggio</span></div>
+    <div class="tab" onclick="setTab(this)" data-i18n="tab_verificati"><span data-i18n="tab_verified">✓ Verificati</span></div>
   </div>
 
   <div class="listings">
     <div class="listings-head">
-      <span class="listings-title">Annunci recenti</span>
-      <span class="see-all">Vedi tutti →</span>
+      <span class="listings-title" data-i18n="listings_title">Annunci recenti</span>
+      <span class="see-all" data-i18n="see_all">Vedi tutti →</span>
     </div>
     <div class="grid">
       <div class="card" onclick="goto('annuncio')">
-        <div class="card-img g1"><div class="av">👩</div><div class="dot-on"></div><div class="bdg bdg-verified">✓ Verificata</div></div>
-        <div class="card-body"><div class="card-name">Sofia, 27 <span style="color:var(--red)">♀</span></div><div class="card-meta">📍 Milano · Online ora</div><div class="card-tags"><span class="tag">Discreta</span><span class="tag">No drama</span></div></div>
+        <div class="card-img g1"><div class="av">👩</div><div class="dot-on"></div><div class="bdg bdg-verified" data-i18n="bdg_verified_f">✓ Verificata</div></div>
+        <div class="card-body"><div class="card-name">Sofia, 27 <span style="color:var(--red)">♀</span></div><div class="card-meta"><span data-i18n="card_meta_sofia">📍 Milano · Online ora</span></div><div class="card-tags"><span class="tag" data-i18n="tag_discrete">Discreta</span><span class="tag" data-i18n="tag_nodrama">No drama</span></div></div>
       </div>
       <div class="card" onclick="goto('annuncio')">
-        <div class="card-img g2"><div class="av">👨</div><div class="dot-on"></div><div class="bdg bdg-travel">✈️ In viaggio</div><div class="bdg bdg-verified">✓ Verificato</div></div>
-        <div class="card-body"><div class="card-name">Marco, 34 <span style="color:#6060ff">♂</span></div><div class="card-meta">📍 Roma → Barcellona</div><div class="card-tags"><span class="tag">Serio</span><span class="tag">Foto reali</span></div></div>
+        <div class="card-img g2"><div class="av">👨</div><div class="dot-on"></div><div class="bdg bdg-travel" data-i18n="bdg_travel">✈️ In viaggio</div><div class="bdg bdg-verified" data-i18n="bdg_verified_m">✓ Verificato</div></div>
+        <div class="card-body"><div class="card-name">Marco, 34 <span style="color:#6060ff">♂</span></div><div class="card-meta"><span data-i18n="card_meta_marco">📍 Roma → Barcellona</span></div><div class="card-tags"><span class="tag" data-i18n="tag_serious">Serio</span><span class="tag" data-i18n="tag_realphoto">Foto reali</span></div></div>
       </div>
       <div class="card" onclick="goto('annuncio')">
         <div class="card-img g3"><div class="av">👩</div><div class="bdg bdg-verified">✓ Verificata</div></div>
-        <div class="card-body"><div class="card-name">Léa, 29 <span style="color:var(--red2)">♀</span></div><div class="card-meta">📍 Parigi</div><div class="card-tags"><span class="tag">Open mind</span><span class="tag tag-r">⭐ Premium</span></div></div>
+        <div class="card-body"><div class="card-name">Léa, 29 <span style="color:var(--red2)">♀</span></div><div class="card-meta"><span data-i18n="card_meta_lea">📍 Parigi</span></div><div class="card-tags"><span class="tag" data-i18n="tag_openmind">Open mind</span><span class="tag tag-r" data-i18n="tag_premium_lbl">⭐ Premium</span></div></div>
       </div>
-      <div class="card"><div class="card-img g4"><div class="av blur">👩</div><div class="lock-over"><div class="lock-ico">🔒</div><div class="lock-lbl">Sblocca con Premium</div></div></div><div class="card-body"><div class="card-name">••••, 31</div><div class="card-meta">📍 •••••</div><div class="card-tags"><span class="tag tag-r">Solo Premium</span></div></div></div>
+      <div class="card"><div class="card-img g4"><div class="av blur">👩</div><div class="lock-over"><div class="lock-ico">🔒</div><div class="lock-lbl" data-i18n="lock_unlock">Sblocca con Premium</div></div></div><div class="card-body"><div class="card-name" data-i18n="card_hidden">••••, 31</div><div class="card-meta">📍 •••••</div><div class="card-tags"><span class="tag tag-r" data-i18n="tag_only_premium">Solo Premium</span></div></div></div>
       <div class="card"><div class="card-img g5"><div class="av blur">👨</div><div class="lock-over"><div class="lock-ico">🔒</div><div class="lock-lbl">Sblocca con Premium</div></div></div><div class="card-body"><div class="card-name">••••, 38</div><div class="card-meta">📍 •••••</div><div class="card-tags"><span class="tag tag-r">Solo Premium</span></div></div></div>
       <div class="card"><div class="card-img g6"><div class="av blur">👩</div><div class="lock-over"><div class="lock-ico">🔒</div><div class="lock-lbl">Sblocca con Premium</div></div></div><div class="card-body"><div class="card-name">••••, 25</div><div class="card-meta">📍 •••••</div><div class="card-tags"><span class="tag tag-r">Solo Premium</span></div></div></div>
     </div>
@@ -670,19 +699,19 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
   <div class="prem-banner">
     <div class="prem-inner">
       <div class="prem-left">
-        <h3>Passa a <span>Silk Dates Premium</span></h3>
-        <p>Sblocca tutti i profili e inizia a chattare senza limiti</p>
+        <h3><span data-i18n="prem_title">Passa a</span> <span data-i18n="prem_name">Silk Dates Premium</span></h3>
+        <p data-i18n="prem_sub">Sblocca tutti i profili e inizia a chattare senza limiti</p>
         <div class="pf-list">
-          <div class="pf">Profili illimitati</div><div class="pf">Messaggistica privata</div><div class="pf">Filtri avanzati</div><div class="pf">Chi visita il tuo profilo</div><div class="pf">Badge verificato</div><div class="pf">Modalità In viaggio</div>
+          <div class="pf" data-i18n="pf1"><span data-i18n="pfeat_unlimited">Profili illimitati</span></div><div class="pf" data-i18n="pf2">Messaggistica privata</div><div class="pf" data-i18n="pf3"><span data-i18n="pfeat_filters">Filtri avanzati</span></div><div class="pf" data-i18n="pf4">Chi visita il tuo profilo</div><div class="pf" data-i18n="pf5">Badge verificato</div><div class="pf" data-i18n="pf6">Modalità In viaggio</div>
         </div>
       </div>
-      <button class="btn btn-primary" onclick="goto('premium')">🔥 Prova Premium</button>
+      <button class="btn btn-primary" onclick="goto('premium')" data-i18n="prem_btn">🔥 Prova Premium</button>
     </div>
   </div>
 
   <footer>
-    <div class="age-warn">🔞 Accesso riservato ai maggiorenni (18+)</div>
-    <div class="foot-links"><a>Privacy Policy</a><a>Termini di servizio</a><a>Cookie</a><a>Contatti</a><a>Segnala abuso</a></div>
+    <div class="age-warn"><span data-i18n="footer_age">🔞 Accesso riservato ai maggiorenni (18+)</span></div>
+    <div class="foot-links"><a><span data-i18n="footer_privacy">Privacy Policy</span></a><a><span data-i18n="footer_terms">Termini di servizio</span></a><a><span data-i18n="footer_cookie">Cookie</span></a><a><span data-i18n="footer_contact">Contatti</span></a><a><span data-i18n="footer_report">Segnala abuso</span></a></div>
     <div class="foot-copy">© 2026 Silk Dates · Tutti i diritti riservati</div>
   </footer>
 </div>
@@ -698,7 +727,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
   </nav>
   <div style="flex:1;">
     <div class="ann-wrap">
-      <div class="ann-back" onclick="goto('home')">← Torna agli annunci</div>
+      <div class="ann-back" onclick="goto('home')" data-i18n="ann_back">← Torna agli annunci</div>
       <div class="ann-grid">
         <div>
           <div class="ann-photos">
@@ -713,7 +742,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
           </div>
           <!-- descrizione estesa -->
           <div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:22px;margin-top:14px;">
-            <div style="font-size:14px;font-weight:700;margin-bottom:12px;">📝 Descrizione completa</div>
+            <div style="font-size:14px;font-weight:700;margin-bottom:12px;"><span data-i18n="ann_desc_title">📝 Descrizione completa</span></div>
             <p style="font-size:14px;color:var(--muted2);line-height:1.8;">Ciao, sono Sofia. Milanese, lavoro nel settore moda e amo viaggiare. Cerco persone genuine, senza filtri e senza complicazioni. Sono discreta e apprezzo la stessa cosa. Se mi scrivi, fallo con intenzione. Niente messaggi copiati e incollati 😊. Sono verificata, le mie foto sono recenti e reali.</p>
             <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;">
               <span class="tag">🎭 Moda</span><span class="tag">✈️ Viaggi</span><span class="tag">🍷 Aperitivi</span><span class="tag">📸 Fotografia</span><span class="tag">🎵 Musica</span>
@@ -724,25 +753,25 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
         <div class="ann-info">
           <div class="ann-name">Sofia <span style="color:var(--red)">♀</span> <span style="font-size:22px;">27</span></div>
           <div class="ann-chips">
-            <span class="chip chip-blue">✓ Verificata</span>
-            <span class="chip chip-green">● Online</span>
-            <span class="chip chip-gold">⭐ Premium</span>
+            <span class="chip chip-blue" data-i18n="chip_verified_f">✓ Verificata</span>
+            <span class="chip chip-green" data-i18n="chip_online">● Online</span>
+            <span class="chip chip-gold" data-i18n="chip_premium">⭐ Premium</span>
           </div>
           <ul class="ann-detail-list">
-            <li><span>📍 Città</span><span>Milano, Italia</span></li>
-            <li><span>🎂 Età</span><span>27 anni</span></li>
-            <li><span>👁️ Cerco</span><span>Uomini, Coppie</span></li>
-            <li><span>📏 Distanza</span><span>Max 50 km</span></li>
-            <li><span>🌍 Lingue</span><span>IT, EN</span></li>
-            <li><span>📅 Online</span><span>2 min fa</span></li>
-            <li><span>📸 Foto</span><span>5 (2 Premium)</span></li>
+            <li><span data-i18n="det_city">📍 Città</span><span>Milano, Italia</span></li>
+            <li><span data-i18n="det_age">🎂 Età</span><span>27 anni</span></li>
+            <li><span data-i18n="det_seeking">👁️ Cerco</span><span>Uomini, Coppie</span></li>
+            <li><span data-i18n="det_distance">📏 Distanza</span><span>Max 50 km</span></li>
+            <li><span data-i18n="det_languages">🌍 Lingue</span><span>IT, EN</span></li>
+            <li><span data-i18n="det_lastonline">📅 Online</span><span>2 min fa</span></li>
+            <li><span data-i18n="det_photos">📸 Foto</span><span>5 (2 Premium)</span></li>
           </ul>
           <div class="ann-actions">
-            <button class="btn btn-primary" style="width:100%;" onclick="goto('messages')">💬 Invia messaggio</button>
-            <button class="btn btn-outline" style="width:100%;" onclick="goto('profile')">👁️ Vedi profilo completo</button>
-            <button class="btn btn-outline" style="width:100%;font-size:13px;" onclick="showToast('❤️ Salvato nei preferiti!')">❤️ Salva nei preferiti</button>
+            <button class="btn btn-primary" style="width:100%;" onclick="goto('messages')"><span data-i18n="btn_send_msg">💬 Invia messaggio</span></button>
+            <button class="btn btn-outline" style="width:100%;" onclick="goto('profile')"><span data-i18n="btn_full_profile">👁️ Vedi profilo completo</span></button>
+            <button class="btn btn-outline" style="width:100%;font-size:13px;" onclick="showToast('❤️ Salvato nei preferiti!')"><span data-i18n="btn_save_fav">❤️ Salva nei preferiti</span></button>
           </div>
-          <div class="report-link" onclick="showToast('🚩 Segnalazione inviata')">🚩 Segnala questo annuncio</div>
+          <div class="report-link" data-i18n="btn_report_ann" onclick="showToast('🚩 Segnalazione inviata')">🚩 Segnala questo annuncio</div>
         </div>
       </div>
     </div>
@@ -752,14 +781,14 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
 
 <!-- ════════════ AUTH ════════════ -->
 <div id="page-auth" class="page">
-  <nav><div class="logo" onclick="goto('home')">♥ Silk Dates</div><div class="nav-links"><button class="btn-sm btn-outline" onclick="goto('home')">← Torna</button></div></nav>
+  <nav><div class="logo" onclick="goto('home')">♥ Silk Dates</div><div class="nav-links"><button class="btn-sm btn-outline" onclick="goto('home')"><span data-i18n="btn_back_nav">← Torna</span></button></div></nav>
   <div style="flex:1;display:flex;align-items:center;justify-content:center;padding:36px 20px;">
     <div class="auth-wrap">
       <div class="auth-logo">♥ Silk Dates</div>
       <div class="auth-box">
         <div class="auth-tabs">
-          <button class="auth-tab on" id="tab-reg" onclick="switchAuth('reg')">Registrati</button>
-          <button class="auth-tab" id="tab-login" onclick="switchAuth('login')">Accedi</button>
+          <button class="auth-tab on" id="tab-reg" onclick="switchAuth('reg')" data-i18n="auth_register">Registrati</button>
+          <button class="auth-tab" id="tab-login" onclick="switchAuth('login')" data-i18n="auth_login">Accedi</button>
         </div>
         <div id="auth-reg">
           <div style="display:flex;gap:11px;">
@@ -767,9 +796,9 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
             <div class="form-group" style="flex:1;"><label class="form-label">Età</label><input class="form-input" type="number" placeholder="18+" min="18"></div>
           </div>
           <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="tua@email.com"></div>
-          <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" placeholder="Min. 8 caratteri"></div>
+          <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" placeholder="Min. 8 caratteri" data-i18n-placeholder="ph_pass"></div>
           <div class="form-group"><label class="form-label">Sono</label><div class="gender-grid"><div class="gender-opt" onclick="selGender(this)">👩 Donna</div><div class="gender-opt" onclick="selGender(this)">👨 Uomo</div><div class="gender-opt" onclick="selGender(this)">🏳️‍🌈 Non-binary</div><div class="gender-opt" onclick="selGender(this)">👫 Coppia</div></div></div>
-          <div class="form-group"><label class="form-label">Città</label><input class="form-input" type="text" placeholder="La tua città"></div>
+          <div class="form-group"><label class="form-label">Città</label><input class="form-input" type="text" placeholder="La tua città" data-i18n-placeholder="ph_city"></div>
           <div class="age-check"><input type="checkbox" id="age18"><span>Confermo di avere almeno <strong>18 anni</strong> e accetto i <strong>Termini</strong> e la <strong>Privacy Policy</strong>.</span></div>
           <button class="btn-auth" onclick="doRegister()">Crea account gratis →</button>
           <div class="auth-divider">oppure</div>
@@ -777,7 +806,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
         </div>
         <div id="auth-login" style="display:none;">
           <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="tua@email.com"></div>
-          <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" placeholder="Password"></div>
+          <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" placeholder="Password" data-i18n-placeholder="ph_pass2"></div>
           <button class="btn-auth" onclick="doLogin()">Accedi →</button>
           <div class="auth-divider">oppure</div>
           <button class="btn-social">🌐 Accedi con Google</button>
@@ -810,13 +839,13 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
           <div class="profile-name">Sofia <span style="color:var(--red);font-size:22px;">♀</span> <span style="font-size:20px;">27</span></div>
           <div class="profile-chips">
             <span class="chip chip-blue">✓ Verificata</span>
-            <span class="chip chip-green">● Online ora</span>
+            <span class="chip chip-green" data-i18n="chip_online_now">● Online ora</span>
             <span class="chip chip-gold">⭐ Premium</span>
           </div>
-          <div class="profile-meta">📍 Milano, Italia · Membro da Gennaio 2025</div>
+          <div class="profile-meta" data-i18n="profile_meta">📍 Milano, Italia · Membro da Gennaio 2025</div>
         </div>
         <div class="profile-actions">
-          <button class="btn btn-outline" onclick="showToast('❤️ Salvato!')">❤️</button>
+          <button class="btn btn-outline" onclick="showToast('❤️ Salvato!')"><span data-i18n="btn_heart">❤️</span></button>
           <button class="btn btn-primary" onclick="goto('messages')">💬 Scrivi</button>
         </div>
       </div>
@@ -827,7 +856,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
       </div>
 
       <div id="ptab-info" class="profile-section">
-        <p class="profile-about">Ciao! Sono Sofia, milanese con la passione per i viaggi e le conversazioni genuine. Cerco persone senza filtri e senza drammi. Discreta e diretta 😊</p>
+        <p class="profile-about" data-i18n="profile_about">Ciao! Sono Sofia, milanese con la passione per i viaggi e le conversazioni genuine. Cerco persone senza filtri e senza drammi. Discreta e diretta 😊</p>
         <div class="profile-details">
           <div class="detail-item"><div class="detail-label">Cerco</div><div class="detail-value">Uomini, Coppie</div></div>
           <div class="detail-item"><div class="detail-label">Età cercata</div><div class="detail-value">28 – 45 anni</div></div>
@@ -840,8 +869,8 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
 
       <div id="ptab-gallery" class="profile-section" style="display:none;">
         <div class="gallery-header">
-          <span class="gallery-title">📸 Foto & Video (5)</span>
-          <button class="btn-upload" onclick="document.getElementById('file-input').click()">➕ Aggiungi foto</button>
+          <span class="gallery-title"><span data-i18n="gallery_title">📸 Foto & Video (5)</span></span>
+          <button class="btn-upload" onclick="document.getElementById('file-input').click()"><span data-i18n="btn_add_photo">➕ Aggiungi foto</span></button>
         </div>
         <input type="file" id="file-input" accept="image/*,video/*" onchange="handleUpload(this)">
         <div class="photo-grid" id="photo-grid">
@@ -878,20 +907,20 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
   </nav>
   <div class="msg-layout">
     <div class="sidebar">
-      <div class="sidebar-top"><h2>Messaggi</h2><div class="s-search-wrap"><span class="s-search-icon">🔍</span><input class="s-search" type="text" placeholder="Cerca…"></div></div>
-      <div class="ftabs"><div class="ftab on">Tutti</div><div class="ftab">Non letti</div><div class="ftab">Online</div></div>
+      <div class="sidebar-top"><h2 data-i18n="msg_title">Messaggi</h2><div class="s-search-wrap"><span class="s-search-icon">🔍</span><input class="s-search" type="text" data-i18n-placeholder="msg_search" placeholder="Cerca…"></div></div>
+      <div class="ftabs"><div class="ftab on" data-i18n="msg_tutti">Tutti</div><div class="ftab" data-i18n="msg_nonletti">Non letti</div><div class="ftab" data-i18n="msg_online">Online</div></div>
       <div class="conv-list">
-        <div class="ci active-c"><div class="ci-av" style="background:linear-gradient(135deg,#280d15,#180a1c);">👩<div class="ci-on"></div></div><div class="ci-info"><div class="ci-top"><span class="ci-name">Sofia</span><span class="ci-time">14:32</span></div><div class="ci-preview">Quando sei libero? 😊</div></div><div class="ci-badge">2</div></div>
-        <div class="ci"><div class="ci-av" style="background:linear-gradient(135deg,#0c1826,#09111e);">👨<div class="ci-on"></div></div><div class="ci-info"><div class="ci-top"><span class="ci-name">Marco ✈️</span><span class="ci-time">Ieri</span></div><div class="ci-preview">Sono a Barcellona fino a domenica</div></div></div>
-        <div class="ci"><div class="ci-av" style="background:linear-gradient(135deg,#1a180c,#100e09);">👩</div><div class="ci-info"><div class="ci-top"><span class="ci-name">Léa</span><span class="ci-time">Lun</span></div><div class="ci-preview">Hai visto la mia foto nuova?</div></div></div>
+        <div class="ci active-c"><div class="ci-av" style="background:linear-gradient(135deg,#280d15,#180a1c);">👩<div class="ci-on"></div></div><div class="ci-info"><div class="ci-top"><span class="ci-name">Sofia</span><span class="ci-time">14:32</span></div><div class="ci-preview" data-i18n="conv1_preview">Quando sei libero? 😊</div></div><div class="ci-badge">2</div></div>
+        <div class="ci"><div class="ci-av" style="background:linear-gradient(135deg,#0c1826,#09111e);">👨<div class="ci-on"></div></div><div class="ci-info"><div class="ci-top"><span class="ci-name">Marco ✈️</span><span class="ci-time">Ieri</span></div><div class="ci-preview" data-i18n="conv2_preview">Sono a Barcellona fino a domenica</div></div></div>
+        <div class="ci"><div class="ci-av" style="background:linear-gradient(135deg,#1a180c,#100e09);">👩</div><div class="ci-info"><div class="ci-top"><span class="ci-name">Léa</span><span class="ci-time">Lun</span></div><div class="ci-preview" data-i18n="conv3_preview">Hai visto la mia foto nuova?</div></div></div>
         <div class="ci locked-c"><div class="ci-av" style="background:var(--bg3);filter:blur(3px);">👩</div><div class="ci-info"><div class="ci-top"><span class="ci-name" style="filter:blur(5px)">••••••</span><span class="ci-time">—</span></div><div class="ci-preview" style="filter:blur(4px)">•••••••••••••</div></div><span style="font-size:14px;color:var(--gold);">🔒</span></div>
       </div>
     </div>
     <div class="chat-col">
       <div class="chat-head">
         <div class="ch-av" style="background:linear-gradient(135deg,#280d15,#180a1c);">👩<div class="ch-on"></div></div>
-        <div class="ch-info"><div class="ch-name">Sofia, 27 <span class="chip chip-blue" style="font-size:10px;">✓</span></div><div class="ch-status">● Online ora · Milano</div></div>
-        <div class="ch-actions"><div class="ch-btn" onclick="goto('profile')">👁️</div><div class="ch-btn">🚫</div><div class="ch-btn">⋯</div></div>
+        <div class="ch-info"><div class="ch-name">Sofia, 27 <span class="chip chip-blue" style="font-size:10px;">✓</span></div><div class="ch-status" data-i18n="ch_status">● Online ora · Milano</div></div>
+        <div class="ch-actions"><div class="ch-btn" onclick="goto('profile')" data-i18n="btn_view_profile">👁️</div><div class="ch-btn">🚫</div><div class="ch-btn">⋯</div></div>
       </div>
       <div class="messages-area">
         <div class="day-div">Oggi</div>
@@ -915,71 +944,71 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
 <div id="page-settings" class="page">
   <nav>
     <div class="logo" onclick="goto('home')">♥ Silk Dates</div>
-    <div class="nav-links"><button class="btn-sm btn-outline" onclick="goto('profile')">← Profilo</button></div>
+    <div class="nav-links"><button class="btn-sm btn-outline" onclick="goto('profile')"><span data-i18n="btn_back_profile">← Profilo</span></button></div>
   </nav>
   <div style="flex:1;">
     <div class="settings-wrap">
-      <h1>⚙️ Impostazioni</h1>
+      <h1 data-i18n="settings_title">⚙️ Impostazioni</h1>
 
       <div class="settings-section">
-        <div class="settings-section-head"><span>👤</span><h3>Profilo</h3></div>
+        <div class="settings-section-head"><span>👤</span><h3 data-i18n="settings_profile">Profilo</h3></div>
         <div class="settings-rows">
-          <div class="setting-row"><div class="setting-left"><div class="setting-name">Nome visualizzato</div><div class="setting-desc">Il nome mostrato sugli annunci</div></div><input class="form-input" style="width:160px;" value="Sofia"></div>
-          <div class="setting-row"><div class="setting-left"><div class="setting-name">Città</div><div class="setting-desc">La tua posizione attuale</div></div><input class="form-input" style="width:160px;" value="Milano"></div>
-          <div class="setting-row"><div class="setting-left"><div class="setting-name">Bio</div><div class="setting-desc">Breve descrizione del tuo profilo</div></div><button class="btn-sm btn-ghost" onclick="showToast('✏️ Modifica bio aperta')">Modifica</button></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name" data-i18n="sett_display_name">Nome visualizzato</div><div class="setting-desc" data-i18n="sett_display_name_desc">Il nome mostrato sugli annunci</div></div><input class="form-input" style="width:160px;" value="Sofia"></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name" data-i18n="sett_city">Città</div><div class="setting-desc" data-i18n="sett_city_desc">La tua posizione attuale</div></div><input class="form-input" style="width:160px;" value="Milano"></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name" data-i18n="sett_bio">Bio</div><div class="setting-desc" data-i18n="sett_bio_desc">Breve descrizione del tuo profilo</div></div><button class="btn-sm btn-ghost" onclick="showToast('✏️ Modifica bio aperta')"><span data-i18n="btn_edit">Modifica</span></button></div>
         </div>
       </div>
 
       <div class="settings-section">
-        <div class="settings-section-head"><span>🔔</span><h3>Notifiche</h3></div>
+        <div class="settings-section-head"><span>🔔</span><h3 data-i18n="settings_notif">Notifiche</h3></div>
         <div class="settings-rows">
-          <div class="setting-row"><div class="setting-left"><div class="setting-name">Nuovi messaggi</div><div class="setting-desc">Ricevi una notifica per ogni messaggio</div></div><div class="toggle on" onclick="toggleSetting(this)"></div></div>
-          <div class="setting-row"><div class="setting-left"><div class="setting-name">Visite al profilo</div><div class="setting-desc">Quando qualcuno visita il tuo profilo</div></div><div class="toggle on" onclick="toggleSetting(this)"></div></div>
-          <div class="setting-row"><div class="setting-left"><div class="setting-name">Nuovi match</div><div class="setting-desc">Quando qualcuno ti salva nei preferiti</div></div><div class="toggle on" onclick="toggleSetting(this)"></div></div>
-          <div class="setting-row"><div class="setting-left"><div class="setting-name">Email di riepilogo</div><div class="setting-desc">Riepilogo settimanale via email</div></div><div class="toggle" onclick="toggleSetting(this)"></div></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name" data-i18n="sett_new_msg">Nuovi messaggi</div><div class="setting-desc" data-i18n="sett_new_msg_desc">Ricevi una notifica per ogni messaggio</div></div><div class="toggle on" onclick="toggleSetting(this)"></div></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name" data-i18n="sett_visits">Visite al profilo</div><div class="setting-desc" data-i18n="sett_visits_desc">Quando qualcuno visita il tuo profilo</div></div><div class="toggle on" onclick="toggleSetting(this)"></div></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name" data-i18n="sett_matches">Nuovi match</div><div class="setting-desc" data-i18n="sett_matches_desc">Quando qualcuno ti salva nei preferiti</div></div><div class="toggle on" onclick="toggleSetting(this)"></div></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name" data-i18n="sett_email_digest">Email di riepilogo</div><div class="setting-desc" data-i18n="sett_email_digest_desc">Riepilogo settimanale via email</div></div><div class="toggle" onclick="toggleSetting(this)"></div></div>
         </div>
       </div>
 
       <div class="settings-section">
-        <div class="settings-section-head"><span>🔒</span><h3>Privacy</h3></div>
+        <div class="settings-section-head"><span>🔒</span><h3 data-i18n="settings_privacy">Privacy</h3></div>
         <div class="settings-rows">
-          <div class="setting-row"><div class="setting-left"><div class="setting-name">Profilo visibile</div><div class="setting-desc">Il tuo profilo appare negli annunci</div></div><div class="toggle on" onclick="toggleSetting(this)"></div></div>
-          <div class="setting-row"><div class="setting-left"><div class="setting-name">Stato online</div><div class="setting-desc">Mostra quando sei connesso</div></div><div class="toggle on" onclick="toggleSetting(this)"></div></div>
-          <div class="setting-row"><div class="setting-left"><div class="setting-name">Geolocalizzazione</div><div class="setting-desc">Mostra la distanza dagli altri utenti</div></div><div class="toggle on" onclick="toggleSetting(this)"></div></div>
-          <div class="setting-row"><div class="setting-left"><div class="setting-name">Blocca utenti specifici</div><div class="setting-desc">Gestisci la lista utenti bloccati</div></div><button class="btn-sm btn-ghost">Gestisci</button></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name" data-i18n="sett_visible">Profilo visibile</div><div class="setting-desc" data-i18n="sett_visible_desc">Il tuo profilo appare negli annunci</div></div><div class="toggle on" onclick="toggleSetting(this)"></div></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name" data-i18n="sett_online_status">Stato online</div><div class="setting-desc" data-i18n="sett_online_status_desc">Mostra quando sei connesso</div></div><div class="toggle on" onclick="toggleSetting(this)"></div></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name" data-i18n="sett_geo">Geolocalizzazione</div><div class="setting-desc" data-i18n="sett_geo_desc">Mostra la distanza dagli altri utenti</div></div><div class="toggle on" onclick="toggleSetting(this)"></div></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name" data-i18n="sett_block">Blocca utenti specifici</div><div class="setting-desc" data-i18n="sett_block_desc">Gestisci la lista utenti bloccati</div></div><button class="btn-sm btn-ghost"><span data-i18n="btn_manage">Gestisci</span></button></div>
         </div>
       </div>
 
       <div class="settings-section">
-        <div class="settings-section-head"><span>🔍</span><h3>Preferenze di ricerca</h3></div>
+        <div class="settings-section-head"><span>🔍</span><h3 data-i18n="settings_search">Preferenze di ricerca</h3></div>
         <div class="settings-rows">
-          <div class="setting-row"><div class="setting-left"><div class="setting-name">Cerco</div></div><select class="setting-select"><option>Tutti</option><option>Uomini</option><option selected>Donne</option><option>Coppie</option></select></div>
-          <div class="setting-row"><div class="setting-left"><div class="setting-name">Età minima</div></div><select class="setting-select"><option>18</option><option>21</option><option selected>25</option><option>30</option></select></div>
-          <div class="setting-row"><div class="setting-left"><div class="setting-name">Età massima</div></div><select class="setting-select"><option>30</option><option selected>40</option><option>50</option><option>Qualsiasi</option></select></div>
-          <div class="setting-row"><div class="setting-left"><div class="setting-name">Distanza massima</div></div><select class="setting-select"><option>10 km</option><option>25 km</option><option selected>50 km</option><option>100 km</option><option>Ovunque</option></select></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name" data-i18n="sett_seeking">Cerco</div></div><select class="setting-select"><option>Tutti</option><option>Uomini</option><option selected>Donne</option><option>Coppie</option></select></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name" data-i18n="sett_age_min">Età minima</div></div><select class="setting-select"><option>18</option><option>21</option><option selected>25</option><option>30</option></select></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name" data-i18n="sett_age_max">Età massima</div></div><select class="setting-select"><option>30</option><option selected>40</option><option>50</option><option>Qualsiasi</option></select></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name" data-i18n="sett_distance">Distanza massima</div></div><select class="setting-select"><option>10 km</option><option>25 km</option><option selected>50 km</option><option>100 km</option><option>Ovunque</option></select></div>
         </div>
       </div>
 
       <div class="settings-section">
-        <div class="settings-section-head"><span>💳</span><h3>Abbonamento</h3></div>
+        <div class="settings-section-head"><span>💳</span><h3 data-i18n="settings_sub">Abbonamento</h3></div>
         <div class="settings-rows">
-          <div class="setting-row"><div class="setting-left"><div class="setting-name">Piano attuale</div><div class="setting-desc">Silk Dates Premium Mensile</div></div><span class="chip chip-gold">⭐ Premium</span></div>
-          <div class="setting-row"><div class="setting-left"><div class="setting-name">Prossimo rinnovo</div><div class="setting-desc">€14.00 il 13 Aprile 2026</div></div><button class="btn-sm btn-ghost" onclick="showToast('ℹ️ Gestione abbonamento aperta')">Gestisci</button></div>
-          <div class="setting-row"><div class="setting-left"><div class="setting-name">Disdici abbonamento</div><div class="setting-desc">Il tuo account tornerà al piano Free</div></div><button class="btn-sm" style="background:transparent;color:var(--red);border:1px solid rgba(217,43,58,0.3);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:12px;" onclick="showToast('⚠️ Conferma disdetta inviata')">Disdici</button></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name" data-i18n="sett_plan">Piano attuale</div><div class="setting-desc" data-i18n="sett_plan_desc">Silk Dates Premium Mensile</div></div><span class="chip chip-gold">⭐ Premium</span></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name" data-i18n="sett_renewal">Prossimo rinnovo</div><div class="setting-desc" data-i18n="sett_renewal_desc">€14.00 il 13 Aprile 2026</div></div><button class="btn-sm btn-ghost" onclick="showToast('ℹ️ Gestione abbonamento aperta')">Gestisci</button></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name" data-i18n="sett_cancel_sub">Disdici abbonamento</div><div class="setting-desc" data-i18n="sett_cancel_sub_desc">Il tuo account tornerà al piano Free</div></div><button class="btn-sm" style="background:transparent;color:var(--red);border:1px solid rgba(217,43,58,0.3);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:12px;" onclick="showToast('⚠️ Conferma disdetta inviata')"><span data-i18n="btn_cancel">Disdici</span></button></div>
         </div>
       </div>
 
       <div class="settings-section">
-        <div class="settings-section-head"><span>⚠️</span><h3>Account</h3></div>
+        <div class="settings-section-head"><span>⚠️</span><h3 data-i18n="settings_account">Account</h3></div>
         <div class="settings-rows">
-          <div class="setting-row"><div class="setting-left"><div class="setting-name">Cambia password</div></div><button class="btn-sm btn-ghost">Cambia</button></div>
-          <div class="setting-row"><div class="setting-left"><div class="setting-name">Scarica i miei dati</div><div class="setting-desc">GDPR — esporta tutti i tuoi dati</div></div><button class="btn-sm btn-ghost" onclick="showToast('📦 Richiesta dati inviata via email')">Richiedi</button></div>
-          <div class="setting-row"><div class="setting-left"><div class="setting-name">Elimina account</div><div class="setting-desc">Questa azione è irreversibile</div></div><button class="btn-sm" style="background:rgba(217,43,58,0.1);color:var(--red);border:1px solid rgba(217,43,58,0.3);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:12px;" onclick="showToast('⚠️ Controlla la tua email per confermare')">Elimina</button></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name" data-i18n="sett_change_pass">Cambia password</div></div><button class="btn-sm btn-ghost"><span data-i18n="btn_change">Cambia</span></button></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name" data-i18n="sett_export_data">Scarica i miei dati</div><div class="setting-desc" data-i18n="sett_export_data_desc">GDPR — esporta tutti i tuoi dati</div></div><button class="btn-sm btn-ghost" onclick="showToast('📦 Richiesta dati inviata via email')"><span data-i18n="btn_request">Richiedi</span></button></div>
+          <div class="setting-row"><div class="setting-left"><div class="setting-name" data-i18n="sett_delete_account">Elimina account</div><div class="setting-desc" data-i18n="sett_delete_desc">Questa azione è irreversibile</div></div><button class="btn-sm" style="background:rgba(217,43,58,0.1);color:var(--red);border:1px solid rgba(217,43,58,0.3);border-radius:8px;padding:7px 14px;cursor:pointer;font-size:12px;" onclick="showToast('⚠️ Controlla la tua email per confermare')"><span data-i18n="btn_delete">Elimina</span></button></div>
         </div>
       </div>
 
       <div style="text-align:center;margin-top:24px;">
-        <button class="btn btn-primary" onclick="showToast('✅ Impostazioni salvate!');goto('profile')">Salva modifiche</button>
+        <button class="btn btn-primary" data-i18n="btn_save_settings" onclick="showToast('✅ Impostazioni salvate!');goto('profile')">Salva modifiche</button>
       </div>
     </div>
   </div>
@@ -997,8 +1026,8 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
   </nav>
   <div style="flex:1;">
     <div class="viaggio-wrap">
-      <h1>✈️ Modalità In Viaggio</h1>
-      <p class="sub">Cerca incontri nella tua destinazione prima ancora di arrivare. Aggiorna la tua posizione e connettiti con persone locali.</p>
+      <h1 data-i18n="travel_title">✈️ Modalità In Viaggio</h1>
+      <p class="sub" data-i18n="travel_sub">Cerca incontri nella tua destinazione prima ancora di arrivare. Aggiorna la tua posizione e connettiti con persone locali.</p>
       <div class="viaggio-grid">
         <div>
           <div class="map-container">
@@ -1032,15 +1061,15 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
               <div class="location-chip">📍 Milano, Italia</div>
               <button class="map-btn on" onclick="toggleMapBtn(this)">👁️ Mostra utenti</button>
               <button class="map-btn" onclick="toggleMapBtn(this)">🔍 Filtra</button>
-              <button class="map-btn" onclick="showToast('📍 Posizione aggiornata!')">🔄 Aggiorna</button>
+              <button class="map-btn" onclick="showToast('📍 Posizione aggiornata!')"><span data-i18n="btn_update_loc">🔄 Aggiorna</span></button>
             </div>
           </div>
 
           <!-- destinazione -->
           <div style="background:var(--bg2);border:1px solid var(--border);border-radius:16px;padding:20px;margin-top:14px;">
-            <div style="font-size:14px;font-weight:700;margin-bottom:14px;">🗓️ Pianifica un viaggio</div>
+            <div style="font-size:14px;font-weight:700;margin-bottom:14px;"><span data-i18n="travel_plan_title">🗓️ Pianifica un viaggio</span></div>
             <div style="display:flex;gap:10px;flex-wrap:wrap;">
-              <input class="form-input" style="flex:2;min-width:160px;" placeholder="🏙️ Destinazione (es. Barcellona)">
+              <input class="form-input" style="flex:2;min-width:160px;" placeholder="🏙️ Destinazione (es. Barcellona)" data-i18n-placeholder="ph_destination">
               <input class="form-input" type="date" style="flex:1;min-width:130px;">
               <button class="btn btn-primary" style="padding:10px 20px;" onclick="showToast('✈️ Modalità In Viaggio attivata per Barcellona!')">Attiva</button>
             </div>
@@ -1050,40 +1079,40 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
         <div class="viaggio-panel">
           <div class="viaggio-card">
             <div class="viaggio-card-head">
-              <h3>La mia modalità In Viaggio</h3>
-              <p>Visibile agli utenti nella tua destinazione</p>
+              <h3 data-i18n="vcard1_title">La mia modalità In Viaggio</h3>
+              <p><span data-i18n="vcard1_sub">Visibile agli utenti nella tua destinazione</span></p>
             </div>
             <div class="viaggio-card-body">
               <div class="toggle-big">
-                <span class="toggle-big-label">✈️ Attiva In Viaggio</span>
+                <span class="toggle-big-label"><span data-i18n="travel_toggle_label">✈️ Attiva In Viaggio</span></span>
                 <div class="toggle" id="travel-toggle" onclick="toggleTravel()"></div>
               </div>
-              <div class="form-group"><label class="form-label">Destinazione</label><input class="form-input" placeholder="Dove stai andando?"></div>
+              <div class="form-group"><label class="form-label">Destinazione</label><input class="form-input" placeholder="Dove stai andando?" data-i18n-placeholder="ph_going_to"></div>
               <div class="form-group"><label class="form-label">Date</label><div style="display:flex;gap:8px;"><input class="form-input" type="date" style="flex:1;"><input class="form-input" type="date" style="flex:1;"></div></div>
-              <button class="btn btn-primary" style="width:100%;margin-top:4px;" onclick="showToast('✈️ Badge In Viaggio attivato!')">Salva destinazione</button>
+              <button class="btn btn-primary" style="width:100%;margin-top:4px;" onclick="showToast('✈️ Badge In Viaggio attivato!')"><span data-i18n="btn_save_dest">Salva destinazione</span></button>
             </div>
           </div>
 
           <div class="viaggio-card">
             <div class="viaggio-card-head">
-              <h3>Viaggiatori vicino a te</h3>
-              <p>Utenti con badge ✈️ In Viaggio nella tua area</p>
+              <h3 data-i18n="vcard2_title">Viaggiatori vicino a te</h3>
+              <p><span data-i18n="vcard2_sub">Utenti con badge ✈️ In Viaggio nella tua area</span></p>
             </div>
             <div class="viaggio-card-body">
               <div class="travelers-list">
                 <div class="traveler">
                   <div class="trav-av g2" style="background:linear-gradient(135deg,#0c1826,#09111e);">👨</div>
-                  <div class="trav-info"><div class="trav-name">Marco, 34</div><div class="trav-meta">Roma → Milano · 3km da te</div></div>
+                  <div class="trav-info"><div class="trav-name">Marco, 34</div><div class="trav-meta" data-i18n="trav1_meta">Roma → Milano · 3km da te</div></div>
                   <div class="trav-msg" onclick="goto('messages')">💬</div>
                 </div>
                 <div class="traveler">
                   <div class="trav-av g3" style="background:linear-gradient(135deg,#1a180c,#100e09);">👩</div>
-                  <div class="trav-info"><div class="trav-name">Chiara, 29</div><div class="trav-meta">Napoli → Milano · 6km da te</div></div>
+                  <div class="trav-info"><div class="trav-name">Chiara, 29</div><div class="trav-meta" data-i18n="trav2_meta">Napoli → Milano · 6km da te</div></div>
                   <div class="trav-msg" onclick="goto('messages')">💬</div>
                 </div>
                 <div class="traveler" style="opacity:0.4;filter:blur(1px);">
                   <div class="trav-av" style="background:var(--bg3);">🔒</div>
-                  <div class="trav-info"><div class="trav-name">••••, ••</div><div class="trav-meta">Solo Premium</div></div>
+                  <div class="trav-info"><div class="trav-name">••••, ••</div><div class="trav-meta" data-i18n="trav_locked">Solo Premium</div></div>
                   <div class="trav-msg" onclick="goto('premium')">⭐</div>
                 </div>
               </div>
@@ -1103,12 +1132,12 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
 <script src="https://merchant.revolut.com/embed.js" async></script>
 
 <div id="page-premium" class="page">
-  <nav><div class="logo" onclick="goto('home')">♥ Silk Dates</div><div class="nav-links"><span class="nav-a" onclick="goto('home')">← Torna</span></div></nav>
+  <nav><div class="logo" onclick="goto('home')">♥ Silk Dates</div><div class="nav-links"><span class="nav-a" onclick="goto('home')" data-i18n="btn_back_nav">← Torna</span></div></nav>
   <div style="flex:1;">
     <div class="prem-hero">
       <div class="eyebrow">⭐ Silk Dates Premium</div>
       <h1>Senza <em>limiti.</em><br>Senza confini.</h1>
-      <p>Sblocca l'accesso completo a tutti i profili, la messaggistica illimitata e molto altro.</p>
+      <p data-i18n="prem_hero_sub">Sblocca l'accesso completo a tutti i profili, la messaggistica illimitata e molto altro.</p>
     </div>
 
     <!-- PIANI -->
@@ -1116,33 +1145,33 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
       <div class="plan">
         <div class="plan-name">Free</div>
         <div class="plan-price">€0<span>/mese</span></div>
-        <div class="plan-period">Per sempre gratuito</div>
+        <div class="plan-period" data-i18n="plan_free_period">Per sempre gratuito</div>
         <ul class="plan-feats">
-          <li>3 profili visibili al giorno</li><li>Creazione profilo base</li><li>Geolocalizzazione base</li>
+          <li><span data-i18n="pfeat_3profiles">3 profili visibili al giorno</span></li><li><span data-i18n="pfeat_basic_profile">Creazione profilo base</span></li><li><span data-i18n="pfeat_basic_geo">Geolocalizzazione base</span></li>
           <li class="no">Messaggistica privata</li><li class="no">Profili illimitati</li><li class="no">Modalità In Viaggio</li>
         </ul>
-        <button class="btn-plan btn-plan-outline" onclick="goto('auth')">Inizia gratis</button>
+        <button class="btn-plan btn-plan-outline" onclick="goto('auth')" data-i18n="btn_start_free">Inizia gratis</button>
       </div>
 
       <div class="plan featured" id="plan-mensile">
-        <div class="plan-popular">🔥 Più popolare</div>
+        <div class="plan-popular" data-i18n="plan_popular">🔥 Più popolare</div>
         <div class="plan-name">Premium Mensile</div>
         <div class="plan-price">€14<span>/mese</span></div>
-        <div class="plan-period">Fatturato mensilmente · Disdici quando vuoi</div>
+        <div class="plan-period" data-i18n="plan_monthly_period">Fatturato mensilmente · Disdici quando vuoi</div>
         <ul class="plan-feats">
-          <li>Profili illimitati</li><li>Messaggistica privata illimitata</li><li>Filtri avanzati</li>
-          <li>Chi ha visitato il profilo</li><li>Badge ✓ Verificato</li><li>Modalità ✈️ In Viaggio</li><li>Profilo in evidenza</li>
+          <li>Profili illimitati</li><li><span data-i18n="pfeat_messaging">Messaggistica privata illimitata</span></li><li>Filtri avanzati</li>
+          <li><span data-i18n="pfeat_visitors">Chi ha visitato il profilo</span></li><li><span data-i18n="pfeat_badge">Badge ✓ Verificato</span></li><li><span data-i18n="pfeat_travel">Modalità ✈️ In Viaggio</span></li><li><span data-i18n="pfeat_featured">Profilo in evidenza</span></li>
         </ul>
-        <button class="btn-plan btn-plan-fill" onclick="selectPlan('mensile','14.00')">Abbonati ora →</button>
+        <button class="btn-plan btn-plan-fill" data-i18n="btn_subscribe" onclick="selectPlan('mensile','14.00')">Abbonati ora →</button>
       </div>
 
       <div class="plan" id="plan-annuale">
         <div class="plan-name">Premium Annuale</div>
         <div class="plan-price">€8<span>/mese</span></div>
-        <div class="plan-period">€96 fatturati annualmente · Risparmi 40%</div>
+        <div class="plan-period" data-i18n="plan_annual_period">€96 fatturati annualmente · Risparmi 40%</div>
         <ul class="plan-feats">
-          <li>Tutto di Premium mensile</li><li>Risparmio del 40%</li><li>Priorità nel supporto</li>
-          <li>Accesso anticipato alle nuove funzioni</li><li>Badge esclusivo "Gold"</li><li class="no">—</li>
+          <li><span data-i18n="pfeat_all_monthly">Tutto di Premium mensile</span></li><li><span data-i18n="pfeat_save40">Risparmio del 40%</span></li><li><span data-i18n="pfeat_support">Priorità nel supporto</span></li>
+          <li><span data-i18n="pfeat_early_access">Accesso anticipato alle nuove funzioni</span></li><li><span data-i18n="pfeat_gold_badge">Badge esclusivo &quot;Gold&quot;</span></li><li class="no">—</li>
         </ul>
         <button class="btn-plan btn-plan-outline" onclick="selectPlan('annuale','96.00')">Scegli annuale</button>
       </div>
@@ -1180,7 +1209,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
         </div>
         <div class="form-group"><label class="form-label">Nome sulla carta</label><input class="form-input" type="text" placeholder="Nome Cognome"></div>
         <button class="btn-auth" style="margin-top:6px;" onclick="doPay('card')">🔒 Paga €<span id="card-price">14.00</span> in sicurezza</button>
-        <div class="stripe-note">🔒 Pagamento sicuro tramite <strong>Stripe</strong> · Crittografia SSL 256-bit</div>
+        <div class="stripe-note"><span data-i18n="stripe_note">🔒 Pagamento sicuro tramite Stripe · SSL 256-bit</span></div>
       </div>
 
       <!-- PAYPAL -->
@@ -1267,7 +1296,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
 <div id="page-onboarding" class="page">
   <div class="onb-wrap">
     <div class="onb-logo">♥ Silk Dates</div>
-    <p class="onb-sub">Completa il tuo profilo — ci vogliono solo 30 secondi 🚀</p>
+    <p class="onb-sub" data-i18n="onb_sub">Completa il tuo profilo — ci vogliono solo 30 secondi 🚀</p>
 
     <!-- PROGRESS -->
     <div class="onb-progress">
@@ -1281,8 +1310,8 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
 
       <!-- STEP 1: ETÀ -->
       <div class="onb-panel active" id="onb-step-1">
-        <div class="onb-step-title">🎂 Quanti anni hai?</div>
-        <div class="onb-step-sub">Serve per mostrarti i profili giusti per te</div>
+        <div class="onb-step-title" data-i18n="onb1_title">🎂 Quanti anni hai?</div>
+        <div class="onb-step-sub" data-i18n="onb1_sub">Serve per mostrarti i profili giusti per te</div>
         <div class="form-group">
           <label class="form-label">Età</label>
           <input class="form-input" id="onb-age" type="number" min="18" max="99" placeholder="La tua età (min. 18)">
@@ -1295,19 +1324,19 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
 
       <!-- STEP 2: LUOGO -->
       <div class="onb-panel" id="onb-step-2">
-        <div class="onb-step-title">📍 Dove sei?</div>
-        <div class="onb-step-sub">Troveremo persone vicino a te</div>
+        <div class="onb-step-title" data-i18n="onb2_title">📍 Dove sei?</div>
+        <div class="onb-step-sub" data-i18n="onb2_sub">Troveremo persone vicino a te</div>
         <div class="form-group">
           <label class="form-label">Città o paese</label>
           <div class="loc-wrap">
-            <input class="form-input" id="onb-location" type="text" placeholder="Es. Milano, Roma, Napoli…" style="padding-right:44px;">
+            <input class="form-input" id="onb-location" type="text" placeholder="Es. Milano, Roma, Napoli…" data-i18n-placeholder="ph_location_example" style="padding-right:44px;">
             <span class="loc-detect" onclick="detectLocation()" title="Rileva automaticamente">📡</span>
           </div>
         </div>
         <div class="form-group" style="margin-top:6px;">
           <label class="form-label">Raggio di ricerca</label>
           <div class="pill-grid" id="radius-pills">
-            <div class="pill sel" onclick="selSingle(this,'radius-pills')">10 km</div>
+            <div class="pill sel" onclick="selSingle(this,'radius-pills')" data-i18n="radius_10">10 km</div>
             <div class="pill" onclick="selSingle(this,'radius-pills')">25 km</div>
             <div class="pill" onclick="selSingle(this,'radius-pills')">50 km</div>
             <div class="pill" onclick="selSingle(this,'radius-pills')">100 km</div>
@@ -1323,8 +1352,8 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
 
       <!-- STEP 3: COSA CERCO -->
       <div class="onb-panel" id="onb-step-3">
-        <div class="onb-step-title">✨ Cosa cerchi?</div>
-        <div class="onb-step-sub">Puoi selezionare più opzioni — nessun giudizio 😊</div>
+        <div class="onb-step-title" data-i18n="onb3_title">✨ Cosa cerchi?</div>
+        <div class="onb-step-sub" data-i18n="onb3_sub">Puoi selezionare più opzioni — nessun giudizio 😊</div>
         <div class="pill-grid" id="seeking-pills">
           <div class="pill sel" onclick="selMulti(this)">🔥 Incontri occasionali</div>
           <div class="pill" onclick="selMulti(this)">👫 Amicizia</div>
@@ -1346,8 +1375,8 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
 
       <!-- STEP 4: PREFERENZE SESSUALI -->
       <div class="onb-panel" id="onb-step-4">
-        <div class="onb-step-title">💫 Chi vuoi incontrare?</div>
-        <div class="onb-step-sub">Seleziona tutto ciò che ti interessa — le tue preferenze sono private</div>
+        <div class="onb-step-title" data-i18n="onb4_title">💫 Chi vuoi incontrare?</div>
+        <div class="onb-step-sub" data-i18n="onb4_sub">Seleziona tutto ciò che ti interessa — le tue preferenze sono private</div>
         <div class="pill-grid" id="pref-pills">
           <div class="pill sel" onclick="selMulti(this)">👩 Donna</div>
           <div class="pill" onclick="selMulti(this)">👨 Uomo</div>
@@ -1373,9 +1402,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
 <div class="toast" id="toast">✅</div>
 
 <script>
-// ── AGE GATE ──
-function confirmAge(){document.getElementById('age-gate').style.display='none';showToast('✅ Accesso confermato. Benvenuto!');}
-function denyAge(){document.getElementById('age-gate').innerHTML='<div style="text-align:center;color:#888;padding:40px;"><div style="font-size:48px;margin-bottom:16px;">🔞</div><h2 style="color:#fff;margin-bottom:8px;">Accesso negato</h2><p>Questo sito è riservato agli adulti.</p></div>';}
+// ── AGE GATE handled in translation system above ──
 
 // ── NAVIGATION ──
 function goto(page){
@@ -1641,52 +1668,922 @@ document.querySelector('.chat-ta')?.addEventListener('keydown',e=>{
   if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}
 });
 
-// ── LANGUAGE SELECTOR ──
-const translations = {
-  it: { accedi:'Accedi', registrati:'Registrati', annunci:'Annunci', premium:'Premium', inviaggio:'✈️ In Viaggio', cerca:'🔍 Cerca', benvenuto:'Benvenuto su Silk Dates!' },
-  en: { accedi:'Sign In', registrati:'Sign Up', annunci:'Listings', premium:'Premium', inviaggio:'✈️ Travelling', cerca:'🔍 Search', benvenuto:'Welcome to Silk Dates!' },
-  fr: { accedi:'Connexion', registrati:"S'inscrire", annunci:'Annonces', premium:'Premium', inviaggio:'✈️ En voyage', cerca:'🔍 Chercher', benvenuto:'Bienvenue sur Silk Dates!' },
-  es: { accedi:'Entrar', registrati:'Registrarse', annunci:'Anuncios', premium:'Premium', inviaggio:'✈️ De viaje', cerca:'🔍 Buscar', benvenuto:'¡Bienvenido a Silk Dates!' },
-  pt: { accedi:'Entrar', registrati:'Cadastrar', annunci:'Anúncios', premium:'Premium', inviaggio:'✈️ Viajando', cerca:'🔍 Buscar', benvenuto:'Bem-vindo ao Silk Dates!' },
-  ru: { accedi:'Войти', registrati:'Регистрация', annunci:'Объявления', premium:'Премиум', inviaggio:'✈️ В поездке', cerca:'🔍 Поиск', benvenuto:'Добро пожаловать в Silk Dates!' },
-  zh: { accedi:'登录', registrati:'注册', annunci:'广告', premium:'高级版', inviaggio:'✈️ 旅行中', cerca:'🔍 搜索', benvenuto:'欢迎来到 Silk Dates!' }
+// ── FULL TRANSLATION SYSTEM ──
+const T = {
+  it: {
+    // Age gate
+    age_title:'Accesso riservato ai maggiorenni',
+    age_desc:'Questo sito contiene materiale riservato agli adulti. Accedendo dichiari di avere almeno <strong>18 anni</strong> e accetti i nostri Termini di servizio e la Privacy Policy.',
+    age_yes:'✓ Ho 18+ anni, entra',
+    age_no:'✗ Sono minorenne',
+    age_note:'Cliccando "Entra" dichiari sotto la tua responsabilità di avere l\'età minima richiesta dalla legge del tuo paese.',
+    age_denied:'Accesso negato',
+    age_denied_sub:'Questo sito è riservato agli adulti.',
+    // Nav
+    nav_annunci:'Annunci',
+    nav_viaggio:'✈️ In Viaggio',
+    nav_premium:'Premium',
+    nav_accedi:'Accedi',
+    nav_registrati:'Registrati',
+    nav_messaggi:'Messaggi',
+    nav_profilo:'Profilo',
+    nav_impostazioni:'⚙️ Impostazioni',
+    nav_torna:'← Torna',
+    // Hero
+    hero_badge:'🔥 98.000 utenti online ora',
+    hero_h1:'Incontri reali,',
+    hero_h1_em:'senza filtri.',
+    hero_sub:'Profili verificati in tutto il mondo. Trova chi cerchi, dove sei — o dove stai andando.',
+    hero_cta:'Inizia gratis',
+    hero_browse:'Sfoglia annunci',
+    stat_utenti:'Utenti attivi',
+    stat_paesi:'Paesi',
+    stat_online:'Online ora',
+    stat_rating:'Valutazione',
+    // Search
+    search_cerco:'👤 Cerco…',
+    search_donna:'Donna',
+    search_uomo:'Uomo',
+    search_coppia:'Coppia',
+    search_tutti:'Tutti',
+    search_citta:'📍 Città',
+    search_eta:'🎂 Età',
+    search_filtro:'⭐ Filtro',
+    search_verificati:'Solo verificati',
+    search_online:'Online ora',
+    search_viaggio:'In viaggio',
+    search_btn:'🔍 Cerca',
+    // Tabs
+    tab_popolari:'🔥 Popolari',
+    tab_nuovi:'🆕 Nuovi',
+    tab_vicino:'📍 Vicino a me',
+    tab_viaggio:'✈️ In viaggio',
+    tab_verificati:'✓ Verificati',
+    // Listings
+    listings_title:'Annunci recenti',
+    see_all:'Vedi tutti →',
+    lock_lbl:'Sblocca con Premium',
+    solo_premium:'Solo Premium',
+    // Premium banner
+    prem_title:'Passa a',
+    prem_name:'Silk Dates Premium',
+    prem_sub:'Sblocca tutti i profili e inizia a chattare senza limiti',
+    pf1:'Profili illimitati',pf2:'Messaggistica privata',pf3:'Filtri avanzati',
+    pf4:'Chi visita il tuo profilo',pf5:'Badge verificato',pf6:'Modalità In viaggio',
+    prem_btn:'🔥 Prova Premium',
+    // Footer
+    age_footer:'🔞 Accesso riservato ai maggiorenni (18+)',
+    foot_privacy:'Privacy Policy',foot_terms:'Termini di servizio',foot_cookie:'Cookie',
+    foot_contact:'Contatti',foot_report:'Segnala abuso',foot_mod:'Moderazione',
+    // Auth
+    auth_register:'Registrati',auth_login:'Accedi',
+    auth_nome:'Nome',auth_eta:'Età',auth_email:'Email',auth_password:'Password',
+    auth_sono:'Sono',auth_citta:'Città',
+    auth_gender_f:'👩 Donna',auth_gender_m:'👨 Uomo',auth_gender_nb:'🏳️‍🌈 Non-binary',auth_gender_c:'👫 Coppia',
+    auth_age_check:'Confermo di avere almeno <strong>18 anni</strong> e accetto i <strong>Termini</strong> e la <strong>Privacy Policy</strong>.',
+    auth_crea:'Crea account gratis →',auth_oppure:'oppure',
+    auth_google:'🌐 Continua con Google',auth_google2:'🌐 Accedi con Google',
+    auth_forgot:'Password dimenticata?',auth_login_btn:'Accedi →',
+    // Onboarding
+    onb_sub:'Completa il tuo profilo — ci vogliono solo 30 secondi 🚀',
+    onb1_title:'🎂 Quanti anni hai?',onb1_sub:'Serve per mostrarti i profili giusti per te',
+    onb1_label:'Età',onb1_placeholder:'La tua età (min. 18)',
+    onb2_title:'📍 Dove sei?',onb2_sub:'Troveremo persone vicino a te',
+    onb2_label:'Città o paese',onb2_placeholder:'Es. Milano, Roma, Napoli…',
+    onb2_radius:'Raggio di ricerca',
+    onb3_title:'✨ Cosa cerchi?',onb3_sub:'Puoi selezionare più opzioni — nessun giudizio 😊',
+    onb4_title:'💫 Chi vuoi incontrare?',onb4_sub:'Seleziona tutto ciò che ti interessa — le tue preferenze sono private',
+    onb_privacy:'Le tue preferenze sono <strong>completamente private</strong> e non vengono condivise con altri utenti.',
+    onb_next:'Continua →',onb_back:'← Indietro',onb_finish:'✅ Completa profilo',onb_skip:'Salta per ora',
+    // Messages
+    msg_title:'Messaggi',msg_search:'Cerca…',
+    msg_tutti:'Tutti',msg_nonletti:'Non letti',msg_online:'Online',
+    msg_placeholder:'Scrivi un messaggio…',
+    // Profile
+    prof_scrivi:'💬 Scrivi',prof_salva:'❤️ Salva',
+    prof_info:'Info',prof_gallery:'Foto & Video',prof_ann:'Annunci',
+    // Settings
+    set_title:'⚙️ Impostazioni',set_salva:'Salva modifiche',
+    // Viaggio
+    viaggio_title:'✈️ Modalità In Viaggio',
+    viaggio_sub:'Cerca incontri nella tua destinazione prima ancora di arrivare.',
+    // Premium page
+    prem_page_badge:'⭐ Silk Dates Premium',
+    prem_page_h1_a:'Senza',prem_page_h1_em:'limiti.',prem_page_h1_b:'Senza confini.',
+    prem_page_sub:'Sblocca l\'accesso completo a tutti i profili, la messaggistica illimitata e molto altro.',
+    prem_pay_title:'Completa il pagamento',
+    prem_tab_card:'💳 Carta',prem_tab_pp:'🅿️ PayPal',prem_tab_rev:'⚡ Revolut',
+    // Toast
+    // Cards & badges
+    tag_discrete:'Discreta',tag_nodrama:'Senza drama',tag_realphoto:'Foto reali',tag_serious:'Serio',tag_openmind:'Open mind',
+    tag_premium_lbl:'⭐ Premium',tag_only_premium:'Solo Premium',
+    bdg_verified_f:'✓ Verificata',bdg_verified_m:'✓ Verificato',bdg_travel:'✈️ In viaggio',lock_unlock:'Sblocca con Premium',
+    chip_online:'● Online',chip_online_now:'● Online ora',chip_verified_f:'✓ Verificata',chip_premium:'⭐ Premium',
+    card_meta_sofia:'📍 Milano · Online ora',card_meta_marco:'📍 Roma → Barcellona',card_meta_lea:'📍 Parigi',
+    // Annuncio
+    ann_back:'← Torna agli annunci',ann_desc_title:'📝 Descrizione completa',
+    ann_about:'Ciao, sono Sofia. Milanese, lavoro nel settore moda e amo viaggiare. Cerco persone genuine, senza filtri e senza complicazioni.',
+    det_city:'📍 Città',det_age:'🎂 Età',det_seeking:'👁️ Cerco',det_distance:'📏 Distanza',det_languages:'🌍 Lingue',det_lastonline:'📅 Online',det_photos:'📸 Foto',
+    btn_send_msg:'💬 Invia messaggio',btn_report_ann:'🚩 Segnala questo annuncio',
+    // Profile
+    profile_meta:'📍 Milano, Italia · Membro da Gennaio 2025',
+    profile_about:'Ciao! Sono Sofia, milanese con la passione per i viaggi e le conversazioni genuine. Cerco persone senza filtri.',
+    gallery_title:'📸 Foto & Video (5)',btn_add_photo:'➕ Aggiungi foto',btn_back_nav:'← Torna',btn_back_profile:'← Profilo',
+    // Messages
+    ch_status:'● Online ora · Milano',conv1_preview:'Quando sei libero? 😊',conv2_preview:'Sono a Barcellona fino a domenica',conv3_preview:'Hai visto la mia foto nuova?',
+    notif_title:'Notifiche',notif_clear:'Segna tutte come lette',
+    // Settings rows
+    sett_display_name:'Nome visualizzato',sett_display_name_desc:'Il nome mostrato sugli annunci',
+    sett_city:'Città',sett_city_desc:'La tua posizione attuale',sett_bio:'Bio',sett_bio_desc:'Breve descrizione del tuo profilo',
+    sett_new_msg:'Nuovi messaggi',sett_new_msg_desc:'Ricevi una notifica per ogni messaggio',
+    sett_visits:'Visite al profilo',sett_visits_desc:'Quando qualcuno visita il tuo profilo',
+    sett_matches:'Nuovi match',sett_matches_desc:'Quando qualcuno ti salva nei preferiti',
+    sett_email_digest:'Email di riepilogo',sett_email_digest_desc:'Riepilogo settimanale via email',
+    sett_visible:'Profilo visibile',sett_visible_desc:'Il tuo profilo appare negli annunci',
+    sett_online_status:'Stato online',sett_online_status_desc:'Mostra quando sei connesso',
+    sett_geo:'Geolocalizzazione',sett_geo_desc:'Mostra la distanza dagli altri utenti',
+    sett_block:'Blocca utenti specifici',sett_block_desc:'Gestisci la lista utenti bloccati',
+    sett_seeking:'Cerco',sett_age_min:'Età minima',sett_age_max:'Età massima',sett_distance:'Distanza massima',
+    sett_plan:'Piano attuale',sett_plan_desc:'Silk Dates Premium Mensile',sett_renewal:'Prossimo rinnovo',sett_renewal_desc:'€14.00 il 13 Aprile 2026',
+    sett_cancel_sub:'Disdici abbonamento',sett_cancel_sub_desc:'Il tuo account tornerà al piano Free',sett_change_pass:'Cambia password',
+    sett_export_data:'Scarica i miei dati',sett_export_data_desc:'GDPR — esporta tutti i tuoi dati',
+    sett_delete_account:'Elimina account',sett_delete_desc:'Questa azione è irreversibile',
+    btn_edit:'Modifica',btn_manage:'Gestisci',btn_cancel_sub:'Disdici',btn_change:'Cambia',btn_request:'Richiedi',btn_delete:'Elimina',
+    // Viaggio
+    vcard1_title:'La mia modalità In Viaggio',vcard1_sub:'Visibile agli utenti nella tua destinazione',
+    vcard2_title:'Viaggiatori vicino a te',vcard2_sub:'Utenti con badge ✈️ In Viaggio nella tua area',
+    travel_toggle_lbl:'✈️ Attiva In Viaggio',travel_plan_title:'🗓️ Pianifica un viaggio',
+    btn_save_dest:'Salva destinazione',btn_update_loc:'🔄 Aggiorna',
+    trav1_meta:'Roma → Milano · 3km da te',trav2_meta:'Napoli → Milano · 6km da te',trav_locked:'Solo Premium',
+    ph_destination:'🏙️ Destinazione (es. Barcellona)',ph_going_to:'Dove stai andando?',ph_location_example:'Es. Milano, Roma, Napoli…',
+    // Premium features
+    plan_free_period:'Per sempre gratuito',pfeat_3profiles:'3 profili visibili al giorno',pfeat_basic_profile:'Creazione profilo base',
+    pfeat_basic_geo:'Geolocalizzazione base',pfeat_unlimited:'Profili illimitati',pfeat_messaging:'Messaggistica privata illimitata',
+    pfeat_filters:'Filtri avanzati',pfeat_visitors:'Chi ha visitato il profilo',pfeat_badge:'Badge ✓ Verificato',
+    pfeat_travel:'Modalità ✈️ In Viaggio',pfeat_featured:'Profilo in evidenza',pfeat_all_monthly:'Tutto di Premium mensile',
+    pfeat_save40:'Risparmio del 40%',pfeat_support:'Priorità nel supporto',pfeat_early_access:'Accesso anticipato alle nuove funzioni',
+    pfeat_gold_badge:'Badge esclusivo Gold',btn_start_free:'Inizia gratis',
+    stripe_note:'🔒 Pagamento sicuro tramite Stripe · SSL 256-bit',footer_moderation:'Moderazione',
+    toast_welcome:'✅ Accesso confermato. Benvenuto!',
+    toast_denied:'🔞 Accesso negato.',
+    toast_lang:'🌍 Lingua cambiata in Italiano',
+  },
+  en: {
+    age_title:'Access reserved for adults only',
+    age_desc:'This site contains adult material. By entering you confirm you are at least <strong>18 years old</strong> and agree to our Terms of Service and Privacy Policy.',
+    age_yes:'✓ I am 18+, enter',
+    age_no:'✗ I am underage',
+    age_note:'By clicking "Enter" you confirm under your responsibility that you meet the minimum age required by the law of your country to access adult content.',
+    age_denied:'Access denied',
+    age_denied_sub:'This site is reserved for adults.',
+    nav_annunci:'Listings',nav_viaggio:'✈️ Travelling',nav_premium:'Premium',
+    nav_accedi:'Sign In',nav_registrati:'Sign Up',nav_messaggi:'Messages',
+    nav_profilo:'Profile',nav_impostazioni:'⚙️ Settings',nav_torna:'← Back',
+    hero_badge:'🔥 98,000 users online now',
+    hero_h1:'Real encounters,',hero_h1_em:'no filters.',
+    hero_sub:'Verified profiles worldwide. Find who you\'re looking for, wherever you are.',
+    hero_cta:'Start for free',hero_browse:'Browse listings',
+    stat_utenti:'Active users',stat_paesi:'Countries',stat_online:'Online now',stat_rating:'Rating',
+    search_cerco:'👤 Looking for…',search_donna:'Woman',search_uomo:'Man',search_coppia:'Couple',search_tutti:'Everyone',
+    search_citta:'📍 City',search_eta:'🎂 Age',search_filtro:'⭐ Filter',
+    search_verificati:'Verified only',search_online:'Online now',search_viaggio:'Travelling',search_btn:'🔍 Search',
+    tab_popolari:'🔥 Popular',tab_nuovi:'🆕 New',tab_vicino:'📍 Near me',tab_viaggio:'✈️ Travelling',tab_verificati:'✓ Verified',
+    listings_title:'Recent listings',see_all:'See all →',lock_lbl:'Unlock with Premium',solo_premium:'Premium only',
+    prem_title:'Upgrade to',prem_name:'Silk Dates Premium',prem_sub:'Unlock all profiles and start chatting without limits',
+    pf1:'Unlimited profiles',pf2:'Private messaging',pf3:'Advanced filters',pf4:'Who visited your profile',pf5:'Verified badge',pf6:'Travelling mode',
+    prem_btn:'🔥 Try Premium',
+    age_footer:'🔞 Adults only (18+)',
+    foot_privacy:'Privacy Policy',foot_terms:'Terms of Service',foot_cookie:'Cookie',foot_contact:'Contact',foot_report:'Report abuse',foot_mod:'Moderation',
+    auth_register:'Sign Up',auth_login:'Sign In',
+    auth_nome:'Name',auth_eta:'Age',auth_email:'Email',auth_password:'Password',
+    auth_sono:'I am',auth_citta:'City',
+    auth_gender_f:'👩 Woman',auth_gender_m:'👨 Man',auth_gender_nb:'🏳️‍🌈 Non-binary',auth_gender_c:'👫 Couple',
+    auth_age_check:'I confirm I am at least <strong>18 years old</strong> and I accept the <strong>Terms</strong> and <strong>Privacy Policy</strong>.',
+    auth_crea:'Create free account →',auth_oppure:'or',
+    auth_google:'🌐 Continue with Google',auth_google2:'🌐 Sign in with Google',
+    auth_forgot:'Forgot password?',auth_login_btn:'Sign In →',
+    onb_sub:'Complete your profile — it only takes 30 seconds 🚀',
+    onb1_title:'🎂 How old are you?',onb1_sub:'We need this to show you the right profiles',
+    onb1_label:'Age',onb1_placeholder:'Your age (min. 18)',
+    onb2_title:'📍 Where are you?',onb2_sub:'We will find people near you',
+    onb2_label:'City or country',onb2_placeholder:'E.g. London, New York, Paris…',
+    onb2_radius:'Search radius',
+    onb3_title:'✨ What are you looking for?',onb3_sub:'You can select multiple options — no judgment 😊',
+    onb4_title:'💫 Who do you want to meet?',onb4_sub:'Select everything that interests you — your preferences are private',
+    onb_privacy:'Your preferences are <strong>completely private</strong> and are not shared with other users.',
+    onb_next:'Continue →',onb_back:'← Back',onb_finish:'✅ Complete profile',onb_skip:'Skip for now',
+    msg_title:'Messages',msg_search:'Search…',msg_tutti:'All',msg_nonletti:'Unread',msg_online:'Online',
+    msg_placeholder:'Write a message…',
+    prof_scrivi:'💬 Write',prof_salva:'❤️ Save',prof_info:'Info',prof_gallery:'Photos & Videos',prof_ann:'Listings',
+    set_title:'⚙️ Settings',set_salva:'Save changes',
+    viaggio_title:'✈️ Travelling Mode',viaggio_sub:'Find encounters at your destination before you even arrive.',
+    prem_page_badge:'⭐ Silk Dates Premium',prem_page_h1_a:'No',prem_page_h1_em:'limits.',prem_page_h1_b:'No boundaries.',
+    prem_page_sub:'Unlock full access to all profiles, unlimited messaging and much more.',
+    prem_pay_title:'Complete payment',prem_tab_card:'💳 Card',prem_tab_pp:'🅿️ PayPal',prem_tab_rev:'⚡ Revolut',
+    tag_discrete:'Discreet',tag_nodrama:'No drama',tag_realphoto:'Real photos',tag_serious:'Serious',tag_openmind:'Open-minded',
+    tag_premium_lbl:'⭐ Premium',tag_only_premium:'Premium only',
+    bdg_verified_f:'✓ Verified',bdg_verified_m:'✓ Verified',bdg_travel:'✈️ Travelling',lock_unlock:'Unlock with Premium',
+    chip_online:'● Online',chip_online_now:'● Online now',chip_verified_f:'✓ Verified',chip_premium:'⭐ Premium',
+    card_meta_sofia:'📍 Milan · Online now',card_meta_marco:'📍 Rome → Barcelona',card_meta_lea:'📍 Paris',
+    ann_back:'← Back to listings',ann_desc_title:'📝 Full description',
+    ann_about:'Hi, I'm Sofia. Milanese, I work in fashion and love travelling. Looking for genuine people, no filters, no drama.',
+    det_city:'📍 City',det_age:'🎂 Age',det_seeking:'👁️ Seeking',det_distance:'📏 Distance',det_languages:'🌍 Languages',det_lastonline:'📅 Online',det_photos:'📸 Photos',
+    btn_send_msg:'💬 Send message',btn_report_ann:'🚩 Report this listing',
+    profile_meta:'📍 Milan, Italy · Member since January 2025',
+    profile_about:'Hi! I'm Sofia, Milanese with a passion for travel and genuine conversations. Looking for drama-free people.',
+    gallery_title:'📸 Photos & Videos (5)',btn_add_photo:'➕ Add photo',btn_back_nav:'← Back',btn_back_profile:'← Profile',
+    ch_status:'● Online now · Milan',conv1_preview:'When are you free? 😊',conv2_preview:'I'm in Barcelona until Sunday',conv3_preview:'Did you see my new photo?',
+    notif_title:'Notifications',notif_clear:'Mark all as read',
+    sett_display_name:'Display name',sett_display_name_desc:'The name shown on listings',
+    sett_city:'City',sett_city_desc:'Your current location',sett_bio:'Bio',sett_bio_desc:'Short description of your profile',
+    sett_new_msg:'New messages',sett_new_msg_desc:'Get notified for every message',
+    sett_visits:'Profile visits',sett_visits_desc:'When someone visits your profile',
+    sett_matches:'New matches',sett_matches_desc:'When someone saves you as favourite',
+    sett_email_digest:'Email digest',sett_email_digest_desc:'Weekly summary via email',
+    sett_visible:'Profile visible',sett_visible_desc:'Your profile appears in listings',
+    sett_online_status:'Online status',sett_online_status_desc:'Show when you're connected',
+    sett_geo:'Geolocation',sett_geo_desc:'Show distance from other users',
+    sett_block:'Block specific users',sett_block_desc:'Manage your blocked users list',
+    sett_seeking:'Seeking',sett_age_min:'Minimum age',sett_age_max:'Maximum age',sett_distance:'Maximum distance',
+    sett_plan:'Current plan',sett_plan_desc:'Silk Dates Premium Monthly',sett_renewal:'Next renewal',sett_renewal_desc:'€14.00 on April 13, 2026',
+    sett_cancel_sub:'Cancel subscription',sett_cancel_sub_desc:'Your account will revert to Free plan',sett_change_pass:'Change password',
+    sett_export_data:'Download my data',sett_export_data_desc:'GDPR — export all your data',
+    sett_delete_account:'Delete account',sett_delete_desc:'This action is irreversible',
+    btn_edit:'Edit',btn_manage:'Manage',btn_cancel_sub:'Cancel',btn_change:'Change',btn_request:'Request',btn_delete:'Delete',
+    vcard1_title:'My Travelling Mode',vcard1_sub:'Visible to users at your destination',
+    vcard2_title:'Travellers near you',vcard2_sub:'Users with ✈️ Travelling badge in your area',
+    travel_toggle_lbl:'✈️ Enable Travelling',travel_plan_title:'🗓️ Plan a trip',
+    btn_save_dest:'Save destination',btn_update_loc:'🔄 Update',
+    trav1_meta:'Rome → Milan · 3km from you',trav2_meta:'Naples → Milan · 6km from you',trav_locked:'Premium only',
+    ph_destination:'🏙️ Destination (e.g. Barcelona)',ph_going_to:'Where are you going?',ph_location_example:'E.g. London, Paris, Rome…',
+    plan_free_period:'Free forever',pfeat_3profiles:'3 visible profiles per day',pfeat_basic_profile:'Basic profile creation',
+    pfeat_basic_geo:'Basic geolocation',pfeat_unlimited:'Unlimited profiles',pfeat_messaging:'Unlimited private messaging',
+    pfeat_filters:'Advanced filters',pfeat_visitors:'Who visited your profile',pfeat_badge:'✓ Verified badge',
+    pfeat_travel:'✈️ Travelling mode',pfeat_featured:'Featured profile',pfeat_all_monthly:'Everything in Monthly Premium',
+    pfeat_save40:'Save 40%',pfeat_support:'Priority support',pfeat_early_access:'Early access to new features',
+    pfeat_gold_badge:'Exclusive Gold badge',btn_start_free:'Start free',
+    stripe_note:'🔒 Secure payment via Stripe · SSL 256-bit',footer_moderation:'Moderation',
+    toast_welcome:'✅ Access confirmed. Welcome!',toast_denied:'🔞 Access denied.',toast_lang:'🌍 Language changed to English',
+  },
+  fr: {
+    age_title:'Accès réservé aux adultes',
+    age_desc:'Ce site contient du matériel réservé aux adultes. En accédant, vous déclarez avoir au moins <strong>18 ans</strong> et acceptez nos Conditions d\'utilisation et notre Politique de confidentialité.',
+    age_yes:'✓ J\'ai 18+ ans, entrer',age_no:'✗ Je suis mineur',
+    age_note:'En cliquant sur "Entrer", vous déclarez sous votre responsabilité avoir l\'âge minimum requis par la loi de votre pays.',
+    age_denied:'Accès refusé',age_denied_sub:'Ce site est réservé aux adultes.',
+    nav_annunci:'Annonces',nav_viaggio:'✈️ En voyage',nav_premium:'Premium',
+    nav_accedi:'Connexion',nav_registrati:'S\'inscrire',nav_messaggi:'Messages',
+    nav_profilo:'Profil',nav_impostazioni:'⚙️ Paramètres',nav_torna:'← Retour',
+    hero_badge:'🔥 98 000 utilisateurs en ligne',
+    hero_h1:'Rencontres réelles,',hero_h1_em:'sans filtres.',
+    hero_sub:'Profils vérifiés dans le monde entier. Trouvez ce que vous cherchez, où que vous soyez.',
+    hero_cta:'Commencer gratuitement',hero_browse:'Parcourir les annonces',
+    stat_utenti:'Utilisateurs actifs',stat_paesi:'Pays',stat_online:'En ligne',stat_rating:'Note',
+    search_cerco:'👤 Je cherche…',search_donna:'Femme',search_uomo:'Homme',search_coppia:'Couple',search_tutti:'Tous',
+    search_citta:'📍 Ville',search_eta:'🎂 Âge',search_filtro:'⭐ Filtre',
+    search_verificati:'Vérifiés seulement',search_online:'En ligne',search_viaggio:'En voyage',search_btn:'🔍 Rechercher',
+    tab_popolari:'🔥 Populaires',tab_nuovi:'🆕 Nouveaux',tab_vicino:'📍 Près de moi',tab_viaggio:'✈️ En voyage',tab_verificati:'✓ Vérifiés',
+    listings_title:'Annonces récentes',see_all:'Voir tout →',lock_lbl:'Débloquer avec Premium',solo_premium:'Premium seulement',
+    prem_title:'Passer à',prem_name:'Silk Dates Premium',prem_sub:'Débloquez tous les profils et commencez à chatter sans limites',
+    pf1:'Profils illimités',pf2:'Messagerie privée',pf3:'Filtres avancés',pf4:'Qui a visité votre profil',pf5:'Badge vérifié',pf6:'Mode En voyage',
+    prem_btn:'🔥 Essayer Premium',
+    age_footer:'🔞 Adultes seulement (18+)',
+    foot_privacy:'Politique de confidentialité',foot_terms:'Conditions d\'utilisation',foot_cookie:'Cookies',foot_contact:'Contact',foot_report:'Signaler un abus',foot_mod:'Modération',
+    auth_register:'S\'inscrire',auth_login:'Connexion',
+    auth_nome:'Prénom',auth_eta:'Âge',auth_email:'Email',auth_password:'Mot de passe',
+    auth_sono:'Je suis',auth_citta:'Ville',
+    auth_gender_f:'👩 Femme',auth_gender_m:'👨 Homme',auth_gender_nb:'🏳️‍🌈 Non-binaire',auth_gender_c:'👫 Couple',
+    auth_age_check:'Je confirme avoir au moins <strong>18 ans</strong> et j\'accepte les <strong>Conditions</strong> et la <strong>Politique de confidentialité</strong>.',
+    auth_crea:'Créer un compte gratuit →',auth_oppure:'ou',
+    auth_google:'🌐 Continuer avec Google',auth_google2:'🌐 Se connecter avec Google',
+    auth_forgot:'Mot de passe oublié ?',auth_login_btn:'Se connecter →',
+    onb_sub:'Complétez votre profil — seulement 30 secondes 🚀',
+    onb1_title:'🎂 Quel âge avez-vous ?',onb1_sub:'Pour vous montrer les bons profils',
+    onb1_label:'Âge',onb1_placeholder:'Votre âge (min. 18)',
+    onb2_title:'📍 Où êtes-vous ?',onb2_sub:'Nous trouverons des personnes près de vous',
+    onb2_label:'Ville ou pays',onb2_placeholder:'Ex. Paris, Lyon, Marseille…',
+    onb2_radius:'Rayon de recherche',
+    onb3_title:'✨ Que cherchez-vous ?',onb3_sub:'Vous pouvez sélectionner plusieurs options 😊',
+    onb4_title:'💫 Qui voulez-vous rencontrer ?',onb4_sub:'Vos préférences sont privées',
+    onb_privacy:'Vos préférences sont <strong>complètement privées</strong> et ne sont pas partagées.',
+    onb_next:'Continuer →',onb_back:'← Retour',onb_finish:'✅ Compléter le profil',onb_skip:'Passer pour l\'instant',
+    msg_title:'Messages',msg_search:'Rechercher…',msg_tutti:'Tous',msg_nonletti:'Non lus',msg_online:'En ligne',
+    msg_placeholder:'Écrire un message…',
+    prof_scrivi:'💬 Écrire',prof_salva:'❤️ Sauvegarder',prof_info:'Info',prof_gallery:'Photos & Vidéos',prof_ann:'Annonces',
+    set_title:'⚙️ Paramètres',set_salva:'Sauvegarder',
+    viaggio_title:'✈️ Mode En Voyage',viaggio_sub:'Trouvez des rencontres à votre destination avant même d\'arriver.',
+    prem_page_badge:'⭐ Silk Dates Premium',prem_page_h1_a:'Sans',prem_page_h1_em:'limites.',prem_page_h1_b:'Sans frontières.',
+    prem_page_sub:'Débloquez l\'accès complet à tous les profils, la messagerie illimitée et bien plus encore.',
+    prem_pay_title:'Finaliser le paiement',prem_tab_card:'💳 Carte',prem_tab_pp:'🅿️ PayPal',prem_tab_rev:'⚡ Revolut',
+    tag_discrete:'Discrète',tag_nodrama:'Sans drama',tag_realphoto:'Vraies photos',tag_serious:'Sérieux',tag_openmind:'Ouvert d'esprit',
+    tag_premium_lbl:'⭐ Premium',tag_only_premium:'Premium seulement',
+    bdg_verified_f:'✓ Vérifiée',bdg_verified_m:'✓ Vérifié',bdg_travel:'✈️ En voyage',lock_unlock:'Débloquer avec Premium',
+    chip_online:'● En ligne',chip_online_now:'● En ligne maintenant',chip_verified_f:'✓ Vérifiée',chip_premium:'⭐ Premium',
+    card_meta_sofia:'📍 Milan · En ligne',card_meta_marco:'📍 Rome → Barcelone',card_meta_lea:'📍 Paris',
+    ann_back:'← Retour aux annonces',ann_desc_title:'📝 Description complète',
+    ann_about:'Bonjour, je suis Sofia. Milanaise, je travaille dans la mode et j'adore voyager. Je cherche des personnes authentiques.',
+    det_city:'📍 Ville',det_age:'🎂 Âge',det_seeking:'👁️ Cherche',det_distance:'📏 Distance',det_languages:'🌍 Langues',det_lastonline:'📅 En ligne',det_photos:'📸 Photos',
+    btn_send_msg:'💬 Envoyer un message',btn_report_ann:'🚩 Signaler cette annonce',
+    profile_meta:'📍 Milan, Italie · Membre depuis Janvier 2025',
+    profile_about:'Salut ! Je suis Sofia, Milanaise passionnée de voyages et de conversations authentiques.',
+    gallery_title:'📸 Photos & Vidéos (5)',btn_add_photo:'➕ Ajouter photo',btn_back_nav:'← Retour',btn_back_profile:'← Profil',
+    ch_status:'● En ligne · Milan',conv1_preview:'Tu es libre quand ? 😊',conv2_preview:'Je suis à Barcelone jusqu'à dimanche',conv3_preview:'Tu as vu ma nouvelle photo ?',
+    notif_title:'Notifications',notif_clear:'Tout marquer comme lu',
+    sett_display_name:'Nom affiché',sett_display_name_desc:'Le nom affiché sur les annonces',
+    sett_city:'Ville',sett_city_desc:'Votre position actuelle',sett_bio:'Bio',sett_bio_desc:'Courte description de votre profil',
+    sett_new_msg:'Nouveaux messages',sett_new_msg_desc:'Recevoir une notification pour chaque message',
+    sett_visits:'Visites du profil',sett_visits_desc:'Quand quelqu'un visite votre profil',
+    sett_matches:'Nouveaux matchs',sett_matches_desc:'Quand quelqu'un vous sauvegarde en favori',
+    sett_email_digest:'Récapitulatif email',sett_email_digest_desc:'Résumé hebdomadaire par email',
+    sett_visible:'Profil visible',sett_visible_desc:'Votre profil apparaît dans les annonces',
+    sett_online_status:'Statut en ligne',sett_online_status_desc:'Afficher quand vous êtes connecté',
+    sett_geo:'Géolocalisation',sett_geo_desc:'Afficher la distance des autres utilisateurs',
+    sett_block:'Bloquer des utilisateurs',sett_block_desc:'Gérer la liste des utilisateurs bloqués',
+    sett_seeking:'Cherche',sett_age_min:'Âge minimum',sett_age_max:'Âge maximum',sett_distance:'Distance maximale',
+    sett_plan:'Plan actuel',sett_plan_desc:'Silk Dates Premium Mensuel',sett_renewal:'Prochain renouvellement',sett_renewal_desc:'€14.00 le 13 Avril 2026',
+    sett_cancel_sub:'Annuler l'abonnement',sett_cancel_sub_desc:'Votre compte reviendra au plan Gratuit',sett_change_pass:'Changer le mot de passe',
+    sett_export_data:'Télécharger mes données',sett_export_data_desc:'RGPD — exporter toutes vos données',
+    sett_delete_account:'Supprimer le compte',sett_delete_desc:'Cette action est irréversible',
+    btn_edit:'Modifier',btn_manage:'Gérer',btn_cancel_sub:'Annuler',btn_change:'Changer',btn_request:'Demander',btn_delete:'Supprimer',
+    vcard1_title:'Mon mode Voyage',vcard1_sub:'Visible aux utilisateurs à votre destination',
+    vcard2_title:'Voyageurs près de vous',vcard2_sub:'Utilisateurs avec le badge ✈️ En voyage dans votre zone',
+    travel_toggle_lbl:'✈️ Activer le Voyage',travel_plan_title:'🗓️ Planifier un voyage',
+    btn_save_dest:'Sauvegarder destination',btn_update_loc:'🔄 Actualiser',
+    trav1_meta:'Rome → Milan · 3km de vous',trav2_meta:'Naples → Milan · 6km de vous',trav_locked:'Premium seulement',
+    ph_destination:'🏙️ Destination (ex. Barcelone)',ph_going_to:'Où allez-vous ?',ph_location_example:'Ex. Paris, Lyon, Nice…',
+    plan_free_period:'Gratuit pour toujours',pfeat_3profiles:'3 profils visibles par jour',pfeat_basic_profile:'Création de profil basique',
+    pfeat_basic_geo:'Géolocalisation basique',pfeat_unlimited:'Profils illimités',pfeat_messaging:'Messagerie privée illimitée',
+    pfeat_filters:'Filtres avancés',pfeat_visitors:'Qui a visité votre profil',pfeat_badge:'Badge ✓ Vérifié',
+    pfeat_travel:'Mode ✈️ Voyage',pfeat_featured:'Profil mis en avant',pfeat_all_monthly:'Tout du Premium mensuel',
+    pfeat_save40:'Économisez 40%',pfeat_support:'Support prioritaire',pfeat_early_access:'Accès anticipé aux nouvelles fonctions',
+    pfeat_gold_badge:'Badge exclusif Gold',btn_start_free:'Commencer gratuitement',
+    stripe_note:'🔒 Paiement sécurisé via Stripe · SSL 256 bits',footer_moderation:'Modération',
+    toast_welcome:'✅ Accès confirmé. Bienvenue !',toast_denied:'🔞 Accès refusé.',toast_lang:'🌍 Langue changée en Français',
+  },
+  es: {
+    age_title:'Acceso reservado a mayores de edad',
+    age_desc:'Este sitio contiene material para adultos. Al acceder declaras tener al menos <strong>18 años</strong> y aceptas nuestros Términos de servicio y Política de privacidad.',
+    age_yes:'✓ Tengo 18+ años, entrar',age_no:'✗ Soy menor de edad',
+    age_note:'Al hacer clic en "Entrar" declaras bajo tu responsabilidad tener la edad mínima requerida por la ley de tu país.',
+    age_denied:'Acceso denegado',age_denied_sub:'Este sitio está reservado para adultos.',
+    nav_annunci:'Anuncios',nav_viaggio:'✈️ De viaje',nav_premium:'Premium',
+    nav_accedi:'Entrar',nav_registrati:'Registrarse',nav_messaggi:'Mensajes',
+    nav_profilo:'Perfil',nav_impostazioni:'⚙️ Ajustes',nav_torna:'← Volver',
+    hero_badge:'🔥 98.000 usuarios en línea ahora',
+    hero_h1:'Encuentros reales,',hero_h1_em:'sin filtros.',
+    hero_sub:'Perfiles verificados en todo el mundo. Encuentra a quien buscas, donde estés.',
+    hero_cta:'Empezar gratis',hero_browse:'Ver anuncios',
+    stat_utenti:'Usuarios activos',stat_paesi:'Países',stat_online:'En línea',stat_rating:'Valoración',
+    search_cerco:'👤 Busco…',search_donna:'Mujer',search_uomo:'Hombre',search_coppia:'Pareja',search_tutti:'Todos',
+    search_citta:'📍 Ciudad',search_eta:'🎂 Edad',search_filtro:'⭐ Filtro',
+    search_verificati:'Solo verificados',search_online:'En línea',search_viaggio:'De viaje',search_btn:'🔍 Buscar',
+    tab_popolari:'🔥 Populares',tab_nuovi:'🆕 Nuevos',tab_vicino:'📍 Cerca de mí',tab_viaggio:'✈️ De viaje',tab_verificati:'✓ Verificados',
+    listings_title:'Anuncios recientes',see_all:'Ver todos →',lock_lbl:'Desbloquear con Premium',solo_premium:'Solo Premium',
+    prem_title:'Cambiar a',prem_name:'Silk Dates Premium',prem_sub:'Desbloquea todos los perfiles y empieza a chatear sin límites',
+    pf1:'Perfiles ilimitados',pf2:'Mensajería privada',pf3:'Filtros avanzados',pf4:'Quién visitó tu perfil',pf5:'Insignia verificado',pf6:'Modo De viaje',
+    prem_btn:'🔥 Probar Premium',
+    age_footer:'🔞 Solo adultos (18+)',
+    foot_privacy:'Política de privacidad',foot_terms:'Términos de servicio',foot_cookie:'Cookies',foot_contact:'Contacto',foot_report:'Denunciar',foot_mod:'Moderación',
+    auth_register:'Registrarse',auth_login:'Entrar',
+    auth_nome:'Nombre',auth_eta:'Edad',auth_email:'Email',auth_password:'Contraseña',
+    auth_sono:'Soy',auth_citta:'Ciudad',
+    auth_gender_f:'👩 Mujer',auth_gender_m:'👨 Hombre',auth_gender_nb:'🏳️‍🌈 No binario',auth_gender_c:'👫 Pareja',
+    auth_age_check:'Confirmo que tengo al menos <strong>18 años</strong> y acepto los <strong>Términos</strong> y la <strong>Política de privacidad</strong>.',
+    auth_crea:'Crear cuenta gratis →',auth_oppure:'o',
+    auth_google:'🌐 Continuar con Google',auth_google2:'🌐 Entrar con Google',
+    auth_forgot:'¿Olvidaste la contraseña?',auth_login_btn:'Entrar →',
+    onb_sub:'Completa tu perfil — solo tarda 30 segundos 🚀',
+    onb1_title:'🎂 ¿Cuántos años tienes?',onb1_sub:'Para mostrarte los perfiles correctos',
+    onb1_label:'Edad',onb1_placeholder:'Tu edad (mín. 18)',
+    onb2_title:'📍 ¿Dónde estás?',onb2_sub:'Encontraremos personas cerca de ti',
+    onb2_label:'Ciudad o país',onb2_placeholder:'Ej. Madrid, Barcelona, Sevilla…',
+    onb2_radius:'Radio de búsqueda',
+    onb3_title:'✨ ¿Qué buscas?',onb3_sub:'Puedes seleccionar varias opciones 😊',
+    onb4_title:'💫 ¿A quién quieres conocer?',onb4_sub:'Tus preferencias son privadas',
+    onb_privacy:'Tus preferencias son <strong>completamente privadas</strong> y no se comparten.',
+    onb_next:'Continuar →',onb_back:'← Atrás',onb_finish:'✅ Completar perfil',onb_skip:'Omitir por ahora',
+    msg_title:'Mensajes',msg_search:'Buscar…',msg_tutti:'Todos',msg_nonletti:'No leídos',msg_online:'En línea',
+    msg_placeholder:'Escribe un mensaje…',
+    prof_scrivi:'💬 Escribir',prof_salva:'❤️ Guardar',prof_info:'Info',prof_gallery:'Fotos y Videos',prof_ann:'Anuncios',
+    set_title:'⚙️ Ajustes',set_salva:'Guardar cambios',
+    viaggio_title:'✈️ Modo De Viaje',viaggio_sub:'Encuentra encuentros en tu destino antes de llegar.',
+    prem_page_badge:'⭐ Silk Dates Premium',prem_page_h1_a:'Sin',prem_page_h1_em:'límites.',prem_page_h1_b:'Sin fronteras.',
+    prem_page_sub:'Desbloquea el acceso completo a todos los perfiles, mensajería ilimitada y mucho más.',
+    prem_pay_title:'Completar pago',prem_tab_card:'💳 Tarjeta',prem_tab_pp:'🅿️ PayPal',prem_tab_rev:'⚡ Revolut',
+    tag_discrete:'Discreta',tag_nodrama:'Sin drama',tag_realphoto:'Fotos reales',tag_serious:'Serio',tag_openmind:'Mente abierta',
+    tag_premium_lbl:'⭐ Premium',tag_only_premium:'Solo Premium',
+    bdg_verified_f:'✓ Verificada',bdg_verified_m:'✓ Verificado',bdg_travel:'✈️ De viaje',lock_unlock:'Desbloquear con Premium',
+    chip_online:'● En línea',chip_online_now:'● En línea ahora',chip_verified_f:'✓ Verificada',chip_premium:'⭐ Premium',
+    card_meta_sofia:'📍 Milán · En línea',card_meta_marco:'📍 Roma → Barcelona',card_meta_lea:'📍 París',
+    ann_back:'← Volver a anuncios',ann_desc_title:'📝 Descripción completa',
+    ann_about:'Hola, soy Sofia. Milanesa, trabajo en moda y me encanta viajar. Busco personas genuinas, sin filtros.',
+    det_city:'📍 Ciudad',det_age:'🎂 Edad',det_seeking:'👁️ Busco',det_distance:'📏 Distancia',det_languages:'🌍 Idiomas',det_lastonline:'📅 En línea',det_photos:'📸 Fotos',
+    btn_send_msg:'💬 Enviar mensaje',btn_report_ann:'🚩 Reportar este anuncio',
+    profile_meta:'📍 Milán, Italia · Miembro desde Enero 2025',
+    profile_about:'¡Hola! Soy Sofia, milanesa con pasión por los viajes y conversaciones genuinas.',
+    gallery_title:'📸 Fotos y Vídeos (5)',btn_add_photo:'➕ Añadir foto',btn_back_nav:'← Volver',btn_back_profile:'← Perfil',
+    ch_status:'● En línea · Milán',conv1_preview:'¿Cuándo estás libre? 😊',conv2_preview:'Estoy en Barcelona hasta el domingo',conv3_preview:'¿Viste mi nueva foto?',
+    notif_title:'Notificaciones',notif_clear:'Marcar todas como leídas',
+    sett_display_name:'Nombre mostrado',sett_display_name_desc:'El nombre mostrado en los anuncios',
+    sett_city:'Ciudad',sett_city_desc:'Tu ubicación actual',sett_bio:'Bio',sett_bio_desc:'Breve descripción de tu perfil',
+    sett_new_msg:'Nuevos mensajes',sett_new_msg_desc:'Recibir notificación por cada mensaje',
+    sett_visits:'Visitas al perfil',sett_visits_desc:'Cuando alguien visita tu perfil',
+    sett_matches:'Nuevos matches',sett_matches_desc:'Cuando alguien te guarda como favorito',
+    sett_email_digest:'Resumen por email',sett_email_digest_desc:'Resumen semanal por email',
+    sett_visible:'Perfil visible',sett_visible_desc:'Tu perfil aparece en los anuncios',
+    sett_online_status:'Estado en línea',sett_online_status_desc:'Mostrar cuando estás conectado',
+    sett_geo:'Geolocalización',sett_geo_desc:'Mostrar distancia de otros usuarios',
+    sett_block:'Bloquear usuarios',sett_block_desc:'Gestionar lista de usuarios bloqueados',
+    sett_seeking:'Busco',sett_age_min:'Edad mínima',sett_age_max:'Edad máxima',sett_distance:'Distancia máxima',
+    sett_plan:'Plan actual',sett_plan_desc:'Silk Dates Premium Mensual',sett_renewal:'Próxima renovación',sett_renewal_desc:'€14.00 el 13 de Abril 2026',
+    sett_cancel_sub:'Cancelar suscripción',sett_cancel_sub_desc:'Tu cuenta volverá al plan Gratis',sett_change_pass:'Cambiar contraseña',
+    sett_export_data:'Descargar mis datos',sett_export_data_desc:'RGPD — exportar todos tus datos',
+    sett_delete_account:'Eliminar cuenta',sett_delete_desc:'Esta acción es irreversible',
+    btn_edit:'Editar',btn_manage:'Gestionar',btn_cancel_sub:'Cancelar',btn_change:'Cambiar',btn_request:'Solicitar',btn_delete:'Eliminar',
+    vcard1_title:'Mi modo De viaje',vcard1_sub:'Visible para usuarios en tu destino',
+    vcard2_title:'Viajeros cerca de ti',vcard2_sub:'Usuarios con badge ✈️ De viaje en tu área',
+    travel_toggle_lbl:'✈️ Activar De viaje',travel_plan_title:'🗓️ Planificar un viaje',
+    btn_save_dest:'Guardar destino',btn_update_loc:'🔄 Actualizar',
+    trav1_meta:'Roma → Milán · 3km de ti',trav2_meta:'Nápoles → Milán · 6km de ti',trav_locked:'Solo Premium',
+    ph_destination:'🏙️ Destino (ej. Barcelona)',ph_going_to:'¿Adónde vas?',ph_location_example:'Ej. Madrid, Barcelona, Valencia…',
+    plan_free_period:'Siempre gratis',pfeat_3profiles:'3 perfiles visibles al día',pfeat_basic_profile:'Creación de perfil básico',
+    pfeat_basic_geo:'Geolocalización básica',pfeat_unlimited:'Perfiles ilimitados',pfeat_messaging:'Mensajería privada ilimitada',
+    pfeat_filters:'Filtros avanzados',pfeat_visitors:'Quién visitó tu perfil',pfeat_badge:'Badge ✓ Verificado',
+    pfeat_travel:'Modo ✈️ De viaje',pfeat_featured:'Perfil destacado',pfeat_all_monthly:'Todo del Premium mensual',
+    pfeat_save40:'Ahorra 40%',pfeat_support:'Soporte prioritario',pfeat_early_access:'Acceso anticipado a nuevas funciones',
+    pfeat_gold_badge:'Badge exclusivo Gold',btn_start_free:'Empezar gratis',
+    stripe_note:'🔒 Pago seguro vía Stripe · SSL 256-bit',footer_moderation:'Moderación',
+    toast_welcome:'✅ Acceso confirmado. ¡Bienvenido!',toast_denied:'🔞 Acceso denegado.',toast_lang:'🌍 Idioma cambiado a Español',
+  },
+  pt: {
+    age_title:'Acesso reservado a maiores de idade',
+    age_desc:'Este site contém material adulto. Ao acessar, declara ter pelo menos <strong>18 anos</strong> e aceita os nossos Termos de Serviço e Política de Privacidade.',
+    age_yes:'✓ Tenho 18+ anos, entrar',age_no:'✗ Sou menor de idade',
+    age_note:'Ao clicar em "Entrar" você declara sob sua responsabilidade ter a idade mínima exigida pela lei do seu país.',
+    age_denied:'Acesso negado',age_denied_sub:'Este site é reservado para adultos.',
+    nav_annunci:'Anúncios',nav_viaggio:'✈️ Viajando',nav_premium:'Premium',
+    nav_accedi:'Entrar',nav_registrati:'Cadastrar',nav_messaggi:'Mensagens',
+    nav_profilo:'Perfil',nav_impostazioni:'⚙️ Configurações',nav_torna:'← Voltar',
+    hero_badge:'🔥 98.000 usuários online agora',
+    hero_h1:'Encontros reais,',hero_h1_em:'sem filtros.',
+    hero_sub:'Perfis verificados em todo o mundo. Encontre quem você procura, onde estiver.',
+    hero_cta:'Começar grátis',hero_browse:'Ver anúncios',
+    stat_utenti:'Usuários ativos',stat_paesi:'Países',stat_online:'Online agora',stat_rating:'Avaliação',
+    search_cerco:'👤 Procuro…',search_donna:'Mulher',search_uomo:'Homem',search_coppia:'Casal',search_tutti:'Todos',
+    search_citta:'📍 Cidade',search_eta:'🎂 Idade',search_filtro:'⭐ Filtro',
+    search_verificati:'Só verificados',search_online:'Online agora',search_viaggio:'Viajando',search_btn:'🔍 Buscar',
+    tab_popolari:'🔥 Populares',tab_nuovi:'🆕 Novos',tab_vicino:'📍 Perto de mim',tab_viaggio:'✈️ Viajando',tab_verificati:'✓ Verificados',
+    listings_title:'Anúncios recentes',see_all:'Ver todos →',lock_lbl:'Desbloquear com Premium',solo_premium:'Só Premium',
+    prem_title:'Mudar para',prem_name:'Silk Dates Premium',prem_sub:'Desbloqueie todos os perfis e comece a conversar sem limites',
+    pf1:'Perfis ilimitados',pf2:'Mensagens privadas',pf3:'Filtros avançados',pf4:'Quem visitou seu perfil',pf5:'Badge verificado',pf6:'Modo Viajando',
+    prem_btn:'🔥 Experimentar Premium',
+    age_footer:'🔞 Apenas adultos (18+)',
+    foot_privacy:'Política de Privacidade',foot_terms:'Termos de Serviço',foot_cookie:'Cookies',foot_contact:'Contato',foot_report:'Denunciar abuso',foot_mod:'Moderação',
+    auth_register:'Cadastrar',auth_login:'Entrar',
+    auth_nome:'Nome',auth_eta:'Idade',auth_email:'Email',auth_password:'Senha',
+    auth_sono:'Sou',auth_citta:'Cidade',
+    auth_gender_f:'👩 Mulher',auth_gender_m:'👨 Homem',auth_gender_nb:'🏳️‍🌈 Não-binário',auth_gender_c:'👫 Casal',
+    auth_age_check:'Confirmo ter pelo menos <strong>18 anos</strong> e aceito os <strong>Termos</strong> e a <strong>Política de Privacidade</strong>.',
+    auth_crea:'Criar conta grátis →',auth_oppure:'ou',
+    auth_google:'🌐 Continuar com Google',auth_google2:'🌐 Entrar com Google',
+    auth_forgot:'Esqueceu a senha?',auth_login_btn:'Entrar →',
+    onb_sub:'Complete seu perfil — leva apenas 30 segundos 🚀',
+    onb1_title:'🎂 Quantos anos você tem?',onb1_sub:'Para mostrar os perfis certos para você',
+    onb1_label:'Idade',onb1_placeholder:'Sua idade (mín. 18)',
+    onb2_title:'📍 Onde você está?',onb2_sub:'Encontraremos pessoas perto de você',
+    onb2_label:'Cidade ou país',onb2_placeholder:'Ex. São Paulo, Rio de Janeiro…',
+    onb2_radius:'Raio de busca',
+    onb3_title:'✨ O que você procura?',onb3_sub:'Pode selecionar várias opções 😊',
+    onb4_title:'💫 Com quem quer se encontrar?',onb4_sub:'Suas preferências são privadas',
+    onb_privacy:'Suas preferências são <strong>completamente privadas</strong> e não são compartilhadas.',
+    onb_next:'Continuar →',onb_back:'← Voltar',onb_finish:'✅ Completar perfil',onb_skip:'Pular por agora',
+    msg_title:'Mensagens',msg_search:'Buscar…',msg_tutti:'Todos',msg_nonletti:'Não lidos',msg_online:'Online',
+    msg_placeholder:'Escreva uma mensagem…',
+    prof_scrivi:'💬 Escrever',prof_salva:'❤️ Salvar',prof_info:'Info',prof_gallery:'Fotos e Vídeos',prof_ann:'Anúncios',
+    set_title:'⚙️ Configurações',set_salva:'Salvar alterações',
+    viaggio_title:'✈️ Modo Viajando',viaggio_sub:'Encontre pessoas no seu destino antes mesmo de chegar.',
+    prem_page_badge:'⭐ Silk Dates Premium',prem_page_h1_a:'Sem',prem_page_h1_em:'limites.',prem_page_h1_b:'Sem fronteiras.',
+    prem_page_sub:'Desbloqueie acesso completo a todos os perfis, mensagens ilimitadas e muito mais.',
+    prem_pay_title:'Concluir pagamento',prem_tab_card:'💳 Cartão',prem_tab_pp:'🅿️ PayPal',prem_tab_rev:'⚡ Revolut',
+    tag_discrete:'Discreta',tag_nodrama:'Sem drama',tag_realphoto:'Fotos reais',tag_serious:'Sério',tag_openmind:'Mente aberta',
+    tag_premium_lbl:'⭐ Premium',tag_only_premium:'Só Premium',
+    bdg_verified_f:'✓ Verificada',bdg_verified_m:'✓ Verificado',bdg_travel:'✈️ Viajando',lock_unlock:'Desbloquear com Premium',
+    chip_online:'● Online',chip_online_now:'● Online agora',chip_verified_f:'✓ Verificada',chip_premium:'⭐ Premium',
+    card_meta_sofia:'📍 Milão · Online agora',card_meta_marco:'📍 Roma → Barcelona',card_meta_lea:'📍 Paris',
+    ann_back:'← Voltar aos anúncios',ann_desc_title:'📝 Descrição completa',
+    ann_about:'Olá, sou Sofia. Milanesa, trabalho na moda e adoro viajar. Procuro pessoas genuínas, sem filtros.',
+    det_city:'📍 Cidade',det_age:'🎂 Idade',det_seeking:'👁️ Procuro',det_distance:'📏 Distância',det_languages:'🌍 Idiomas',det_lastonline:'📅 Online',det_photos:'📸 Fotos',
+    btn_send_msg:'💬 Enviar mensagem',btn_report_ann:'🚩 Reportar este anúncio',
+    profile_meta:'📍 Milão, Itália · Membro desde Janeiro 2025',
+    profile_about:'Olá! Sou Sofia, milanesa com paixão por viagens e conversas genuínas.',
+    gallery_title:'📸 Fotos e Vídeos (5)',btn_add_photo:'➕ Adicionar foto',btn_back_nav:'← Voltar',btn_back_profile:'← Perfil',
+    ch_status:'● Online · Milão',conv1_preview:'Quando você está livre? 😊',conv2_preview:'Estou em Barcelona até domingo',conv3_preview:'Você viu minha nova foto?',
+    notif_title:'Notificações',notif_clear:'Marcar todas como lidas',
+    sett_display_name:'Nome exibido',sett_display_name_desc:'O nome mostrado nos anúncios',
+    sett_city:'Cidade',sett_city_desc:'Sua localização atual',sett_bio:'Bio',sett_bio_desc:'Breve descrição do seu perfil',
+    sett_new_msg:'Novas mensagens',sett_new_msg_desc:'Receber notificação por cada mensagem',
+    sett_visits:'Visitas ao perfil',sett_visits_desc:'Quando alguém visita seu perfil',
+    sett_matches:'Novos matches',sett_matches_desc:'Quando alguém te salva como favorito',
+    sett_email_digest:'Resumo por email',sett_email_digest_desc:'Resumo semanal por email',
+    sett_visible:'Perfil visível',sett_visible_desc:'Seu perfil aparece nos anúncios',
+    sett_online_status:'Status online',sett_online_status_desc:'Mostrar quando você está conectado',
+    sett_geo:'Geolocalização',sett_geo_desc:'Mostrar distância de outros usuários',
+    sett_block:'Bloquear usuários',sett_block_desc:'Gerenciar lista de usuários bloqueados',
+    sett_seeking:'Procuro',sett_age_min:'Idade mínima',sett_age_max:'Idade máxima',sett_distance:'Distância máxima',
+    sett_plan:'Plano atual',sett_plan_desc:'Silk Dates Premium Mensal',sett_renewal:'Próxima renovação',sett_renewal_desc:'€14.00 em 13 de Abril 2026',
+    sett_cancel_sub:'Cancelar assinatura',sett_cancel_sub_desc:'Sua conta voltará ao plano Grátis',sett_change_pass:'Alterar senha',
+    sett_export_data:'Baixar meus dados',sett_export_data_desc:'LGPD — exportar todos os dados',
+    sett_delete_account:'Excluir conta',sett_delete_desc:'Esta ação é irreversível',
+    btn_edit:'Editar',btn_manage:'Gerenciar',btn_cancel_sub:'Cancelar',btn_change:'Alterar',btn_request:'Solicitar',btn_delete:'Excluir',
+    vcard1_title:'Meu modo Viagem',vcard1_sub:'Visível para usuários no seu destino',
+    vcard2_title:'Viajantes perto de você',vcard2_sub:'Usuários com badge ✈️ Viajando na sua área',
+    travel_toggle_lbl:'✈️ Ativar Viagem',travel_plan_title:'🗓️ Planejar uma viagem',
+    btn_save_dest:'Salvar destino',btn_update_loc:'🔄 Atualizar',
+    trav1_meta:'Roma → Milão · 3km de você',trav2_meta:'Nápoles → Milão · 6km de você',trav_locked:'Só Premium',
+    ph_destination:'🏙️ Destino (ex. Barcelona)',ph_going_to:'Para onde você vai?',ph_location_example:'Ex. São Paulo, Rio, Lisboa…',
+    plan_free_period:'Sempre gratuito',pfeat_3profiles:'3 perfis visíveis por dia',pfeat_basic_profile:'Criação de perfil básico',
+    pfeat_basic_geo:'Geolocalização básica',pfeat_unlimited:'Perfis ilimitados',pfeat_messaging:'Mensagens privadas ilimitadas',
+    pfeat_filters:'Filtros avançados',pfeat_visitors:'Quem visitou seu perfil',pfeat_badge:'Badge ✓ Verificado',
+    pfeat_travel:'Modo ✈️ Viagem',pfeat_featured:'Perfil em destaque',pfeat_all_monthly:'Tudo do Premium mensal',
+    pfeat_save40:'Economize 40%',pfeat_support:'Suporte prioritário',pfeat_early_access:'Acesso antecipado às novidades',
+    pfeat_gold_badge:'Badge exclusivo Gold',btn_start_free:'Começar grátis',
+    stripe_note:'🔒 Pagamento seguro via Stripe · SSL 256-bit',footer_moderation:'Moderação',
+    toast_welcome:'✅ Acesso confirmado. Bem-vindo!',toast_denied:'🔞 Acesso negado.',toast_lang:'🌍 Idioma alterado para Português',
+  },
+  ru: {
+    age_title:'Доступ только для совершеннолетних',
+    age_desc:'Этот сайт содержит материалы для взрослых. Входя, вы подтверждаете, что вам не менее <strong>18 лет</strong> и соглашаетесь с Условиями использования и Политикой конфиденциальности.',
+    age_yes:'✓ Мне 18+, войти',age_no:'✗ Я несовершеннолетний',
+    age_note:'Нажимая "Войти", вы подтверждаете свою ответственность за соответствие минимальному возрасту.',
+    age_denied:'Доступ запрещён',age_denied_sub:'Этот сайт предназначен только для взрослых.',
+    nav_annunci:'Объявления',nav_viaggio:'✈️ В поездке',nav_premium:'Премиум',
+    nav_accedi:'Войти',nav_registrati:'Регистрация',nav_messaggi:'Сообщения',
+    nav_profilo:'Профиль',nav_impostazioni:'⚙️ Настройки',nav_torna:'← Назад',
+    hero_badge:'🔥 98 000 пользователей онлайн',
+    hero_h1:'Реальные встречи,',hero_h1_em:'без фильтров.',
+    hero_sub:'Проверенные профили по всему миру. Найдите того, кого ищете, где бы вы ни были.',
+    hero_cta:'Начать бесплатно',hero_browse:'Просмотреть объявления',
+    stat_utenti:'Активных пользователей',stat_paesi:'Стран',stat_online:'Онлайн сейчас',stat_rating:'Рейтинг',
+    search_cerco:'👤 Ищу…',search_donna:'Женщину',search_uomo:'Мужчину',search_coppia:'Пару',search_tutti:'Всех',
+    search_citta:'📍 Город',search_eta:'🎂 Возраст',search_filtro:'⭐ Фильтр',
+    search_verificati:'Только верифицированные',search_online:'Онлайн',search_viaggio:'В поездке',search_btn:'🔍 Найти',
+    tab_popolari:'🔥 Популярные',tab_nuovi:'🆕 Новые',tab_vicino:'📍 Рядом',tab_viaggio:'✈️ В поездке',tab_verificati:'✓ Верифицированные',
+    listings_title:'Последние объявления',see_all:'Смотреть все →',lock_lbl:'Разблокировать Премиум',solo_premium:'Только Премиум',
+    prem_title:'Перейти на',prem_name:'Silk Dates Премиум',prem_sub:'Разблокируйте все профили и начните общаться без ограничений',
+    pf1:'Неограниченные профили',pf2:'Личные сообщения',pf3:'Расширенные фильтры',pf4:'Кто посетил профиль',pf5:'Значок верификации',pf6:'Режим В поездке',
+    prem_btn:'🔥 Попробовать Премиум',
+    age_footer:'🔞 Только для взрослых (18+)',
+    foot_privacy:'Политика конфиденциальности',foot_terms:'Условия использования',foot_cookie:'Cookie',foot_contact:'Контакты',foot_report:'Сообщить о нарушении',foot_mod:'Модерация',
+    auth_register:'Регистрация',auth_login:'Войти',
+    auth_nome:'Имя',auth_eta:'Возраст',auth_email:'Email',auth_password:'Пароль',
+    auth_sono:'Я',auth_citta:'Город',
+    auth_gender_f:'👩 Женщина',auth_gender_m:'👨 Мужчина',auth_gender_nb:'🏳️‍🌈 Небинарный',auth_gender_c:'👫 Пара',
+    auth_age_check:'Подтверждаю, что мне не менее <strong>18 лет</strong> и принимаю <strong>Условия</strong> и <strong>Политику конфиденциальности</strong>.',
+    auth_crea:'Создать бесплатный аккаунт →',auth_oppure:'или',
+    auth_google:'🌐 Продолжить с Google',auth_google2:'🌐 Войти с Google',
+    auth_forgot:'Забыли пароль?',auth_login_btn:'Войти →',
+    onb_sub:'Заполните профиль — займёт всего 30 секунд 🚀',
+    onb1_title:'🎂 Сколько вам лет?',onb1_sub:'Чтобы показать подходящие профили',
+    onb1_label:'Возраст',onb1_placeholder:'Ваш возраст (мин. 18)',
+    onb2_title:'📍 Где вы находитесь?',onb2_sub:'Найдём людей рядом с вами',
+    onb2_label:'Город или страна',onb2_placeholder:'Напр. Москва, Санкт-Петербург…',
+    onb2_radius:'Радиус поиска',
+    onb3_title:'✨ Что вы ищете?',onb3_sub:'Можно выбрать несколько вариантов 😊',
+    onb4_title:'💫 Кого хотите встретить?',onb4_sub:'Ваши предпочтения конфиденциальны',
+    onb_privacy:'Ваши предпочтения <strong>полностью конфиденциальны</strong> и не передаются другим.',
+    onb_next:'Продолжить →',onb_back:'← Назад',onb_finish:'✅ Завершить профиль',onb_skip:'Пропустить',
+    msg_title:'Сообщения',msg_search:'Поиск…',msg_tutti:'Все',msg_nonletti:'Непрочитанные',msg_online:'Онлайн',
+    msg_placeholder:'Написать сообщение…',
+    prof_scrivi:'💬 Написать',prof_salva:'❤️ Сохранить',prof_info:'Инфо',prof_gallery:'Фото и Видео',prof_ann:'Объявления',
+    set_title:'⚙️ Настройки',set_salva:'Сохранить изменения',
+    viaggio_title:'✈️ Режим В поездке',viaggio_sub:'Найдите встречи в пункте назначения ещё до прибытия.',
+    prem_page_badge:'⭐ Silk Dates Премиум',prem_page_h1_a:'Без',prem_page_h1_em:'ограничений.',prem_page_h1_b:'Без границ.',
+    prem_page_sub:'Полный доступ ко всем профилям, неограниченные сообщения и многое другое.',
+    prem_pay_title:'Завершить оплату',prem_tab_card:'💳 Карта',prem_tab_pp:'🅿️ PayPal',prem_tab_rev:'⚡ Revolut',
+    tag_discrete:'Дискретно',tag_nodrama:'Без драмы',tag_realphoto:'Реальные фото',tag_serious:'Серьёзно',tag_openmind:'Открытый взгляд',
+    tag_premium_lbl:'⭐ Премиум',tag_only_premium:'Только Премиум',
+    bdg_verified_f:'✓ Верифицирована',bdg_verified_m:'✓ Верифицирован',bdg_travel:'✈️ В поездке',lock_unlock:'Разблокировать с Премиум',
+    chip_online:'● Онлайн',chip_online_now:'● Онлайн сейчас',chip_verified_f:'✓ Верифицирована',chip_premium:'⭐ Премиум',
+    card_meta_sofia:'📍 Милан · Онлайн',card_meta_marco:'📍 Рим → Барселона',card_meta_lea:'📍 Париж',
+    ann_back:'← Назад к объявлениям',ann_desc_title:'📝 Полное описание',
+    ann_about:'Привет, я София. Из Милана, работаю в моде, люблю путешествовать. Ищу настоящих людей без лишних драм.',
+    det_city:'📍 Город',det_age:'🎂 Возраст',det_seeking:'👁️ Ищу',det_distance:'📏 Расстояние',det_languages:'🌍 Языки',det_lastonline:'📅 Онлайн',det_photos:'📸 Фото',
+    btn_send_msg:'💬 Отправить сообщение',btn_report_ann:'🚩 Пожаловаться на объявление',
+    profile_meta:'📍 Милан, Италия · Участник с Января 2025',
+    profile_about:'Привет! Я София, из Милана, увлекаюсь путешествиями и искренними разговорами.',
+    gallery_title:'📸 Фото и Видео (5)',btn_add_photo:'➕ Добавить фото',btn_back_nav:'← Назад',btn_back_profile:'← Профиль',
+    ch_status:'● Онлайн · Милан',conv1_preview:'Когда вы свободны? 😊',conv2_preview:'Я в Барселоне до воскресенья',conv3_preview:'Вы видели моё новое фото?',
+    notif_title:'Уведомления',notif_clear:'Отметить всё прочитанным',
+    sett_display_name:'Отображаемое имя',sett_display_name_desc:'Имя, отображаемое в объявлениях',
+    sett_city:'Город',sett_city_desc:'Ваше текущее местоположение',sett_bio:'Биография',sett_bio_desc:'Краткое описание профиля',
+    sett_new_msg:'Новые сообщения',sett_new_msg_desc:'Уведомление при каждом сообщении',
+    sett_visits:'Посещения профиля',sett_visits_desc:'Когда кто-то посещает ваш профиль',
+    sett_matches:'Новые совпадения',sett_matches_desc:'Когда кто-то добавляет вас в избранное',
+    sett_email_digest:'Email-дайджест',sett_email_digest_desc:'Еженедельная сводка на email',
+    sett_visible:'Профиль виден',sett_visible_desc:'Ваш профиль отображается в объявлениях',
+    sett_online_status:'Статус онлайн',sett_online_status_desc:'Показывать когда вы в сети',
+    sett_geo:'Геолокация',sett_geo_desc:'Показывать расстояние до других пользователей',
+    sett_block:'Блокировать пользователей',sett_block_desc:'Управлять списком заблокированных',
+    sett_seeking:'Ищу',sett_age_min:'Минимальный возраст',sett_age_max:'Максимальный возраст',sett_distance:'Максимальное расстояние',
+    sett_plan:'Текущий план',sett_plan_desc:'Silk Dates Премиум Ежемесячно',sett_renewal:'Следующее продление',sett_renewal_desc:'€14.00, 13 апреля 2026',
+    sett_cancel_sub:'Отменить подписку',sett_cancel_sub_desc:'Аккаунт вернётся на бесплатный план',sett_change_pass:'Изменить пароль',
+    sett_export_data:'Скачать мои данные',sett_export_data_desc:'GDPR — экспортировать все данные',
+    sett_delete_account:'Удалить аккаунт',sett_delete_desc:'Это действие необратимо',
+    btn_edit:'Изменить',btn_manage:'Управлять',btn_cancel_sub:'Отменить',btn_change:'Изменить',btn_request:'Запросить',btn_delete:'Удалить',
+    vcard1_title:'Мой режим путешествий',vcard1_sub:'Виден пользователям в вашем месте назначения',
+    vcard2_title:'Путешественники рядом',vcard2_sub:'Пользователи со значком ✈️ В поездке в вашем районе',
+    travel_toggle_lbl:'✈️ Включить режим путешествий',travel_plan_title:'🗓️ Запланировать поездку',
+    btn_save_dest:'Сохранить место назначения',btn_update_loc:'🔄 Обновить',
+    trav1_meta:'Рим → Милан · 3 км от вас',trav2_meta:'Неаполь → Милан · 6 км от вас',trav_locked:'Только Премиум',
+    ph_destination:'🏙️ Место назначения (напр. Барселона)',ph_going_to:'Куда вы едете?',ph_location_example:'Напр. Москва, Санкт-Петербург…',
+    plan_free_period:'Бесплатно навсегда',pfeat_3profiles:'3 профиля в день',pfeat_basic_profile:'Базовый профиль',
+    pfeat_basic_geo:'Базовая геолокация',pfeat_unlimited:'Безлимитные профили',pfeat_messaging:'Безлимитные личные сообщения',
+    pfeat_filters:'Расширенные фильтры',pfeat_visitors:'Кто посещал профиль',pfeat_badge:'Значок ✓ Верификации',
+    pfeat_travel:'Режим ✈️ Путешествий',pfeat_featured:'Профиль в топе',pfeat_all_monthly:'Всё из Ежемесячного',
+    pfeat_save40:'Экономия 40%',pfeat_support:'Приоритетная поддержка',pfeat_early_access:'Ранний доступ к новым функциям',
+    pfeat_gold_badge:'Эксклюзивный Gold-значок',btn_start_free:'Начать бесплатно',
+    stripe_note:'🔒 Безопасная оплата через Stripe · SSL 256-bit',footer_moderation:'Модерация',
+    toast_welcome:'✅ Доступ подтверждён. Добро пожаловать!',toast_denied:'🔞 Доступ запрещён.',toast_lang:'🌍 Язык изменён на Русский',
+  },
+  zh: {
+    age_title:'仅限成年人访问',
+    age_desc:'本网站包含成人内容。访问即表示您确认年满 <strong>18岁</strong>，并同意我们的服务条款和隐私政策。',
+    age_yes:'✓ 我已满18岁，进入',age_no:'✗ 我未成年',
+    age_note:'点击"进入"即表示您在自己的责任下确认符合您所在国家/地区访问成人内容的最低年龄要求。',
+    age_denied:'访问被拒绝',age_denied_sub:'本网站仅限成人使用。',
+    nav_annunci:'广告',nav_viaggio:'✈️ 旅行中',nav_premium:'高级版',
+    nav_accedi:'登录',nav_registrati:'注册',nav_messaggi:'消息',
+    nav_profilo:'个人资料',nav_impostazioni:'⚙️ 设置',nav_torna:'← 返回',
+    hero_badge:'🔥 当前 98,000 名用户在线',
+    hero_h1:'真实相遇，',hero_h1_em:'无过滤。',
+    hero_sub:'全球经过验证的用户资料。无论您在哪里，找到您想找的人。',
+    hero_cta:'免费开始',hero_browse:'浏览广告',
+    stat_utenti:'活跃用户',stat_paesi:'国家',stat_online:'当前在线',stat_rating:'评分',
+    search_cerco:'👤 我在寻找…',search_donna:'女性',search_uomo:'男性',search_coppia:'情侣',search_tutti:'所有人',
+    search_citta:'📍 城市',search_eta:'🎂 年龄',search_filtro:'⭐ 筛选',
+    search_verificati:'仅已验证',search_online:'当前在线',search_viaggio:'旅行中',search_btn:'🔍 搜索',
+    tab_popolari:'🔥 热门',tab_nuovi:'🆕 最新',tab_vicino:'📍 附近',tab_viaggio:'✈️ 旅行中',tab_verificati:'✓ 已验证',
+    listings_title:'最新广告',see_all:'查看全部 →',lock_lbl:'高级版解锁',solo_premium:'仅限高级版',
+    prem_title:'升级到',prem_name:'Silk Dates 高级版',prem_sub:'解锁所有用户资料，无限制聊天',
+    pf1:'无限用户资料',pf2:'私信功能',pf3:'高级筛选',pf4:'谁访问了您的资料',pf5:'认证徽章',pf6:'旅行中模式',
+    prem_btn:'🔥 试用高级版',
+    age_footer:'🔞 仅限成年人 (18+)',
+    foot_privacy:'隐私政策',foot_terms:'服务条款',foot_cookie:'Cookie',foot_contact:'联系我们',foot_report:'举报滥用',foot_mod:'内容审核',
+    auth_register:'注册',auth_login:'登录',
+    auth_nome:'姓名',auth_eta:'年龄',auth_email:'邮箱',auth_password:'密码',
+    auth_sono:'我是',auth_citta:'城市',
+    auth_gender_f:'👩 女性',auth_gender_m:'👨 男性',auth_gender_nb:'🏳️‍🌈 非二元',auth_gender_c:'👫 情侣',
+    auth_age_check:'我确认年满 <strong>18岁</strong>，并接受<strong>服务条款</strong>和<strong>隐私政策</strong>。',
+    auth_crea:'创建免费账户 →',auth_oppure:'或',
+    auth_google:'🌐 使用 Google 继续',auth_google2:'🌐 使用 Google 登录',
+    auth_forgot:'忘记密码？',auth_login_btn:'登录 →',
+    onb_sub:'完善您的资料 — 只需 30 秒 🚀',
+    onb1_title:'🎂 您多大了？',onb1_sub:'用于为您显示合适的用户资料',
+    onb1_label:'年龄',onb1_placeholder:'您的年龄（最小 18）',
+    onb2_title:'📍 您在哪里？',onb2_sub:'我们会为您找到附近的人',
+    onb2_label:'城市或国家',onb2_placeholder:'例如：北京、上海、广州…',
+    onb2_radius:'搜索半径',
+    onb3_title:'✨ 您在寻找什么？',onb3_sub:'可以选择多个选项 😊',
+    onb4_title:'💫 您想遇见谁？',onb4_sub:'您的偏好是私密的',
+    onb_privacy:'您的偏好<strong>完全私密</strong>，不会与其他用户共享。',
+    onb_next:'继续 →',onb_back:'← 返回',onb_finish:'✅ 完善资料',onb_skip:'稍后再说',
+    msg_title:'消息',msg_search:'搜索…',msg_tutti:'全部',msg_nonletti:'未读',msg_online:'在线',
+    msg_placeholder:'写消息…',
+    prof_scrivi:'💬 发消息',prof_salva:'❤️ 收藏',prof_info:'信息',prof_gallery:'照片和视频',prof_ann:'广告',
+    set_title:'⚙️ 设置',set_salva:'保存更改',
+    viaggio_title:'✈️ 旅行中模式',viaggio_sub:'在抵达目的地之前就找到相遇机会。',
+    prem_page_badge:'⭐ Silk Dates 高级版',prem_page_h1_a:'无',prem_page_h1_em:'限制。',prem_page_h1_b:'无边界。',
+    prem_page_sub:'解锁所有用户资料的完整访问权限、无限消息等更多功能。',
+    prem_pay_title:'完成付款',prem_tab_card:'💳 银行卡',prem_tab_pp:'🅿️ PayPal',prem_tab_rev:'⚡ Revolut',
+    tag_discrete:'低调',tag_nodrama:'无争议',tag_realphoto:'真实照片',tag_serious:'认真',tag_openmind:'思想开放',
+    tag_premium_lbl:'⭐ 高级版',tag_only_premium:'仅限高级版',
+    bdg_verified_f:'✓ 已认证',bdg_verified_m:'✓ 已认证',bdg_travel:'✈️ 旅行中',lock_unlock:'用高级版解锁',
+    chip_online:'● 在线',chip_online_now:'● 现在在线',chip_verified_f:'✓ 已认证',chip_premium:'⭐ 高级版',
+    card_meta_sofia:'📍 米兰 · 在线',card_meta_marco:'📍 罗马 → 巴塞罗那',card_meta_lea:'📍 巴黎',
+    ann_back:'← 返回广告',ann_desc_title:'📝 完整介绍',
+    ann_about:'你好，我是索菲亚。米兰人，从事时尚行业，热爱旅行。寻找真诚的人。',
+    det_city:'📍 城市',det_age:'🎂 年龄',det_seeking:'👁️ 寻找',det_distance:'📏 距离',det_languages:'🌍 语言',det_lastonline:'📅 在线',det_photos:'📸 照片',
+    btn_send_msg:'💬 发送消息',btn_report_ann:'🚩 举报此广告',
+    profile_meta:'📍 意大利米兰 · 2025年1月加入',
+    profile_about:'你好！我是索菲亚，米兰人，热爱旅行和真诚的交流。',
+    gallery_title:'📸 照片和视频 (5)',btn_add_photo:'➕ 添加照片',btn_back_nav:'← 返回',btn_back_profile:'← 个人资料',
+    ch_status:'● 在线 · 米兰',conv1_preview:'你什么时候有空？😊',conv2_preview:'我在巴塞罗那直到周日',conv3_preview:'你看到我的新照片了吗？',
+    notif_title:'通知',notif_clear:'全部标为已读',
+    sett_display_name:'显示名称',sett_display_name_desc:'广告中显示的名称',
+    sett_city:'城市',sett_city_desc:'您当前的位置',sett_bio:'简介',sett_bio_desc:'个人资料的简短描述',
+    sett_new_msg:'新消息',sett_new_msg_desc:'每条消息收到通知',
+    sett_visits:'档案访问',sett_visits_desc:'当有人访问您的档案时',
+    sett_matches:'新匹配',sett_matches_desc:'当有人将您保存为收藏时',
+    sett_email_digest:'邮件摘要',sett_email_digest_desc:'每周邮件摘要',
+    sett_visible:'档案可见',sett_visible_desc:'您的档案显示在广告中',
+    sett_online_status:'在线状态',sett_online_status_desc:'显示您在线时间',
+    sett_geo:'地理位置',sett_geo_desc:'显示与其他用户的距离',
+    sett_block:'屏蔽用户',sett_block_desc:'管理屏蔽用户列表',
+    sett_seeking:'寻找',sett_age_min:'最小年龄',sett_age_max:'最大年龄',sett_distance:'最大距离',
+    sett_plan:'当前计划',sett_plan_desc:'Silk Dates 高级版月度',sett_renewal:'下次续费',sett_renewal_desc:'€14.00，2026年4月13日',
+    sett_cancel_sub:'取消订阅',sett_cancel_sub_desc:'您的账户将恢复到免费计划',sett_change_pass:'更改密码',
+    sett_export_data:'下载我的数据',sett_export_data_desc:'GDPR — 导出所有数据',
+    sett_delete_account:'删除账户',sett_delete_desc:'此操作不可撤销',
+    btn_edit:'编辑',btn_manage:'管理',btn_cancel_sub:'取消',btn_change:'更改',btn_request:'申请',btn_delete:'删除',
+    vcard1_title:'我的旅行模式',vcard1_sub:'目的地用户可见',
+    vcard2_title:'附近的旅行者',vcard2_sub:'您所在区域带✈️旅行中标签的用户',
+    travel_toggle_lbl:'✈️ 启用旅行模式',travel_plan_title:'🗓️ 计划一次旅行',
+    btn_save_dest:'保存目的地',btn_update_loc:'🔄 更新',
+    trav1_meta:'罗马 → 米兰 · 距您3公里',trav2_meta:'那不勒斯 → 米兰 · 距您6公里',trav_locked:'仅限高级版',
+    ph_destination:'🏙️ 目的地（如巴塞罗那）',ph_going_to:'您要去哪里？',ph_location_example:'如北京、上海、广州…',
+    plan_free_period:'永久免费',pfeat_3profiles:'每天3个可见档案',pfeat_basic_profile:'基本档案创建',
+    pfeat_basic_geo:'基本地理位置',pfeat_unlimited:'无限档案',pfeat_messaging:'无限私信',
+    pfeat_filters:'高级筛选',pfeat_visitors:'谁访问了您的档案',pfeat_badge:'✓ 认证徽章',
+    pfeat_travel:'✈️ 旅行模式',pfeat_featured:'档案置顶',pfeat_all_monthly:'包含月度高级版所有功能',
+    pfeat_save40:'节省40%',pfeat_support:'优先支持',pfeat_early_access:'新功能抢先体验',
+    pfeat_gold_badge:'独家Gold徽章',btn_start_free:'免费开始',
+    stripe_note:'🔒 通过Stripe安全支付 · SSL 256位',footer_moderation:'内容审核',
+    toast_welcome:'✅ 访问已确认。欢迎！',toast_denied:'🔞 访问被拒绝。',toast_lang:'🌍 语言已更改为中文',
+  }
 };
 
 let currentLang = 'it';
+
+function applyTranslations(code){
+  const t = T[code];
+  if(!t) return;
+  currentLang = code;
+  // Apply all data-i18n text
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.getAttribute('data-i18n');
+    if(t[key] !== undefined) el.innerHTML = t[key];
+  });
+  // Apply placeholders
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{
+    const key = el.getAttribute('data-i18n-placeholder');
+    if(t[key] !== undefined) el.placeholder = t[key];
+  });
+  // Nav links (text nodes with spans inside)
+  document.querySelectorAll('.nav-a').forEach(a=>{
+    const sp = a.querySelector('[data-i18n]');
+    if(sp){ const k=sp.getAttribute('data-i18n'); if(t[k]) sp.innerHTML=t[k]; }
+  });
+  // Btn-sm ghost/fill in nav
+  document.querySelectorAll('.btn-sm').forEach(b=>{
+    const sp = b.querySelector('[data-i18n]');
+    if(sp){ const k=sp.getAttribute('data-i18n'); if(t[k]) sp.innerHTML=t[k]; }
+  });
+  // Search selects
+  const sel = document.querySelectorAll('.s-select');
+  if(sel[0]&&t.search_cerco){ sel[0].options[0].text=t.search_cerco; if(t.search_donna) sel[0].options[1].text=t.search_donna; if(t.search_uomo) sel[0].options[2].text=t.search_uomo; if(t.search_coppia) sel[0].options[3].text=t.search_coppia; if(t.search_tutti) sel[0].options[4].text=t.search_tutti; }
+  if(sel[1]&&t.search_citta){ sel[1].options[0].text=t.search_citta; }
+  if(sel[2]&&t.search_eta){ sel[2].options[0].text=t.search_eta; }
+  if(sel[3]&&t.search_filtro){ sel[3].options[0].text=t.search_filtro; if(t.search_verificati) sel[3].options[1].text=t.search_verificati; if(t.search_online) sel[3].options[2].text=t.search_online; if(t.search_viaggio) sel[3].options[3].text=t.search_viaggio; }
+  // Tabs
+  const tabs = document.querySelectorAll('.tab');
+  const tabKeys=['tab_popolari','tab_nuovi','tab_vicino','tab_viaggio','tab_verificati'];
+  tabs.forEach((tb,i)=>{ if(tabKeys[i]&&t[tabKeys[i]]) tb.innerHTML=t[tabKeys[i]]; });
+  // Filter tabs (messages)
+  const ftabs=document.querySelectorAll('.ftab');
+  if(ftabs[0]&&t.msg_tutti) ftabs[0].innerHTML=t.msg_tutti;
+  if(ftabs[1]&&t.msg_nonletti) ftabs[1].innerHTML=t.msg_nonletti;
+  if(ftabs[2]&&t.msg_online) ftabs[2].innerHTML=t.msg_online;
+  // Auth tabs
+  const tabReg=document.getElementById('tab-reg'); if(tabReg&&t.auth_register) tabReg.innerHTML=t.auth_register;
+  const tabLog=document.getElementById('tab-login'); if(tabLog&&t.auth_login) tabLog.innerHTML=t.auth_login;
+  // Auth form labels
+  document.querySelectorAll('.form-label').forEach(lbl=>{
+    const txt=lbl.textContent.trim();
+    if(txt==='Nome'||txt==='Name'||txt==='Prénom'||txt==='Nombre'||txt==='Nome'||txt==='Имя'||txt==='姓名') lbl.innerHTML=t.auth_nome||lbl.innerHTML;
+    if(txt==='Età'||txt==='Age'||txt==='Âge'||txt==='Edad'||txt==='Idade'||txt==='Возраст'||txt==='年龄') lbl.innerHTML=t.auth_eta||lbl.innerHTML;
+    if(txt==='Email') lbl.innerHTML=t.auth_email||lbl.innerHTML;
+    if(txt==='Password'||txt==='Mot de passe'||txt==='Contraseña'||txt==='Senha'||txt==='Пароль'||txt==='密码') lbl.innerHTML=t.auth_password||lbl.innerHTML;
+    if(txt==='Sono'||txt==='I am'||txt==='Je suis'||txt==='Soy'||txt==='Sou'||txt==='Я'||txt==='我是') lbl.innerHTML=t.auth_sono||lbl.innerHTML;
+    if(txt==='Città'||txt==='City'||txt==='Ville'||txt==='Ciudad'||txt==='Cidade'||txt==='Город'||txt==='城市') { if(lbl.closest('#auth-reg')) lbl.innerHTML=t.auth_citta||lbl.innerHTML; }
+  });
+  // Gender options
+  const go=document.querySelectorAll('.gender-opt');
+  if(go[0]&&t.auth_gender_f) go[0].innerHTML=t.auth_gender_f;
+  if(go[1]&&t.auth_gender_m) go[1].innerHTML=t.auth_gender_m;
+  if(go[2]&&t.auth_gender_nb) go[2].innerHTML=t.auth_gender_nb;
+  if(go[3]&&t.auth_gender_c) go[3].innerHTML=t.auth_gender_c;
+  // Auth buttons
+  const ba=document.querySelectorAll('.btn-auth');
+  if(ba[0]&&t.auth_crea) ba[0].innerHTML=t.auth_crea;
+  if(ba[1]&&t.auth_login_btn) ba[1].innerHTML=t.auth_login_btn;
+  // Auth social
+  const bs=document.querySelectorAll('.btn-social');
+  if(bs[0]&&t.auth_google) bs[0].innerHTML=t.auth_google;
+  if(bs[1]&&t.auth_google2) bs[1].innerHTML=t.auth_google2;
+  // Auth dividers
+  document.querySelectorAll('.auth-divider').forEach(d=>{ if(t.auth_oppure) d.innerHTML=t.auth_oppure; });
+  // Age check
+  const ac=document.querySelector('.age-check span'); if(ac&&t.auth_age_check) ac.innerHTML=t.auth_age_check;
+  // Forgot pass
+  const fp=document.querySelector('#auth-login p'); if(fp&&t.auth_forgot) fp.innerHTML=t.auth_forgot;
+  // Onboarding
+  const onbSub=document.querySelector('.onb-sub'); if(onbSub&&t.onb_sub) onbSub.innerHTML=t.onb_sub;
+  const onbTitles=document.querySelectorAll('.onb-step-title');
+  if(onbTitles[0]&&t.onb1_title) onbTitles[0].innerHTML=t.onb1_title;
+  if(onbTitles[1]&&t.onb2_title) onbTitles[1].innerHTML=t.onb2_title;
+  if(onbTitles[2]&&t.onb3_title) onbTitles[2].innerHTML=t.onb3_title;
+  if(onbTitles[3]&&t.onb4_title) onbTitles[3].innerHTML=t.onb4_title;
+  const onbSubs=document.querySelectorAll('.onb-step-sub');
+  if(onbSubs[0]&&t.onb1_sub) onbSubs[0].innerHTML=t.onb1_sub;
+  if(onbSubs[1]&&t.onb2_sub) onbSubs[1].innerHTML=t.onb2_sub;
+  if(onbSubs[2]&&t.onb3_sub) onbSubs[2].innerHTML=t.onb3_sub;
+  if(onbSubs[3]&&t.onb4_sub) onbSubs[3].innerHTML=t.onb4_sub;
+  // Onboarding next/back/finish/skip
+  const onbNext=document.querySelectorAll('.btn-onb-next');
+  onbNext.forEach((b,i)=>{ b.innerHTML = i<3 ? (t.onb_next||'Continua →') : (t.onb_finish||'✅ Completa'); });
+  document.querySelectorAll('.btn-onb-back').forEach(b=>{ if(t.onb_back) b.innerHTML=t.onb_back; });
+  document.querySelectorAll('.onb-skip').forEach(b=>{ if(t.onb_skip) b.innerHTML=t.onb_skip; });
+  // Onboarding seek pills
+  const seekPills=document.querySelectorAll('#seeking-pills .pill');
+  const seekKeys=['onb_occasional','onb_friendship','onb_relation','onb_drinks','onb_dinner','onb_dance','onb_nightout','onb_cinema','onb_travel_c','onb_coffee'];
+  // use existing keys from T
+  const seekVals=['🔥 Incontri occasionali','👫 Amicizia','❤️ Relazione seria','🍹 Aperitivo','🍽️ Cena','💃 Andare a ballare','🌙 Uscire la sera','🎬 Cinema','✈️ Compagno di viaggio','☕ Caffè / Chiacchiere'];
+  const seekTrans={
+    en:['🔥 Casual encounters','👫 Friendship','❤️ Serious relationship','🍹 Drinks','🍽️ Dinner','💃 Dancing','🌙 Night out','🎬 Cinema','✈️ Travel companion','☕ Coffee / Chat'],
+    fr:['🔥 Rencontres occasionnelles','👫 Amitié','❤️ Relation sérieuse','🍹 Apéro','🍽️ Dîner','💃 Danser','🌙 Sortir le soir','🎬 Cinéma','✈️ Compagnon de voyage','☕ Café / Discussion'],
+    es:['🔥 Encuentros casuales','👫 Amistad','❤️ Relación seria','🍹 Copas','🍽️ Cena','💃 Bailar','🌙 Salir de noche','🎬 Cine','✈️ Compañero de viaje','☕ Café / Charla'],
+    pt:['🔥 Encontros casuais','👫 Amizade','❤️ Relacionamento sério','🍹 Drinks','🍽️ Jantar','💃 Dançar','🌙 Sair à noite','🎬 Cinema','✈️ Companheiro de viagem','☕ Café / Papo'],
+    ru:['🔥 Случайные встречи','👫 Дружба','❤️ Серьёзные отношения','🍹 Коктейли','🍽️ Ужин','💃 Потанцевать','🌙 Ночная прогулка','🎬 Кино','✈️ Попутчик','☕ Кофе / Общение'],
+    zh:['🔥 随意约会','👫 友谊','❤️ 认真关系','🍹 喝酒','🍽️ 晚餐','💃 跳舞','🌙 夜间出行','🎬 电影','✈️ 旅行伴侣','☕ 咖啡/聊天']
+  };
+  const sv = seekTrans[code] || seekVals;
+  seekPills.forEach((p,i)=>{ if(sv[i]) p.innerHTML=sv[i]; });
+  // Onboarding pref pills
+  const prefPills=document.querySelectorAll('#pref-pills .pill');
+  const prefVals=['👩 Donna','👨 Uomo','🏳️‍⚧️ Trans','👫 Coppia','👥 Gruppo','🏳️‍🌈 Non-binary'];
+  const prefTrans={
+    en:['👩 Woman','👨 Man','🏳️‍⚧️ Trans','👫 Couple','👥 Group','🏳️‍🌈 Non-binary'],
+    fr:['👩 Femme','👨 Homme','🏳️‍⚧️ Trans','👫 Couple','👥 Groupe','🏳️‍🌈 Non-binaire'],
+    es:['👩 Mujer','👨 Hombre','🏳️‍⚧️ Trans','👫 Pareja','👥 Grupo','🏳️‍🌈 No binario'],
+    pt:['👩 Mulher','👨 Homem','🏳️‍⚧️ Trans','👫 Casal','👥 Grupo','🏳️‍🌈 Não-binário'],
+    ru:['👩 Женщина','👨 Мужчина','🏳️‍⚧️ Транс','👫 Пара','👥 Группа','🏳️‍🌈 Небинарный'],
+    zh:['👩 女性','👨 男性','🏳️‍⚧️ 跨性别','👫 情侣','👥 群组','🏳️‍🌈 非二元']
+  };
+  const pv = prefTrans[code] || prefVals;
+  prefPills.forEach((p,i)=>{ if(pv[i]) p.innerHTML=pv[i]; });
+  // Onboarding privacy note
+  const onbPriv=document.querySelector('.onb-panel .age-check span')||document.querySelectorAll('[style*="rgba(31,212,106"]')[0];
+  // Settings
+  const sh1=document.querySelector('.settings-wrap h1'); if(sh1&&t.set_title) sh1.innerHTML=t.set_title;
+  const sSave=document.querySelector('.settings-wrap .btn-primary'); if(sSave&&t.set_salva) sSave.innerHTML=t.set_salva;
+  // Viaggio
+  const vh1=document.querySelector('.viaggio-wrap h1'); if(vh1&&t.viaggio_title) vh1.innerHTML=t.viaggio_title;
+  const vsub=document.querySelector('.viaggio-wrap .sub'); if(vsub&&t.viaggio_sub) vsub.innerHTML=t.viaggio_sub;
+  // Messages
+  const mh2=document.querySelector('.sidebar-top h2'); if(mh2&&t.msg_title) mh2.innerHTML=t.msg_title;
+  const mSearch=document.querySelector('.s-search'); if(mSearch&&t.msg_search) mSearch.placeholder=t.msg_search;
+  const ta=document.querySelector('.chat-ta'); if(ta&&t.msg_placeholder) ta.placeholder=t.msg_placeholder;
+  // Profile tabs
+  const ptabs=document.querySelectorAll('.ptab');
+  if(ptabs[0]&&t.prof_info) ptabs[0].innerHTML=t.prof_info;
+  if(ptabs[1]&&t.prof_gallery) ptabs[1].innerHTML=t.prof_gallery;
+  if(ptabs[2]&&t.prof_ann) ptabs[2].innerHTML=t.prof_ann;
+  // Premium pay tabs
+  const pcard=document.getElementById('tab-card'); if(pcard&&t.prem_tab_card) pcard.innerHTML=t.prem_tab_card;
+  const ppp=document.getElementById('tab-paypal'); if(ppp&&t.prem_tab_pp) ppp.innerHTML=t.prem_tab_pp;
+  const prev=document.getElementById('tab-revolut'); if(prev&&t.prem_tab_rev) prev.innerHTML=t.prem_tab_rev;
+  // Age gate lang label
+  const agl=document.querySelector('.age-gate-lang-label'); if(agl) agl.innerHTML='🌍 '+({'it':'Scegli la lingua','en':'Choose language','fr':'Choisir la langue','es':'Elige el idioma','pt':'Escolha o idioma','ru':'Выберите язык','zh':'选择语言'}[code]||'Choose language');
+}
+
+function confirmAge(){
+  document.getElementById('age-gate').style.display='none';
+  showToast(T[currentLang].toast_welcome||'✅ Benvenuto!');
+}
+function denyAge(){
+  const t = T[currentLang];
+  document.getElementById('age-gate').innerHTML=`<div style="text-align:center;color:#888;padding:40px;"><div style="font-size:48px;margin-bottom:16px;">🔞</div><h2 style="color:#fff;margin-bottom:8px;">${t.age_denied||'Accesso negato'}</h2><p>${t.age_denied_sub||'Questo sito è riservato agli adulti.'}</p></div>`;
+}
+
+function setLangFull(code, flag, label, btn){
+  currentLang = code;
+  // update age gate lang buttons
+  document.querySelectorAll('.age-lang-btn').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  // update navbar lang button
+  const flagEl = document.getElementById('lang-flag');
+  const labelEl = document.getElementById('lang-label');
+  if(flagEl) flagEl.textContent = flag;
+  if(labelEl) labelEl.textContent = label;
+  // update navbar dropdown active
+  document.querySelectorAll('.lang-option').forEach(o=>{
+    o.classList.toggle('active', o.getAttribute('onclick')&&o.getAttribute('onclick').includes("'"+code+"'"));
+  });
+  closeLang();
+  applyTranslations(code);
+  showToast(T[code].toast_lang);
+}
 
 function toggleLang(){
   document.getElementById('lang-wrap').classList.toggle('open');
 }
 function closeLang(){
-  document.getElementById('lang-wrap').classList.remove('open');
+  const w = document.getElementById('lang-wrap');
+  if(w) w.classList.remove('open');
 }
 function setLang(el, flag, label, code){
-  // update button
-  document.getElementById('lang-flag').textContent = flag;
-  document.getElementById('lang-label').textContent = label;
-  // update active state
-  document.querySelectorAll('.lang-option').forEach(o=>o.classList.remove('active'));
-  el.classList.add('active');
-  currentLang = code;
-  closeLang();
-  // apply translations
-  const t = translations[code];
-  // navbar links
-  document.querySelectorAll('.nav-a').forEach(a=>{
-    if(a.textContent.includes('Annunci')||a.textContent.includes('Listings')||a.textContent.includes('Anuncios')||a.textContent.includes('Annonces')||a.textContent.includes('Объявления')||a.textContent.includes('广告')||a.textContent.includes('Anúncios')) a.textContent = t.annunci;
-    if(a.textContent.includes('Viaggio')||a.textContent.includes('voyage')||a.textContent.includes('viaje')||a.textContent.includes('Viajando')||a.textContent.includes('поездке')||a.textContent.includes('旅行')) a.textContent = t.inviaggio;
-    if(a.textContent==='Premium'||a.textContent==='Премиум'||a.textContent==='高级版') a.textContent = t.premium;
-  });
-  // buttons
-  document.querySelectorAll('.btn-ghost').forEach(b=>{ if(b.textContent.trim().match(/Accedi|Sign In|Connexion|Entrar|Войти|登录/)) b.textContent = t.accedi; });
-  document.querySelectorAll('.btn-fill').forEach(b=>{ if(b.textContent.trim().match(/Registrati|Sign Up|S'inscrire|Registrarse|Cadastrar|Регистрация|注册/)) b.textContent = t.registrati; });
-  showToast('🌍 ' + t.benvenuto);
+  setLangFull(code, flag, label, null);
 }
-
-document.addEventListener('click',e=>{
-  const wrap=document.getElementById('lang-wrap');
-  if(wrap&&!wrap.contains(e.target)) closeLang();
-});
 function showToast(msg){
   const t=document.getElementById('toast');
   t.textContent=msg;t.classList.add('show');

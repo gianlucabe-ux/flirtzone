@@ -66,7 +66,39 @@ nav{
 .btn-fill{background:var(--grad);color:#fff;box-shadow:0 4px 16px rgba(217,43,58,0.32);}
 .btn-fill:hover{transform:translateY(-1px);}
 
-/* NOTIFICATION BELL */
+/* LANGUAGE SELECTOR */
+.lang-wrap{position:relative;}
+.lang-btn{
+  display:flex;align-items:center;gap:6px;
+  background:transparent;border:1px solid var(--border);
+  color:var(--muted2);padding:7px 12px;border-radius:9px;
+  font-size:13px;font-weight:500;cursor:pointer;
+  font-family:'DM Sans',sans-serif;transition:all .2s;
+  white-space:nowrap;
+}
+.lang-btn:hover{color:var(--text);border-color:var(--border2);}
+.lang-arrow{font-size:10px;transition:transform .2s;}
+.lang-wrap.open .lang-arrow{transform:rotate(180deg);}
+.lang-dropdown{
+  position:absolute;top:calc(100% + 8px);right:0;
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:14px;overflow:hidden;
+  box-shadow:0 16px 44px rgba(0,0,0,0.5);
+  display:none;z-index:400;min-width:180px;
+}
+.lang-wrap.open .lang-dropdown{display:block;}
+.lang-option{
+  display:flex;align-items:center;gap:10px;
+  padding:11px 16px;cursor:pointer;
+  font-size:13px;font-weight:500;color:var(--muted2);
+  transition:background .15s,color .15s;
+  border-bottom:1px solid rgba(255,255,255,0.04);
+}
+.lang-option:last-child{border-bottom:none;}
+.lang-option:hover{background:rgba(255,255,255,0.04);color:var(--text);}
+.lang-option.active{color:var(--text);background:rgba(217,43,58,0.08);}
+.lang-option.active::after{content:'✓';margin-left:auto;color:var(--red);font-weight:700;}
+.lang-flag{font-size:18px;}
 .notif-wrap{position:relative;}
 .notif-btn{width:36px;height:36px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:17px;cursor:pointer;color:var(--muted2);border:1px solid var(--border);background:transparent;transition:all .2s;position:relative;}
 .notif-btn:hover{color:var(--text);border-color:var(--border2);}
@@ -523,6 +555,24 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
       <span class="nav-a active-link" onclick="goto('home')">Annunci</span>
       <span class="nav-a" onclick="goto('viaggio')">✈️ In Viaggio</span>
       <span class="nav-a" onclick="goto('premium')">Premium</span>
+      <!-- LANGUAGE SELECTOR -->
+      <div class="lang-wrap" id="lang-wrap">
+        <button class="lang-btn" onclick="toggleLang()">
+          <span id="lang-flag">🇮🇹</span>
+          <span id="lang-label">IT</span>
+          <span class="lang-arrow">▾</span>
+        </button>
+        <div class="lang-dropdown" id="lang-dropdown">
+          <div class="lang-option active" onclick="setLang(this,'🇮🇹','IT','it')"><span class="lang-flag">🇮🇹</span> Italiano</div>
+          <div class="lang-option" onclick="setLang(this,'🇬🇧','EN','en')"><span class="lang-flag">🇬🇧</span> English</div>
+          <div class="lang-option" onclick="setLang(this,'🇫🇷','FR','fr')"><span class="lang-flag">🇫🇷</span> Français</div>
+          <div class="lang-option" onclick="setLang(this,'🇪🇸','ES','es')"><span class="lang-flag">🇪🇸</span> Español</div>
+          <div class="lang-option" onclick="setLang(this,'🇧🇷','PT','pt')"><span class="lang-flag">🇧🇷</span> Português</div>
+          <div class="lang-option" onclick="setLang(this,'🇷🇺','RU','ru')"><span class="lang-flag">🇷🇺</span> Русский</div>
+          <div class="lang-option" onclick="setLang(this,'🇨🇳','CN','zh')"><span class="lang-flag">🇨🇳</span> 中文</div>
+        </div>
+      </div>
+
       <div class="notif-wrap">
         <button class="notif-btn" onclick="toggleNotif()" id="notif-btn">🔔<div class="notif-dot"></div></button>
         <div class="notif-panel" id="notif-panel">
@@ -1591,7 +1641,52 @@ document.querySelector('.chat-ta')?.addEventListener('keydown',e=>{
   if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMsg();}
 });
 
-// ── TOAST ──
+// ── LANGUAGE SELECTOR ──
+const translations = {
+  it: { accedi:'Accedi', registrati:'Registrati', annunci:'Annunci', premium:'Premium', inviaggio:'✈️ In Viaggio', cerca:'🔍 Cerca', benvenuto:'Benvenuto su Silk Dates!' },
+  en: { accedi:'Sign In', registrati:'Sign Up', annunci:'Listings', premium:'Premium', inviaggio:'✈️ Travelling', cerca:'🔍 Search', benvenuto:'Welcome to Silk Dates!' },
+  fr: { accedi:'Connexion', registrati:"S'inscrire", annunci:'Annonces', premium:'Premium', inviaggio:'✈️ En voyage', cerca:'🔍 Chercher', benvenuto:'Bienvenue sur Silk Dates!' },
+  es: { accedi:'Entrar', registrati:'Registrarse', annunci:'Anuncios', premium:'Premium', inviaggio:'✈️ De viaje', cerca:'🔍 Buscar', benvenuto:'¡Bienvenido a Silk Dates!' },
+  pt: { accedi:'Entrar', registrati:'Cadastrar', annunci:'Anúncios', premium:'Premium', inviaggio:'✈️ Viajando', cerca:'🔍 Buscar', benvenuto:'Bem-vindo ao Silk Dates!' },
+  ru: { accedi:'Войти', registrati:'Регистрация', annunci:'Объявления', premium:'Премиум', inviaggio:'✈️ В поездке', cerca:'🔍 Поиск', benvenuto:'Добро пожаловать в Silk Dates!' },
+  zh: { accedi:'登录', registrati:'注册', annunci:'广告', premium:'高级版', inviaggio:'✈️ 旅行中', cerca:'🔍 搜索', benvenuto:'欢迎来到 Silk Dates!' }
+};
+
+let currentLang = 'it';
+
+function toggleLang(){
+  document.getElementById('lang-wrap').classList.toggle('open');
+}
+function closeLang(){
+  document.getElementById('lang-wrap').classList.remove('open');
+}
+function setLang(el, flag, label, code){
+  // update button
+  document.getElementById('lang-flag').textContent = flag;
+  document.getElementById('lang-label').textContent = label;
+  // update active state
+  document.querySelectorAll('.lang-option').forEach(o=>o.classList.remove('active'));
+  el.classList.add('active');
+  currentLang = code;
+  closeLang();
+  // apply translations
+  const t = translations[code];
+  // navbar links
+  document.querySelectorAll('.nav-a').forEach(a=>{
+    if(a.textContent.includes('Annunci')||a.textContent.includes('Listings')||a.textContent.includes('Anuncios')||a.textContent.includes('Annonces')||a.textContent.includes('Объявления')||a.textContent.includes('广告')||a.textContent.includes('Anúncios')) a.textContent = t.annunci;
+    if(a.textContent.includes('Viaggio')||a.textContent.includes('voyage')||a.textContent.includes('viaje')||a.textContent.includes('Viajando')||a.textContent.includes('поездке')||a.textContent.includes('旅行')) a.textContent = t.inviaggio;
+    if(a.textContent==='Premium'||a.textContent==='Премиум'||a.textContent==='高级版') a.textContent = t.premium;
+  });
+  // buttons
+  document.querySelectorAll('.btn-ghost').forEach(b=>{ if(b.textContent.trim().match(/Accedi|Sign In|Connexion|Entrar|Войти|登录/)) b.textContent = t.accedi; });
+  document.querySelectorAll('.btn-fill').forEach(b=>{ if(b.textContent.trim().match(/Registrati|Sign Up|S'inscrire|Registrarse|Cadastrar|Регистрация|注册/)) b.textContent = t.registrati; });
+  showToast('🌍 ' + t.benvenuto);
+}
+
+document.addEventListener('click',e=>{
+  const wrap=document.getElementById('lang-wrap');
+  if(wrap&&!wrap.contains(e.target)) closeLang();
+});
 function showToast(msg){
   const t=document.getElementById('toast');
   t.textContent=msg;t.classList.add('show');

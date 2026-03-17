@@ -558,6 +558,42 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
 .onb-skip{text-align:center;margin-top:12px;font-size:12px;color:var(--muted);cursor:pointer;}
 .onb-skip:hover{color:var(--text);}
 
+/* ICEBREAKER PANEL */
+.icebreaker-wrap{position:relative;}
+.icebreaker-toggle{
+  white-space:nowrap;display:flex;align-items:center;gap:6px;
+}
+.icebreaker-panel{
+  position:absolute;top:calc(100% + 10px);right:0;
+  background:var(--bg2);border:1px solid var(--border2);
+  border-radius:18px;padding:16px;
+  box-shadow:0 16px 48px rgba(0,0,0,0.5);
+  z-index:300;width:240px;
+}
+.icebreaker-label{
+  font-size:11px;font-weight:700;color:var(--muted2);
+  text-transform:uppercase;letter-spacing:0.5px;
+  margin-bottom:12px;
+}
+.icebreaker-grid{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:8px;
+}
+.ice-btn{
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  background:var(--bg3);border:1px solid var(--border);
+  border-radius:12px;padding:12px 6px;cursor:pointer;
+  transition:all .2s;font-family:'DM Sans',sans-serif;
+}
+.ice-btn:hover{
+  border-color:rgba(217,43,58,0.45);
+  background:rgba(217,43,58,0.08);
+  transform:translateY(-2px);
+  box-shadow:0 4px 14px rgba(217,43,58,0.2);
+}
+.ice-icon{font-size:24px;line-height:1;}
+.ice-name{font-size:10px;font-weight:600;color:var(--muted2);text-align:center;line-height:1.2;}
+.ice-btn:hover .ice-name{color:var(--text);}
+
 /* ONBOARDING PHOTO SLOTS */
 .onb-photo-slot{
   aspect-ratio:1;border-radius:12px;
@@ -1085,6 +1121,41 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
         <div class="profile-actions">
           <button class="btn btn-outline" onclick="showToast('❤️ Salvato!')"><span data-i18n="btn_heart">❤️</span></button>
           <button class="btn btn-primary" onclick="goto('messages')">💬 Scrivi</button>
+          <!-- Icebreaker games -->
+          <div class="icebreaker-wrap">
+            <button class="btn btn-outline icebreaker-toggle" onclick="toggleIcebreakers(this)" title="Rompi il ghiaccio con un gioco!">
+              🎮 <span style="font-size:12px;font-weight:600;">Icebreaker</span> ▾
+            </button>
+            <div class="icebreaker-panel" id="icebreaker-panel" style="display:none;">
+              <div class="icebreaker-label">🎯 Rompi il ghiaccio!</div>
+              <div class="icebreaker-grid">
+                <button class="ice-btn" onclick="startIcebreaker('dice')">
+                  <span class="ice-icon">🎲</span>
+                  <span class="ice-name">Dadi</span>
+                </button>
+                <button class="ice-btn" onclick="startIcebreaker('rps')">
+                  <span class="ice-icon">✂️</span>
+                  <span class="ice-name">C.S.F.</span>
+                </button>
+                <button class="ice-btn" onclick="startIcebreaker('truth')">
+                  <span class="ice-icon">❓</span>
+                  <span class="ice-name">Verità o Sfida</span>
+                </button>
+                <button class="ice-btn" onclick="startIcebreaker('quiz')">
+                  <span class="ice-icon">🧠</span>
+                  <span class="ice-name">Quiz</span>
+                </button>
+                <button class="ice-btn" onclick="startIcebreaker('compat')">
+                  <span class="ice-icon">💕</span>
+                  <span class="ice-name">Compatibilità</span>
+                </button>
+                <button class="ice-btn" onclick="startIcebreaker('number')">
+                  <span class="ice-icon">🔢</span>
+                  <span class="ice-name">Numero</span>
+                </button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
       <div class="profile-tabs">
@@ -2018,6 +2089,40 @@ let drag = { active:false, startX:0, startY:0, x:0, y:0 };
 // ══════════════════════════════════════════
 //  MINI-GAMES ENGINE
 // ══════════════════════════════════════════
+
+// ── ICEBREAKER (from profile page) ──
+function toggleIcebreakers(btn){
+  const panel = document.getElementById('icebreaker-panel');
+  if(!panel) return;
+  const isOpen = panel.style.display !== 'none';
+  panel.style.display = isOpen ? 'none' : 'block';
+  btn.querySelector('span:last-child') && (btn.querySelector('span:last-child').textContent = isOpen ? '▾' : '▴');
+}
+
+// Close icebreaker panel when clicking outside
+document.addEventListener('click', e => {
+  const wrap = document.querySelector('.icebreaker-wrap');
+  if(wrap && !wrap.contains(e.target)){
+    const panel = document.getElementById('icebreaker-panel');
+    if(panel) panel.style.display = 'none';
+  }
+});
+
+function startIcebreaker(type){
+  // Navigate to messages and launch the game
+  document.getElementById('icebreaker-panel').style.display = 'none';
+  goto('messages');
+  // Small delay to let the messages page render
+  setTimeout(()=>{
+    launchGame(type);
+    const names = {
+      dice:'🎲 Dadi', rps:'✂️ Carta Sasso Forbice',
+      truth:'❓ Verità o Sfida', quiz:'🧠 Quiz',
+      compat:'💕 Compatibilità', number:'🔢 Indovina il numero'
+    };
+    showToast('🎮 ' + (names[type]||'Gioco') + ' avviato!');
+  }, 300);
+}
 
 function toggleGameMenu(){
   const menu = document.getElementById('game-menu');

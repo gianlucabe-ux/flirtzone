@@ -1172,7 +1172,24 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
       </div>
       <div class="chat-input-area">
         <div class="ci-wrap2"><textarea class="chat-ta" rows="1" placeholder="Scrivi un messaggio…"></textarea><span class="emoji-b">😊</span></div>
-        <div class="ia"><button class="ia-btn">📎</button><button class="ia-btn">📷</button><button class="send-b" onclick="sendMsg()">➤</button></div>
+        <div class="ia">
+          <button class="ia-btn" onclick="toggleGameMenu()" title="Giochi" id="game-menu-btn">🎮</button>
+          <button class="ia-btn">📎</button>
+          <button class="ia-btn">📷</button>
+          <button class="send-b" onclick="sendMsg()">➤</button>
+        </div>
+        <!-- Game Menu Popup -->
+        <div id="game-menu" style="display:none;position:absolute;bottom:64px;right:20px;background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:14px;box-shadow:0 12px 40px rgba(0,0,0,0.5);z-index:100;width:260px;">
+          <div style="font-size:12px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">🎮 Giochi in chat</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+            <button class="game-launch-btn" onclick="launchGame('dice')">🎲 Dadi</button>
+            <button class="game-launch-btn" onclick="launchGame('rps')">✂️ C.S.F.</button>
+            <button class="game-launch-btn" onclick="launchGame('truth')">❓ Verità o Sfida</button>
+            <button class="game-launch-btn" onclick="launchGame('quiz')">🧠 Quiz</button>
+            <button class="game-launch-btn" onclick="launchGame('compat')">💕 Compatibilità</button>
+            <button class="game-launch-btn" onclick="launchGame('number')">🔢 Numero</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1997,6 +2014,357 @@ let tinderFilter_current = 'all';
 
 // Drag state
 let drag = { active:false, startX:0, startY:0, x:0, y:0 };
+
+// ══════════════════════════════════════════
+//  MINI-GAMES ENGINE
+// ══════════════════════════════════════════
+
+function toggleGameMenu(){
+  const menu = document.getElementById('game-menu');
+  if(menu) menu.style.display = menu.style.display==='none'?'block':'none';
+}
+document.addEventListener('click', e=>{
+  const menu = document.getElementById('game-menu');
+  const btn = document.getElementById('game-menu-btn');
+  if(menu && btn && !menu.contains(e.target) && !btn.contains(e.target)){
+    menu.style.display='none';
+  }
+});
+
+function launchGame(type){
+  document.getElementById('game-menu').style.display='none';
+  const area = document.querySelector('.messages-area');
+  if(!area) return;
+  let html = '';
+  if(type==='dice')    html = buildDiceGame();
+  if(type==='rps')     html = buildRPSGame();
+  if(type==='truth')   html = buildTruthDareGame();
+  if(type==='quiz')    html = buildQuizGame();
+  if(type==='compat')  html = buildCompatGame();
+  if(type==='number')  html = buildNumberGame();
+  const wrap = document.createElement('div');
+  wrap.className = 'game-bubble';
+  wrap.innerHTML = html;
+  area.appendChild(wrap);
+  area.scrollTop = area.scrollHeight;
+}
+
+// ─── 🎲 DADI ───
+const DICE_FACES = ['⚀','⚁','⚂','⚃','⚄','⚅'];
+function buildDiceGame(){
+  return `
+  <div class="game-header">
+    <span class="game-icon">🎲</span>
+    <span class="game-title">Dadi</span>
+    <span class="game-badge">Sfida</span>
+  </div>
+  <div class="game-body">
+    <div style="text-align:center;font-size:13px;color:var(--muted2);margin-bottom:10px;">Chi tira di più vince!</div>
+    <div class="dice-wrap">
+      <div class="dice" id="my-dice">🎲</div>
+      <div style="font-size:20px;font-weight:700;align-self:center;color:var(--muted);">VS</div>
+      <div class="dice" id="opp-dice">🎲</div>
+    </div>
+    <div id="dice-result" class="game-result" style="display:none;"></div>
+    <button class="game-btn" onclick="rollDiceGame(this)">🎲 Tira i dadi!</button>
+  </div>`;
+}
+function rollDiceGame(btn){
+  const myD = document.getElementById('my-dice');
+  const oppD = document.getElementById('opp-dice');
+  const res = document.getElementById('dice-result');
+  btn.disabled = true;
+  btn.textContent = '🎲 Rotolando…';
+  myD.classList.add('rolling');
+  oppD.classList.add('rolling');
+  let count = 0;
+  const interval = setInterval(()=>{
+    myD.textContent = DICE_FACES[Math.floor(Math.random()*6)];
+    oppD.textContent = DICE_FACES[Math.floor(Math.random()*6)];
+    count++;
+    if(count>8){
+      clearInterval(interval);
+      myD.classList.remove('rolling');
+      oppD.classList.remove('rolling');
+      const my = Math.floor(Math.random()*6)+1;
+      const opp = Math.floor(Math.random()*6)+1;
+      myD.textContent = DICE_FACES[my-1];
+      oppD.textContent = DICE_FACES[opp-1];
+      res.style.display='block';
+      if(my>opp) res.innerHTML=`<span class="big">🏆</span><span class="win">Hai vinto!</span><br><small>${my} vs ${opp}</small>`;
+      else if(opp>my) res.innerHTML=`<span class="big">😅</span><span class="lose">Ha vinto l'altro!</span><br><small>${my} vs ${opp}</small>`;
+      else res.innerHTML=`<span class="big">🤝</span><span class="draw">Pareggio!</span><br><small>${my} vs ${opp}</small>`;
+      btn.textContent='🎲 Ritira'; btn.disabled=false;
+    }
+  },80);
+}
+
+// ─── ✂️ CARTA SASSO FORBICE ───
+const RPS = [{e:'✊',n:'Sasso'},{e:'✋',n:'Carta'},{e:'✌️',n:'Forbice'}];
+function buildRPSGame(){
+  return `
+  <div class="game-header">
+    <span class="game-icon">✂️</span>
+    <span class="game-title">Carta Sasso Forbice</span>
+    <span class="game-badge">Sfida</span>
+  </div>
+  <div class="game-body">
+    <div style="font-size:13px;color:var(--muted2);text-align:center;margin-bottom:12px;">Scegli la tua mossa!</div>
+    <div class="game-options" id="rps-opts">
+      ${RPS.map((r,i)=>`<div class="game-opt" onclick="playRPS(${i},this)">${r.e}<span>${r.n}</span></div>`).join('')}
+    </div>
+    <div id="rps-result" class="game-result" style="display:none;"></div>
+    <button class="game-btn" id="rps-again" style="display:none;" onclick="resetRPS()">🔄 Gioca ancora</button>
+  </div>`;
+}
+function playRPS(idx, el){
+  document.querySelectorAll('.game-opt').forEach(o=>o.onclick=null);
+  el.classList.add('selected');
+  const oIdx = Math.floor(Math.random()*3);
+  const res = document.getElementById('rps-result');
+  const opts = document.getElementById('rps-opts');
+  const again = document.getElementById('rps-again');
+  // Highlight opponent choice
+  opts.querySelectorAll('.game-opt')[oIdx].style.border='2px solid var(--red)';
+  const wins = [[1,2],[2,0],[0,1]];
+  let outcome='';
+  if(idx===oIdx){ outcome='draw'; }
+  else if(wins[idx].includes(oIdx)){ outcome='win'; }
+  else { outcome='lose'; }
+  res.style.display='block';
+  if(outcome==='win') res.innerHTML=`<span class="big">🏆</span><span class="win">Hai vinto!</span><br><small>Tuo: ${RPS[idx].e} vs ${RPS[oIdx].e}</small>`;
+  else if(outcome==='lose') res.innerHTML=`<span class="big">😅</span><span class="lose">Hai perso!</span><br><small>Tuo: ${RPS[idx].e} vs ${RPS[oIdx].e}</small>`;
+  else res.innerHTML=`<span class="big">🤝</span><span class="draw">Pareggio!</span><br><small>Entrambi: ${RPS[idx].e}</small>`;
+  again.style.display='block';
+}
+function resetRPS(){
+  const bubble = document.querySelector('.game-bubble:last-child');
+  if(bubble){ bubble.outerHTML = ''; launchGame('rps'); }
+}
+
+// ─── ❓ VERITÀ O SFIDA ───
+const TRUTH_Q = [
+  'Qual è la cosa più imbarazzante che ti sia mai capitata?',
+  'Hai mai mentito per uscire da un appuntamento?',
+  'Qual è il tuo difetto peggiore in una relazione?',
+  'Cosa pensi appena svegli ogni mattina?',
+  'Qual è la cosa più strana che hai fatto per attirare l\'attenzione di qualcuno?',
+  'Hai ancora il contatto di un ex? Perché?',
+  'Cosa non faresti mai per nessun motivo?',
+  'Qual è il tuo guilty pleasure più segreto?',
+  'Ti sei mai innamorato/a a prima vista?',
+  'Cosa noti per prima in una persona che ti piace?',
+];
+const DARE_Q = [
+  'Manda un audio con la tua risata più brutta 🤣',
+  'Scrivi un messaggio "ti voglio bene" a qualcuno a caso nella tua rubrica',
+  'Descritti in 3 emoji senza usare quelle ovvie',
+  'Racconta la storia del tuo primo bacio in 3 parole',
+  'Canta 5 secondi di una canzone romantica (manda audio!) 🎵',
+  'Scrivi la frase di apertura peggiore per una chat di dating',
+  'Descrivi il tuo tipo ideale usando solo nomi di cibi 🍕',
+  'Manda una foto con la faccia più strana che riesci a fare 📸',
+  'Scrivi un complimento originale che non hai mai fatto a nessuno',
+  'Confessa qualcosa che non hai mai detto a nessuno (di non troppo serio!)',
+];
+function buildTruthDareGame(){
+  return `
+  <div class="game-header">
+    <span class="game-icon">❓</span>
+    <span class="game-title">Verità o Sfida</span>
+    <span class="game-badge">Divertimento</span>
+  </div>
+  <div class="game-body">
+    <div class="tod-card" id="tod-card" style="color:var(--muted2);">Scegli Verità o Sfida per iniziare!</div>
+    <div class="tod-btns">
+      <button class="tod-btn tod-truth" onclick="drawTOD('truth')">💬 Verità</button>
+      <button class="tod-btn tod-dare" onclick="drawTOD('dare')">🔥 Sfida</button>
+    </div>
+  </div>`;
+}
+function drawTOD(type){
+  const card = document.getElementById('tod-card');
+  card.className = 'tod-card ' + type;
+  if(type==='truth'){
+    card.textContent = TRUTH_Q[Math.floor(Math.random()*TRUTH_Q.length)];
+  } else {
+    card.textContent = DARE_Q[Math.floor(Math.random()*DARE_Q.length)];
+  }
+}
+
+// ─── 🧠 QUIZ ───
+const QUIZ_QS = [
+  { q:'Qual è la capitale della Francia?', opts:['Londra','Parigi','Roma','Madrid'], a:1 },
+  { q:'Quanti colori ha l\'arcobaleno?', opts:['5','6','7','8'], a:2 },
+  { q:'Chi ha dipinto la Gioconda?', opts:['Michelangelo','Raffaello','Leonardo da Vinci','Botticelli'], a:2 },
+  { q:'Qual è il pianeta più grande del sistema solare?', opts:['Saturno','Urano','Giove','Nettuno'], a:2 },
+  { q:'In che anno è iniziato il primo World War?', opts:['1912','1914','1916','1918'], a:1 },
+  { q:'Qual è l\'animale più veloce del mondo?', opts:['Leone','Ghepardo','Falco pellegrino','Marlin'], a:2 },
+  { q:'Quanti lati ha un esagono?', opts:['5','6','7','8'], a:1 },
+  { q:'Qual è la lingua più parlata al mondo?', opts:['Inglese','Spagnolo','Mandarino','Hindi'], a:2 },
+  { q:'Chi ha scritto Romeo e Giulietta?', opts:['Dante','Shakespeare','Cervantes','Molière'], a:1 },
+  { q:'Qual è il simbolo chimico dell\'oro?', opts:['Go','Ag','Au','Or'], a:2 },
+];
+let quizState = { qIdx:0, score:0, total:5, qs:[] };
+function buildQuizGame(){
+  quizState.qs = [...QUIZ_QS].sort(()=>Math.random()-0.5).slice(0,5);
+  quizState.qIdx = 0; quizState.score = 0;
+  return `
+  <div class="game-header">
+    <span class="game-icon">🧠</span>
+    <span class="game-title">Quiz</span>
+    <span class="game-badge">Sfida</span>
+  </div>
+  <div class="game-body" id="quiz-body">${renderQuizQ()}</div>`;
+}
+function renderQuizQ(){
+  if(quizState.qIdx >= quizState.total){
+    const pct = Math.round(quizState.score/quizState.total*100);
+    const emoji = pct>=80?'🏆':pct>=60?'😊':pct>=40?'😅':'😬';
+    return `
+      <div class="game-result">
+        <span class="big">${emoji}</span>
+        <strong>Punteggio: ${quizState.score}/${quizState.total}</strong><br>
+        <span style="color:var(--muted2);">${pct>=80?'Fantastico!':pct>=60?'Molto bene!':pct>=40?'Non male!':'Riprova!'}</span>
+      </div>
+      <button class="game-btn" onclick="restartQuiz()">🔄 Nuovo quiz</button>`;
+  }
+  const q = quizState.qs[quizState.qIdx];
+  const prog = ((quizState.qIdx)/quizState.total*100);
+  return `
+    <div class="quiz-score">Domanda ${quizState.qIdx+1}/${quizState.total} · Punteggio: ${quizState.score}</div>
+    <div class="quiz-progress"><div class="quiz-progress-bar" style="width:${prog}%"></div></div>
+    <div class="quiz-q">${q.q}</div>
+    <div class="quiz-opts">
+      ${q.opts.map((o,i)=>`<button class="quiz-opt" onclick="answerQuiz(${i},this)">${o}</button>`).join('')}
+    </div>`;
+}
+function answerQuiz(idx, btn){
+  const q = quizState.qs[quizState.qIdx];
+  document.querySelectorAll('.quiz-opt').forEach(b=>b.onclick=null);
+  if(idx===q.a){ btn.classList.add('correct'); quizState.score++; }
+  else {
+    btn.classList.add('wrong');
+    document.querySelectorAll('.quiz-opt')[q.a].classList.add('correct');
+  }
+  quizState.qIdx++;
+  setTimeout(()=>{
+    const body = document.getElementById('quiz-body');
+    if(body) body.innerHTML = renderQuizQ();
+  },900);
+}
+function restartQuiz(){
+  quizState.qs = [...QUIZ_QS].sort(()=>Math.random()-0.5).slice(0,5);
+  quizState.qIdx=0; quizState.score=0;
+  const body = document.getElementById('quiz-body');
+  if(body) body.innerHTML = renderQuizQ();
+}
+
+// ─── 💕 COMPATIBILITÀ ───
+const COMPAT_CATS = [
+  {label:'❤️ Amore',      keys:['Romantico','Passionale','Dolce']},
+  {label:'🎯 Interessi',   keys:['Viaggi','Sport','Arte']},
+  {label:'😂 Umorismo',    keys:['Ironia','Sarcasmo','Gioia']},
+  {label:'🌙 Stile di vita',keys:['Nottambulo','Mattiniero','Equilibrato']},
+  {label:'💬 Comunicazione',keys:['Diretto','Riflessivo','Emotivo']},
+];
+function buildCompatGame(){
+  return `
+  <div class="game-header">
+    <span class="game-icon">💕</span>
+    <span class="game-title">Test Compatibilità</span>
+    <span class="game-badge">Romantico</span>
+  </div>
+  <div class="game-body">
+    <div style="text-align:center;font-size:13px;color:var(--muted2);margin-bottom:14px;">Scopri quanto siete compatibili! 💑</div>
+    <button class="game-btn" onclick="runCompat(this)">💕 Calcola compatibilità!</button>
+    <div id="compat-result" style="display:none;"></div>
+  </div>`;
+}
+function runCompat(btn){
+  btn.textContent = '💫 Analizzando…'; btn.disabled=true;
+  setTimeout(()=>{
+    const total = Math.floor(Math.random()*35)+60; // 60-95%
+    const cats = COMPAT_CATS.map(c=>({
+      label:c.label,
+      pct: Math.floor(Math.random()*40)+55,
+      key: c.keys[Math.floor(Math.random()*3)]
+    }));
+    const emoji = total>=90?'🔥💕':total>=80?'❤️':total>=70?'💛':'💙';
+    let html = `
+      <div style="text-align:center;margin:14px 0;">
+        <div style="font-size:48px;">${emoji}</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:700;color:var(--red);">${total}%</div>
+        <div style="font-size:13px;color:var(--muted2);">${total>=90?'Anima gemella!':total>=80?'Ottima intesa!':total>=70?'Buona compatibilità!':'Diversi ma complementari!'}</div>
+      </div>`;
+    cats.forEach(c=>{
+      html += `
+        <div class="compat-label"><span>${c.label}</span><span>${c.pct}%</span></div>
+        <div class="compat-bar"><div class="compat-fill" style="width:0%" data-pct="${c.pct}"></div></div>`;
+    });
+    const res = document.getElementById('compat-result');
+    res.innerHTML = html; res.style.display='block';
+    btn.textContent='🔄 Ricalcola'; btn.disabled=false;
+    // Animate bars
+    setTimeout(()=>{
+      res.querySelectorAll('.compat-fill').forEach(bar=>{
+        bar.style.width = bar.dataset.pct+'%';
+      });
+    }, 100);
+  },1200);
+}
+
+// ─── 🔢 INDOVINA IL NUMERO ───
+let numState = { secret:0, attempts:0, maxAttempts:6, done:false };
+function buildNumberGame(){
+  numState = { secret: Math.floor(Math.random()*100)+1, attempts:0, maxAttempts:6, done:false };
+  return `
+  <div class="game-header">
+    <span class="game-icon">🔢</span>
+    <span class="game-title">Indovina il numero</span>
+    <span class="game-badge">Logica</span>
+  </div>
+  <div class="game-body">
+    <div style="text-align:center;font-size:13px;color:var(--muted2);margin-bottom:10px;">Sto pensando a un numero tra <strong style="color:var(--text);">1 e 100</strong></div>
+    <div class="number-attempts" id="num-attempts">
+      ${Array(6).fill('<div class="attempt-dot"></div>').join('')}
+    </div>
+    <div class="number-hint" id="num-hint">Hai 6 tentativi. Buona fortuna! 🍀</div>
+    <input class="number-input" id="num-input" type="number" min="1" max="100" placeholder="?" onkeydown="if(event.key==='Enter')guessNumber()">
+    <button class="game-btn" id="num-btn" onclick="guessNumber()">🎯 Indovina!</button>
+  </div>`;
+}
+function guessNumber(){
+  if(numState.done) return;
+  const input = document.getElementById('num-input');
+  const hint = document.getElementById('num-hint');
+  const btn = document.getElementById('num-btn');
+  const dotsEl = document.getElementById('num-attempts');
+  const guess = parseInt(input.value);
+  if(!guess || guess<1 || guess>100){ showToast('⚠️ Inserisci un numero tra 1 e 100'); return; }
+  numState.attempts++;
+  const dots = dotsEl.querySelectorAll('.attempt-dot');
+  const diff = Math.abs(guess - numState.secret);
+  const isHot = diff<=10;
+  dots[numState.attempts-1].classList.add('used', isHot?'hot':'cold');
+  if(guess === numState.secret){
+    numState.done = true;
+    hint.innerHTML = `<span style="color:var(--green);font-weight:700;">🏆 Hai indovinato in ${numState.attempts} tentativi!</span>`;
+    btn.textContent='🔄 Nuovo gioco'; btn.onclick=()=>{ const b=document.querySelector('.game-bubble:last-child'); if(b){b.remove();launchGame('number');} };
+    input.disabled = true;
+  } else if(numState.attempts >= numState.maxAttempts){
+    numState.done = true;
+    hint.innerHTML = `<span style="color:var(--red);font-weight:700;">💥 Hai perso! Il numero era ${numState.secret}</span>`;
+    btn.textContent='🔄 Riprova'; btn.onclick=()=>{ const b=document.querySelector('.game-bubble:last-child'); if(b){b.remove();launchGame('number');} };
+    input.disabled = true;
+  } else {
+    const remaining = numState.maxAttempts - numState.attempts;
+    const direction = guess < numState.secret ? '🔼 Più alto!' : '🔽 Più basso!';
+    const temp = diff<=5?'🔥 Caldissimo!':diff<=15?'♨️ Caldo':diff<=30?'🌡️ Tiepido':'❄️ Freddo';
+    hint.innerHTML = `${direction} &nbsp; ${temp} &nbsp; (${remaining} tentativi rimasti)`;
+  }
+  input.value=''; input.focus();
+}
 
 function tinderInit(){
   tinderQueue = [...tinderProfiles];

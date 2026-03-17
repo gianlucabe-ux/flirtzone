@@ -558,6 +558,32 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
 .onb-skip{text-align:center;margin-top:12px;font-size:12px;color:var(--muted);cursor:pointer;}
 .onb-skip:hover{color:var(--text);}
 
+/* ONBOARDING PHOTO SLOTS */
+.onb-photo-slot{
+  aspect-ratio:1;border-radius:12px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:6px;cursor:pointer;border:2px dashed var(--border2);
+  background:var(--bg3);transition:all .2s;position:relative;overflow:hidden;
+}
+.onb-photo-slot.add:hover{border-color:var(--red);background:rgba(217,43,58,0.06);}
+.onb-photo-slot.filled{border:2px solid var(--green);border-style:solid;}
+.onb-photo-slot.filled:hover::after{
+  content:'✕';position:absolute;inset:0;
+  background:rgba(0,0,0,0.55);
+  font-size:22px;color:#fff;line-height:1;display:grid;place-items:center;
+}
+.onb-slot-icon{font-size:22px;color:var(--muted);}
+.onb-slot-label{font-size:11px;font-weight:600;color:var(--muted);}
+.onb-photo-slot img{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+.onb-photo-slot.filled .onb-slot-icon,
+.onb-photo-slot.filled .onb-slot-label{display:none;}
+.onb-photo-slot.filled::before{
+  content:'✓';position:absolute;top:6px;right:8px;
+  font-size:11px;font-weight:700;color:var(--green);
+  background:rgba(0,0,0,0.6);border-radius:50%;width:20px;height:20px;
+  line-height:20px;text-align:center;z-index:2;
+}
+
 /* PASSWORD TOGGLE */
 .pw-wrap{position:relative;}
 .pw-toggle{
@@ -1341,6 +1367,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
       <div class="onb-step" id="prog-2"></div>
       <div class="onb-step" id="prog-3"></div>
       <div class="onb-step" id="prog-4"></div>
+      <div class="onb-step" id="prog-5"></div>
     </div>
 
     <div class="onb-card">
@@ -1427,7 +1454,95 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
         </div>
         <div class="onb-nav">
           <button class="btn-onb-back" onclick="onbBack(4)">← Indietro</button>
-          <button class="btn-onb-next" onclick="onbFinish()" style="background:linear-gradient(130deg,var(--green),#18a852);">✅ Completa profilo</button>
+          <button class="btn-onb-next" onclick="onbNext(4)">Continua →</button>
+        </div>
+      </div>
+
+      <!-- STEP 5: CREA PROFILO -->
+      <div class="onb-panel" id="onb-step-5">
+        <div class="onb-step-title">✨ Crea il tuo profilo</div>
+        <div class="onb-step-sub">Quasi fatto! Aggiungi foto e descrizione per attirare l'attenzione</div>
+
+        <!-- FOTO -->
+        <div style="margin-bottom:20px;">
+          <div style="font-size:12px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:10px;">
+            📸 Foto profilo <span style="color:var(--muted);font-weight:400;">(minimo 2)</span>
+          </div>
+          <div id="onb-photo-grid" style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:8px;">
+            <!-- Slot foto -->
+            <div class="onb-photo-slot add" onclick="document.getElementById('onb-file-1').click()" title="Clicca per cambiare foto">
+              <input type="file" id="onb-file-1" accept="image/*" style="display:none;" onchange="onbAddPhoto(this,1)">
+              <span class="onb-slot-icon">📷</span>
+              <span class="onb-slot-label">Aggiungi</span>
+            </div>
+            <div class="onb-photo-slot add" onclick="document.getElementById('onb-file-2').click()" title="Clicca per cambiare foto">
+              <input type="file" id="onb-file-2" accept="image/*" style="display:none;" onchange="onbAddPhoto(this,2)">
+              <span class="onb-slot-icon">📷</span>
+              <span class="onb-slot-label">Aggiungi</span>
+            </div>
+            <div class="onb-photo-slot add" onclick="document.getElementById('onb-file-3').click()" title="Aggiunta opzionale">
+              <input type="file" id="onb-file-3" accept="image/*" style="display:none;" onchange="onbAddPhoto(this,3)">
+              <span class="onb-slot-icon">📷</span>
+              <span class="onb-slot-label">Opzionale</span>
+            </div>
+          </div>
+          <div id="onb-photo-error" style="display:none;font-size:12px;color:var(--red);margin-top:4px;">⚠️ Carica almeno 2 foto per continuare</div>
+          <div style="font-size:11px;color:var(--muted);">Formati supportati: JPG, PNG, WEBP · Max 5MB per foto</div>
+        </div>
+
+        <!-- DESCRIZIONE -->
+        <div style="margin-bottom:20px;">
+          <div style="font-size:12px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:8px;">
+            📝 Qualcosa su di te <span style="color:var(--muted);font-weight:400;">(min. 50 caratteri)</span>
+          </div>
+          <div style="position:relative;">
+            <textarea id="onb-desc" class="form-input" rows="4"
+              placeholder="Ciao! Sono... Mi piace... Cerco qualcuno che..."
+              style="resize:none;line-height:1.6;padding-bottom:28px;"
+              oninput="onbCountDesc(this)"></textarea>
+            <div id="onb-desc-count" style="position:absolute;bottom:10px;right:12px;font-size:11px;color:var(--muted);">0/50 min</div>
+          </div>
+          <div id="onb-desc-error" style="display:none;font-size:12px;color:var(--red);margin-top:4px;">⚠️ Scrivi almeno 50 caratteri per continuare</div>
+        </div>
+
+        <!-- INTERESSI -->
+        <div style="margin-bottom:20px;">
+          <div style="font-size:12px;font-weight:700;color:var(--muted2);text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px;">
+            🎯 I tuoi interessi <span style="color:var(--muted);font-weight:400;">(scegli almeno 3)</span>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Seleziona quelli che ti rappresentano meglio</div>
+          <div class="pill-grid" id="interests-pills">
+            <div class="pill" onclick="selMulti(this)">🎵 Musica</div>
+            <div class="pill" onclick="selMulti(this)">🎬 Cinema</div>
+            <div class="pill" onclick="selMulti(this)">📚 Lettura</div>
+            <div class="pill" onclick="selMulti(this)">✈️ Viaggi</div>
+            <div class="pill" onclick="selMulti(this)">🍽️ Cucina</div>
+            <div class="pill" onclick="selMulti(this)">🏋️ Fitness</div>
+            <div class="pill" onclick="selMulti(this)">🎨 Arte</div>
+            <div class="pill" onclick="selMulti(this)">📸 Fotografia</div>
+            <div class="pill" onclick="selMulti(this)">🎮 Gaming</div>
+            <div class="pill" onclick="selMulti(this)">🌿 Natura</div>
+            <div class="pill" onclick="selMulti(this)">🧘 Yoga</div>
+            <div class="pill" onclick="selMulti(this)">🍷 Vino & Aperitivi</div>
+            <div class="pill" onclick="selMulti(this)">💃 Ballo</div>
+            <div class="pill" onclick="selMulti(this)">🚴 Ciclismo</div>
+            <div class="pill" onclick="selMulti(this)">🏊 Nuoto</div>
+            <div class="pill" onclick="selMulti(this)">🎭 Teatro</div>
+            <div class="pill" onclick="selMulti(this)">🐕 Animali</div>
+            <div class="pill" onclick="selMulti(this)">🌱 Sostenibilità</div>
+            <div class="pill" onclick="selMulti(this)">🍕 Street Food</div>
+            <div class="pill" onclick="selMulti(this)">🏔️ Escursionismo</div>
+            <div class="pill" onclick="selMulti(this)">🎸 Concerti</div>
+            <div class="pill" onclick="selMulti(this)">☕ Caffè & Chiacchiere</div>
+            <div class="pill" onclick="selMulti(this)">🧩 Giochi da tavolo</div>
+            <div class="pill" onclick="selMulti(this)">🏄 Sport acquatici</div>
+          </div>
+          <div id="onb-interests-error" style="display:none;font-size:12px;color:var(--red);margin-top:6px;">⚠️ Seleziona almeno 3 interessi</div>
+        </div>
+
+        <div class="onb-nav">
+          <button class="btn-onb-back" onclick="onbBack(5)">← Indietro</button>
+          <button class="btn-onb-next" onclick="onbFinish()" style="background:linear-gradient(130deg,var(--green),#18a852);">🚀 Vai al tuo profilo!</button>
         </div>
       </div>
 
@@ -1533,7 +1648,8 @@ async function doRegister(){
     });
 
     if(!ok){
-      const msg = data.error_description || data.msg || data.message || 'Errore nella registrazione';
+      const raw = data.error_description || data.msg || data.message || data.error || 'Errore nella registrazione';
+      const msg = raw;
       errDiv.textContent = '❌ ' + translateAuthError(msg);
       errDiv.style.display = 'block';
       btn.textContent = 'Crea account gratis →';
@@ -1541,10 +1657,10 @@ async function doRegister(){
       return;
     }
 
-    // 2. Salva sessione
+    // 2. Salva sessione (Supabase v2 returns user + session)
     currentUser = data.user;
-    currentSession = data.session;
-    if(currentSession) localStorage.setItem('sd_session', JSON.stringify(currentSession));
+    currentSession = data.session || data;
+    if(currentSession?.access_token) localStorage.setItem('sd_session', JSON.stringify(currentSession));
 
     // 3. Salva profilo nella tabella profiles (se esiste)
     if(currentSession){
@@ -1594,11 +1710,14 @@ async function doLogin(){
       return;
     }
 
-    currentUser    = data.user;
-    currentSession = data;
-    localStorage.setItem('sd_session', JSON.stringify(data));
+    // Supabase v2 may nest session differently
+    const session = data.session || data;
+    const user = data.user || session?.user;
+    currentUser    = user;
+    currentSession = session;
+    localStorage.setItem('sd_session', JSON.stringify(session));
 
-    const nome = data.user?.user_metadata?.nome || email.split('@')[0];
+    const nome = user?.user_metadata?.nome || email.split('@')[0];
     updateNavForUser(data.user, nome);
     showToast('✅ Bentornato su Silk Dates!');
     btn.textContent = 'Accedi →';
@@ -1700,7 +1819,7 @@ function translateAuthError(msg){
 
 // Avvia ripristino sessione
 restoreSession();
-const onbTotal = 4;
+const onbTotal = 5;
 
 function onbShowStep(n){
   // hide all panels
@@ -1733,16 +1852,109 @@ function onbBack(step){
   if(step > 1) onbShowStep(step-1);
 }
 
-function onbFinish(){
-  const prefs = [...document.querySelectorAll('#pref-pills .pill.sel')].map(p=>p.textContent.trim());
-  if(prefs.length===0){ showToast('⚠️ Seleziona almeno una preferenza'); return; }
+// Uploaded photo data URLs
+const onbPhotos = {};
 
+function onbAddPhoto(input, slot){
+  if(!input.files || !input.files[0]) return;
+  const file = input.files[0];
+  if(file.size > 5 * 1024 * 1024){ showToast('⚠️ Foto troppo grande (max 5MB)'); return; }
+  const reader = new FileReader();
+  reader.onload = e => {
+    const slotEl = input.closest('.onb-photo-slot');
+    // Remove existing img if any
+    const existing = slotEl.querySelector('img');
+    if(existing) existing.remove();
+    // Add image
+    const img = document.createElement('img');
+    img.src = e.target.result;
+    slotEl.appendChild(img);
+    slotEl.classList.remove('add');
+    slotEl.classList.add('filled');
+        slotEl.style.cursor = 'pointer';
+    onbPhotos[slot] = e.target.result;
+    // Hide error
+    document.getElementById('onb-photo-error').style.display = 'none';
+    showToast('📸 Foto ' + slot + ' caricata!');
+  };
+  reader.readAsDataURL(file);
+  input.value = '';
+}
+
+function onbCountDesc(el){
+  const len = el.value.trim().length;
+  const counter = document.getElementById('onb-desc-count');
+  if(len >= 50){
+    counter.textContent = len + ' ✓';
+    counter.style.color = 'var(--green)';
+    document.getElementById('onb-desc-error').style.display = 'none';
+  } else {
+    counter.textContent = len + '/50 min';
+    counter.style.color = 'var(--muted)';
+  }
+}
+
+function onbFinish(){
+  // Validate photos
+  const photoCount = Object.keys(onbPhotos).length;
+  if(photoCount < 2){
+    document.getElementById('onb-photo-error').style.display = 'block';
+    showToast('⚠️ Carica almeno 2 foto');
+    return;
+  }
+  document.getElementById('onb-photo-error').style.display = 'none';
+
+  // Validate description
+  const desc = document.getElementById('onb-desc').value.trim();
+  if(desc.length < 50){
+    document.getElementById('onb-desc-error').style.display = 'block';
+    showToast('⚠️ La descrizione deve avere almeno 50 caratteri');
+    return;
+  }
+  document.getElementById('onb-desc-error').style.display = 'none';
+
+  // Validate interests
+  const interests = [...document.querySelectorAll('#interests-pills .pill.sel')].map(p=>p.textContent.trim());
+  if(interests.length < 3){
+    document.getElementById('onb-interests-error').style.display = 'block';
+    showToast('⚠️ Seleziona almeno 3 interessi');
+    return;
+  }
+  document.getElementById('onb-interests-error').style.display = 'none';
+
+  // Collect all data
+  const prefs   = [...document.querySelectorAll('#pref-pills .pill.sel')].map(p=>p.textContent.trim());
   const seeking = [...document.querySelectorAll('#seeking-pills .pill.sel')].map(p=>p.textContent.trim());
   const age     = document.getElementById('onb-age')?.value;
   const loc     = document.getElementById('onb-location')?.value;
   const radius  = document.querySelector('#radius-pills .pill.sel')?.textContent.trim();
 
-  // Salva su Supabase se utente loggato
+  // Update profile page with real data
+  const descEl = document.querySelector('.profile-about');
+  if(descEl) descEl.textContent = desc;
+
+  // Add interests as tags in profile info section
+  const detailsEl = document.querySelector('.profile-details');
+  if(detailsEl){
+    const existing = document.getElementById('profile-interests-block');
+    if(existing) existing.remove();
+    const block = document.createElement('div');
+    block.id = 'profile-interests-block';
+    block.style.cssText = 'grid-column:1/-1;';
+    block.innerHTML = `
+      <div class="detail-item" style="grid-column:1/-1;">
+        <div class="detail-label">🎯 Interessi</div>
+        <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px;">
+          ${interests.map(i=>`<span class="tag">${i}</span>`).join('')}
+        </div>
+      </div>`;
+    detailsEl.appendChild(block);
+  }
+
+  // Update profile photos
+  updateProfilePhotos(onbPhotos);
+
+  // Save to Supabase
   if(currentSession?.access_token && currentUser?.id){
     supaFetch('/rest/v1/profiles?id=eq.'+currentUser.id, 'PATCH', {
       eta: parseInt(age) || null,
@@ -1750,17 +1962,46 @@ function onbFinish(){
       raggio: radius || null,
       cosa_cerco: seeking.join(', '),
       preferenze: prefs.join(', '),
+      interessi: interests.join(', '),
+      descrizione: desc,
       onboarding_done: true
     }, currentSession.access_token).catch(()=>{});
   }
 
-  showToast('🎉 Profilo completato! Benvenuto su Silk Dates!');
-  setTimeout(()=>goto('home'),1200);
+  showToast('🎉 Profilo creato! Benvenuto su Silk Dates!');
+  setTimeout(()=>goto('profile'), 1000);
+}
+
+function updateProfilePhotos(photos){
+  const grid = document.getElementById('photo-grid');
+  if(!grid) return;
+  // Replace first cells with uploaded photos
+  const slots = grid.querySelectorAll('.photo-cell:not(.add-cell):not(.locked)');
+  Object.entries(photos).forEach(([slot, dataUrl], idx) => {
+    if(slots[idx]){
+      slots[idx].innerHTML = '';
+      slots[idx].style.background = 'var(--bg2)';
+      const img = document.createElement('img');
+      img.src = dataUrl;
+      img.style.cssText = 'width:100%;height:100%;object-fit:cover;position:absolute;inset:0;';
+      slots[idx].style.position = 'relative';
+      slots[idx].appendChild(img);
+    }
+  });
+  // Update main profile avatar photo
+  const mainPhoto = document.querySelector('.ann-main-photo');
+  if(mainPhoto && photos[1]){
+    mainPhoto.style.backgroundImage = `url(${photos[1]})`;
+    mainPhoto.style.backgroundSize = 'cover';
+    mainPhoto.style.backgroundPosition = 'center';
+    mainPhoto.textContent = '';
+  }
 }
 
 function onbSkipAll(){
-  showToast('⏭️ Puoi completare il profilo più tardi nelle impostazioni');
-  setTimeout(()=>goto('home'),1000);
+  // Skip to profile creation step — cannot skip profile setup entirely
+  onbShowStep(5);
+  showToast('⏭️ Completa il tuo profilo per continuare');
 }
 
 function detectLocation(){
@@ -1928,7 +2169,16 @@ function sendMsg(){
   const area=document.querySelector('.messages-area');
   const div=document.createElement('div');
   div.className='m mine';
-  div.innerHTML=`<div><div class="m-bub">${txt}</div><div class="m-time">Adesso <span class="tick">✓</span></div></div>`;
+  const bub = document.createElement('div');
+  bub.className = 'm-bub';
+  bub.textContent = txt;
+  const tim = document.createElement('div');
+  tim.className = 'm-time';
+  tim.innerHTML = 'Adesso <span class="tick">✓</span>';
+  const inner = document.createElement('div');
+  inner.appendChild(bub);
+  inner.appendChild(tim);
+  div.appendChild(inner);
   area.appendChild(div);
   ta.value='';
   area.scrollTop=area.scrollHeight;

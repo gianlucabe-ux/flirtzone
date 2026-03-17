@@ -558,7 +558,14 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
 .onb-skip{text-align:center;margin-top:12px;font-size:12px;color:var(--muted);cursor:pointer;}
 .onb-skip:hover{color:var(--text);}
 
-/* ── TOAST ── */
+/* PASSWORD TOGGLE */
+.pw-wrap{position:relative;}
+.pw-toggle{
+  position:absolute;right:13px;top:50%;transform:translateY(-50%);
+  font-size:17px;cursor:pointer;color:var(--muted);
+  transition:color .2s;user-select:none;
+}
+.pw-toggle:hover{color:var(--text);}
 .toast{position:fixed;bottom:22px;right:22px;z-index:9998;background:var(--bg3);border:1px solid var(--border2);border-radius:12px;padding:12px 17px;font-size:13px;font-weight:500;box-shadow:0 8px 32px rgba(0,0,0,0.5);transform:translateY(80px);opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);display:flex;align-items:center;gap:8px;pointer-events:none;}
 .toast.show{transform:translateY(0);opacity:1;}
 </style>
@@ -822,7 +829,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
             <div class="form-group" style="flex:1;"><label class="form-label">Età</label><input id="reg-eta" class="form-input" type="number" placeholder="18+" min="18"></div>
           </div>
           <div class="form-group"><label class="form-label">Email</label><input id="reg-email" class="form-input" type="email" placeholder="tua@email.com"></div>
-          <div class="form-group"><label class="form-label">Password</label><input id="reg-password" class="form-input" type="password" placeholder="Min. 8 caratteri" data-i18n-placeholder="ph_pass"></div>
+          <div class="form-group"><label class="form-label">Password</label><div class="pw-wrap"><input id="reg-password" class="form-input" type="password" placeholder="Min. 8 caratteri" data-i18n-placeholder="ph_pass" style="padding-right:42px;"><span class="pw-toggle" onclick="togglePw('reg-password',this)">👁️</span></div></div>
           <div class="form-group"><label class="form-label">Sono</label><div class="gender-grid"><div class="gender-opt" onclick="selGender(this)">👩 Donna</div><div class="gender-opt" onclick="selGender(this)">👨 Uomo</div><div class="gender-opt" onclick="selGender(this)">🏳️‍🌈 Non-binary</div><div class="gender-opt" onclick="selGender(this)">👫 Coppia</div></div></div>
           <div class="form-group"><label class="form-label">Città</label><input id="reg-citta" class="form-input" type="text" placeholder="La tua città" data-i18n-placeholder="ph_city"></div>
           <div class="age-check"><input type="checkbox" id="age18"><span>Confermo di avere almeno <strong>18 anni</strong> e accetto i <strong>Termini</strong> e la <strong>Privacy Policy</strong>.</span></div>
@@ -834,7 +841,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
         </div>
         <div id="auth-login" style="display:none;">
           <div class="form-group"><label class="form-label">Email</label><input id="login-email" class="form-input" type="email" placeholder="tua@email.com"></div>
-          <div class="form-group"><label class="form-label">Password</label><input id="login-password" class="form-input" type="password" placeholder="Password" data-i18n-placeholder="ph_pass2"></div>
+          <div class="form-group"><label class="form-label">Password</label><div class="pw-wrap"><input id="login-password" class="form-input" type="password" placeholder="Password" data-i18n-placeholder="ph_pass2" style="padding-right:42px;"><span class="pw-toggle" onclick="togglePw('login-password',this)">👁️</span></div></div>
           <!-- Error message -->
           <div id="login-error" style="display:none;background:rgba(217,43,58,0.1);border:1px solid rgba(217,43,58,0.3);border-radius:10px;padding:10px 14px;font-size:13px;color:#e07080;margin-bottom:12px;"></div>
           <button class="btn-auth" id="login-btn" onclick="doLogin()">Accedi →</button>
@@ -3514,6 +3521,19 @@ function closeLang(){
 function setLang(el, flag, label, code){
   setLangFull(code, flag, label, null);
 }
+// ── PASSWORD TOGGLE ──
+function togglePw(inputId, icon){
+  const input = document.getElementById(inputId);
+  if(!input) return;
+  if(input.type === 'password'){
+    input.type = 'text';
+    icon.textContent = '🙈';
+  } else {
+    input.type = 'password';
+    icon.textContent = '👁️';
+  }
+}
+
 function showToast(msg){
   const t=document.getElementById('toast');
   t.textContent=msg;t.classList.add('show');

@@ -701,10 +701,19 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
       <em data-i18n="hero_h1_em">senza filtri.</em>
     </h1>
     <p class="hero-sub" data-i18n="hero_sub">Profili verificati in tutto il mondo. Trova chi cerchi, dove sei — o dove stai andando.</p>
-    <div class="hero-btns">
-      <button class="btn btn-primary" onclick="goto('auth')" ><span data-i18n="hero_cta">Inizia gratis</span></button>
-      <button class="btn btn-outline" ><span data-i18n="hero_browse">Sfoglia annunci</span></button>
+
+    <!-- Mostrato solo quando NON loggato -->
+    <div class="hero-btns" id="hero-guest-btns">
+      <button class="btn btn-primary" onclick="goto('auth')"><span data-i18n="hero_cta">Inizia gratis</span></button>
+      <button class="btn btn-outline" onclick="scrollToListings()"><span data-i18n="hero_browse">Sfoglia annunci</span></button>
     </div>
+
+    <!-- Mostrato solo quando loggato -->
+    <div id="hero-user-welcome" style="display:none;text-align:center;">
+      <div id="hero-user-greeting" style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;margin-bottom:16px;"></div>
+      <button class="btn btn-primary" onclick="scrollToListings()">🔍 Scopri gli annunci</button>
+    </div>
+
     <div class="stats-bar">
       <div class="stat"><div class="stat-n">2.4M+</div><div class="stat-l" data-i18n="stat_utenti">Utenti attivi</div></div>
       <div class="stat"><div class="stat-n">140+</div><div class="stat-l" data-i18n="stat_paesi">Paesi</div></div>
@@ -731,7 +740,7 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
     <div class="tab" onclick="setTab(this)"><span data-i18n="tab_verified">✓ Verificati</span></div>
   </div>
 
-  <div class="listings">
+  <div class="listings" id="listings-section">
     <div class="listings-head">
       <span class="listings-title" data-i18n="listings_title">Annunci recenti</span>
       <span class="see-all" data-i18n="see_all">Vedi tutti →</span>
@@ -749,9 +758,19 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
         <div class="card-img g3"><div class="av">👩</div><div class="bdg bdg-verified">✓ Verificata</div></div>
         <div class="card-body"><div class="card-name">Léa, 29 <span style="color:var(--red2)">♀</span></div><div class="card-meta"><span data-i18n="card_meta_lea">📍 Parigi</span></div><div class="card-tags"><span class="tag" data-i18n="tag_openmind">Open mind</span><span class="tag tag-r" data-i18n="tag_premium_lbl">⭐ Premium</span></div></div>
       </div>
+      <!-- Carte BLOCCATE — visibili solo per ospiti, nascoste quando loggato -->
+      <div id="locked-cards-section" style="display:contents;">
       <div class="card"><div class="card-img g4"><div class="av blur">👩</div><div class="lock-over"><div class="lock-ico">🔒</div><div class="lock-lbl" data-i18n="lock_unlock">Sblocca con Premium</div></div></div><div class="card-body"><div class="card-name" data-i18n="card_hidden">••••, 31</div><div class="card-meta">📍 •••••</div><div class="card-tags"><span class="tag tag-r" data-i18n="tag_only_premium">Solo Premium</span></div></div></div>
       <div class="card"><div class="card-img g5"><div class="av blur">👨</div><div class="lock-over"><div class="lock-ico">🔒</div><div class="lock-lbl">Sblocca con Premium</div></div></div><div class="card-body"><div class="card-name">••••, 38</div><div class="card-meta">📍 •••••</div><div class="card-tags"><span class="tag tag-r">Solo Premium</span></div></div></div>
       <div class="card"><div class="card-img g6"><div class="av blur">👩</div><div class="lock-over"><div class="lock-ico">🔒</div><div class="lock-lbl">Sblocca con Premium</div></div></div><div class="card-body"><div class="card-name">••••, 25</div><div class="card-meta">📍 •••••</div><div class="card-tags"><span class="tag tag-r">Solo Premium</span></div></div></div>
+      </div>
+
+      <!-- Carte EXTRA — visibili solo quando loggato -->
+      <div id="logged-extra-cards" style="display:none;">
+      <div class="card" onclick="goto('annuncio')"><div class="card-img g4"><div class="av">👩</div><div class="dot-on"></div><div class="bdg bdg-verified">✓ Verificata</div></div><div class="card-body"><div class="card-name">Anna, 31 <span style="color:var(--red)">♀</span></div><div class="card-meta">📍 Napoli · Online ora</div><div class="card-tags"><span class="tag">Creativa</span><span class="tag">Sport</span></div></div></div>
+      <div class="card" onclick="goto('annuncio')"><div class="card-img g5"><div class="av">👨</div><div class="bdg bdg-verified">✓ Verificato</div></div><div class="card-body"><div class="card-name">Luca, 38 <span style="color:#6060ff">♂</span></div><div class="card-meta">📍 Torino · Offline</div><div class="card-tags"><span class="tag">Sincero</span><span class="tag">Viaggi</span></div></div></div>
+      <div class="card" onclick="goto('annuncio')"><div class="card-img g6"><div class="av">👩</div><div class="dot-on"></div><div class="bdg bdg-travel">✈️ In viaggio</div></div><div class="card-body"><div class="card-name">Mia, 25 <span style="color:var(--red2)">♀</span></div><div class="card-meta">📍 Londra → Roma</div><div class="card-tags"><span class="tag">Arte</span><span class="tag">Musica</span></div></div></div>
+      </div>
     </div>
   </div>
 
@@ -1763,20 +1782,50 @@ async function doForgotPassword(){
   else showToast('❌ Email non trovata');
 }
 
-// ── AGGIORNA NAVBAR ──
+// ── AGGIORNA UI PER UTENTE ──
 function updateNavForUser(user, nome=''){
   const authBtns = document.getElementById('nav-auth-btns');
   const userArea = document.getElementById('nav-user-area');
   const userName = document.getElementById('nav-user-name');
   if(!authBtns || !userArea) return;
-  if(user){
-    authBtns.style.display = 'none';
-    userArea.style.display = 'flex';
-    if(userName) userName.textContent = nome || user.email?.split('@')[0] || '';
-  } else {
-    authBtns.style.display = 'flex';
-    userArea.style.display = 'none';
+
+  const isLogged = !!user;
+
+  // Navbar
+  authBtns.style.display = isLogged ? 'none' : 'flex';
+  userArea.style.display = isLogged ? 'flex' : 'none';
+  if(userName && isLogged) userName.textContent = nome || user.email?.split('@')[0] || '';
+
+  // Hero — mostra/nascondi bottoni
+  const guestBtns = document.getElementById('hero-guest-btns');
+  const userWelcome = document.getElementById('hero-user-welcome');
+  const userGreeting = document.getElementById('hero-user-greeting');
+  if(guestBtns) guestBtns.style.display = isLogged ? 'none' : 'flex';
+  if(userWelcome) userWelcome.style.display = isLogged ? 'block' : 'none';
+  if(userGreeting && isLogged){
+    const n = nome || user.email?.split('@')[0] || '';
+    const ora = new Date().getHours();
+    const saluto = ora < 12 ? 'Buongiorno' : ora < 18 ? 'Buon pomeriggio' : 'Buonasera';
+    userGreeting.textContent = saluto + ', ' + n + ' 👋';
   }
+
+  // Listings — mostra annunci reali se loggato, blocca se ospite
+  const lockedSection = document.getElementById('locked-cards-section');
+  const extraCards = document.getElementById('logged-extra-cards');
+  if(lockedSection) lockedSection.style.display = isLogged ? 'none' : 'contents';
+  if(extraCards) extraCards.style.display = isLogged ? 'contents' : 'none';
+
+  // Banner premium — nascondi se loggato (già dentro, vede gli annunci)
+  const premBanner = document.querySelector('.prem-banner');
+  if(premBanner) premBanner.style.display = isLogged ? 'none' : '';
+
+  // Se appena loggato, scorri agli annunci dopo un momento
+  if(isLogged) setTimeout(scrollToListings, 600);
+}
+
+function scrollToListings(){
+  const el = document.getElementById('listings-section');
+  if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
 }
 
 // ── RIPRISTINA SESSIONE AL CARICAMENTO ──

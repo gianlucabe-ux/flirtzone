@@ -584,6 +584,160 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
   line-height:20px;text-align:center;z-index:2;
 }
 
+/* ═══════════════════════════════════════
+   TINDER MODE
+═══════════════════════════════════════ */
+/* Top bar */
+.tinder-topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 20px 10px;flex-shrink:0;
+}
+.tinder-greeting{
+  font-family:'Cormorant Garamond',serif;
+  font-size:20px;font-weight:700;
+}
+.tinder-filters{display:flex;gap:6px;flex-wrap:wrap;}
+.tinder-filter-btn{
+  padding:5px 13px;border-radius:20px;font-size:12px;font-weight:600;
+  cursor:pointer;border:1px solid var(--border);color:var(--muted);
+  background:transparent;transition:all .2s;font-family:'DM Sans',sans-serif;
+}
+.tinder-filter-btn.on{background:var(--grad);color:#fff;border-color:transparent;}
+
+/* Arena */
+.tinder-arena{
+  flex:1;display:flex;align-items:center;justify-content:center;
+  position:relative;padding:10px 20px 0;min-height:480px;
+}
+
+/* Stack */
+.tinder-stack{
+  position:relative;width:100%;max-width:380px;
+  height:460px;
+}
+
+/* Tinder card */
+.tinder-card{
+  position:absolute;inset:0;
+  border-radius:20px;overflow:hidden;
+  background:var(--bg2);
+  box-shadow:0 8px 40px rgba(0,0,0,0.5);
+  cursor:grab;
+  transition:transform .08s ease;
+  user-select:none;
+  will-change:transform;
+}
+.tinder-card:active{cursor:grabbing;}
+.tinder-card:nth-last-child(2){
+  transform:rotate(-2deg) translateY(6px) scale(0.97);
+  z-index:1;
+}
+.tinder-card:nth-last-child(3){
+  transform:rotate(1.5deg) translateY(12px) scale(0.94);
+  z-index:0;
+}
+.tinder-card:last-child{z-index:10;}
+
+/* Card photo */
+.tc-photo{
+  width:100%;height:100%;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;
+  font-size:100px;
+}
+.tc-gradient{
+  position:absolute;inset:0;
+  background:linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.85) 100%);
+}
+/* Card info overlay */
+.tc-info{
+  position:absolute;bottom:0;left:0;right:0;
+  padding:20px;z-index:2;
+}
+.tc-name{
+  font-family:'Cormorant Garamond',serif;
+  font-size:28px;font-weight:700;color:#fff;
+  display:flex;align-items:center;gap:8px;
+  margin-bottom:4px;
+}
+.tc-online{width:10px;height:10px;border-radius:50%;background:var(--green);flex-shrink:0;box-shadow:0 0 8px rgba(31,212,106,0.8);}
+.tc-meta{font-size:13px;color:rgba(255,255,255,0.8);margin-bottom:8px;}
+.tc-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
+.tc-tag{font-size:11px;font-weight:600;background:rgba(255,255,255,0.15);backdrop-filter:blur(4px);color:#fff;padding:3px 10px;border-radius:20px;}
+.tc-desc{font-size:13px;color:rgba(255,255,255,0.75);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+
+/* Badge su card tinder */
+.tc-badge{
+  position:absolute;top:16px;left:16px;z-index:3;
+  font-size:11px;font-weight:700;padding:4px 10px;border-radius:20px;
+  color:#fff;backdrop-filter:blur(4px);
+}
+.tc-badge-verified{background:rgba(25,120,255,0.85);}
+.tc-badge-travel{background:rgba(240,78,42,0.85);}
+
+/* Indicatori LIKE/NOPE/SUPER */
+.tinder-indicator{
+  position:absolute;
+  font-size:22px;font-weight:900;letter-spacing:2px;
+  border:4px solid;border-radius:10px;
+  padding:8px 16px;
+  opacity:0;pointer-events:none;
+  transition:opacity .15s;
+  z-index:20;top:50px;
+}
+.tinder-indicator.like{color:#1fd46a;border-color:#1fd46a;left:30px;transform:rotate(-15deg);}
+.tinder-indicator.nope{color:var(--red);border-color:var(--red);right:30px;transform:rotate(15deg);}
+.tinder-indicator.super{color:#5aabff;border-color:#5aabff;top:auto;bottom:120px;left:50%;transform:translateX(-50%);}
+
+/* Empty state */
+.tinder-empty{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:24px;
+}
+
+/* Action buttons */
+.tinder-actions{
+  display:flex;align-items:center;justify-content:center;
+  gap:14px;padding:18px 20px 10px;flex-shrink:0;
+}
+.tinder-btn{
+  border:none;cursor:pointer;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;transition:all .2s;
+  box-shadow:0 4px 16px rgba(0,0,0,0.3);
+}
+.tinder-back{width:44px;height:44px;background:var(--bg3);border:2px solid var(--border2);font-size:16px;}
+.tinder-nope{width:60px;height:60px;background:linear-gradient(135deg,#ff4d4d,#d92b3a);font-size:26px;}
+.tinder-super{width:50px;height:50px;background:linear-gradient(135deg,#4da6ff,#1e78ff);font-size:22px;}
+.tinder-like{width:60px;height:60px;background:linear-gradient(135deg,#1fd46a,#12a050);font-size:26px;}
+.tinder-msg{width:44px;height:44px;background:var(--bg3);border:2px solid var(--border2);font-size:18px;}
+.tinder-btn:hover{transform:scale(1.12);}
+.tinder-btn:active{transform:scale(0.95);}
+
+/* Stats */
+.tinder-stats{
+  display:flex;justify-content:center;gap:20px;
+  padding:6px 20px 20px;font-size:12px;color:var(--muted);flex-shrink:0;
+}
+
+/* Match popup */
+.match-popup{
+  position:fixed;inset:0;z-index:9000;
+  background:rgba(0,0,0,0.85);
+  display:flex;align-items:center;justify-content:center;
+  animation:fadeIn .3s ease;
+}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+.match-box{
+  background:var(--bg2);border:1px solid rgba(31,212,106,0.3);
+  border-radius:24px;padding:40px 32px;text-align:center;max-width:340px;width:90%;
+}
+.match-emoji{font-size:60px;margin-bottom:16px;}
+.match-title{font-family:'Cormorant Garamond',serif;font-size:32px;font-weight:700;color:var(--green);margin-bottom:8px;}
+.match-sub{font-size:14px;color:var(--muted2);margin-bottom:24px;}
+.match-actions{display:flex;gap:10px;justify-content:center;}
+
 /* PASSWORD TOGGLE */
 .pw-wrap{position:relative;}
 .pw-toggle{
@@ -694,98 +848,100 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
     </div>
   </nav>
 
-  <div class="hero">
-    <div class="eyebrow" data-i18n="hero_badge">🔥 98.000 utenti online ora</div>
-    <h1>
-      <span data-i18n="hero_h1">Incontri reali,</span><br>
-      <em data-i18n="hero_h1_em">senza filtri.</em>
-    </h1>
-    <p class="hero-sub" data-i18n="hero_sub">Profili verificati in tutto il mondo. Trova chi cerchi, dove sei — o dove stai andando.</p>
-
-    <!-- Mostrato solo quando NON loggato -->
-    <div class="hero-btns" id="hero-guest-btns">
-      <button class="btn btn-primary" onclick="goto('auth')"><span data-i18n="hero_cta">Inizia gratis</span></button>
-      <button class="btn btn-outline" onclick="scrollToListings()"><span data-i18n="hero_browse">Sfoglia annunci</span></button>
-    </div>
-
-    <!-- Mostrato solo quando loggato -->
-    <div id="hero-user-welcome" style="display:none;text-align:center;">
-      <div id="hero-user-greeting" style="font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:700;margin-bottom:16px;"></div>
-      <button class="btn btn-primary" onclick="scrollToListings()">🔍 Scopri gli annunci</button>
-    </div>
-
-    <div class="stats-bar">
-      <div class="stat"><div class="stat-n">2.4M+</div><div class="stat-l" data-i18n="stat_utenti">Utenti attivi</div></div>
-      <div class="stat"><div class="stat-n">140+</div><div class="stat-l" data-i18n="stat_paesi">Paesi</div></div>
-      <div class="stat"><div class="stat-n">98K</div><div class="stat-l" data-i18n="stat_online">Online ora</div></div>
-      <div class="stat"><div class="stat-n">4.8★</div><div class="stat-l" data-i18n="stat_rating">Valutazione</div></div>
-    </div>
-  </div>
-
-  <div class="search-section">
-    <div class="search-box">
-      <select class="s-select"><option>👤 Cerco…</option><option>Donna</option><option>Uomo</option><option>Coppia</option><option>Tutti</option></select>
-      <select class="s-select"><option>📍 Città</option><option>Roma</option><option>Milano</option><option>Parigi</option><option>Barcellona</option><option>Londra</option></select>
-      <select class="s-select"><option>🎂 Età</option><option>18–25</option><option>26–35</option><option>36–45</option><option>45+</option></select>
-      <select class="s-select"><option>⭐ Filtro</option><option>Solo verificati</option><option>Online ora</option><option>In viaggio</option></select>
-      <button class="btn-search"><span data-i18n="btn_search">🔍 Cerca</span></button>
-    </div>
-  </div>
-
-  <div class="tabs-row">
-    <div class="tab on" onclick="setTab(this)"><span data-i18n="tab_popular">🔥 Popolari</span></div>
-    <div class="tab" onclick="setTab(this)"><span data-i18n="tab_new">🆕 Nuovi</span></div>
-    <div class="tab" onclick="setTab(this)"><span data-i18n="tab_near">📍 Vicino a me</span></div>
-    <div class="tab" onclick="setTab(this)"><span data-i18n="tab_travelling">✈️ In viaggio</span></div>
-    <div class="tab" onclick="setTab(this)"><span data-i18n="tab_verified">✓ Verificati</span></div>
-  </div>
-
-  <div class="listings" id="listings-section">
-    <div class="listings-head">
-      <span class="listings-title" data-i18n="listings_title">Annunci recenti</span>
-      <span class="see-all" data-i18n="see_all">Vedi tutti →</span>
-    </div>
-    <div class="grid">
-      <div class="card" onclick="goto('annuncio')">
-        <div class="card-img g1"><div class="av">👩</div><div class="dot-on"></div><div class="bdg bdg-verified" data-i18n="bdg_verified_f">✓ Verificata</div></div>
-        <div class="card-body"><div class="card-name">Sofia, 27 <span style="color:var(--red)">♀</span></div><div class="card-meta"><span data-i18n="card_meta_sofia">📍 Milano · Online ora</span></div><div class="card-tags"><span class="tag" data-i18n="tag_discrete">Discreta</span><span class="tag" data-i18n="tag_nodrama">No drama</span></div></div>
+  <!-- ══════════ VISTA OSPITE ══════════ -->
+  <div id="guest-view">
+    <div class="hero">
+      <div class="eyebrow" data-i18n="hero_badge">🔥 98.000 utenti online ora</div>
+      <h1><span data-i18n="hero_h1">Incontri reali,</span><br><em data-i18n="hero_h1_em">senza filtri.</em></h1>
+      <p class="hero-sub" data-i18n="hero_sub">Profili verificati in tutto il mondo. Trova chi cerchi, dove sei — o dove stai andando.</p>
+      <div class="hero-btns">
+        <button class="btn btn-primary" onclick="goto('auth')"><span data-i18n="hero_cta">Inizia gratis</span></button>
+        <button class="btn btn-outline" onclick="document.getElementById('listings-section').scrollIntoView({behavior:'smooth'})"><span data-i18n="hero_browse">Sfoglia annunci</span></button>
       </div>
-      <div class="card" onclick="goto('annuncio')">
-        <div class="card-img g2"><div class="av">👨</div><div class="dot-on"></div><div class="bdg bdg-travel" data-i18n="bdg_travel">✈️ In viaggio</div><div class="bdg bdg-verified" data-i18n="bdg_verified_m">✓ Verificato</div></div>
-        <div class="card-body"><div class="card-name">Marco, 34 <span style="color:#6060ff">♂</span></div><div class="card-meta"><span data-i18n="card_meta_marco">📍 Roma → Barcellona</span></div><div class="card-tags"><span class="tag" data-i18n="tag_serious">Serio</span><span class="tag" data-i18n="tag_realphoto">Foto reali</span></div></div>
-      </div>
-      <div class="card" onclick="goto('annuncio')">
-        <div class="card-img g3"><div class="av">👩</div><div class="bdg bdg-verified">✓ Verificata</div></div>
-        <div class="card-body"><div class="card-name">Léa, 29 <span style="color:var(--red2)">♀</span></div><div class="card-meta"><span data-i18n="card_meta_lea">📍 Parigi</span></div><div class="card-tags"><span class="tag" data-i18n="tag_openmind">Open mind</span><span class="tag tag-r" data-i18n="tag_premium_lbl">⭐ Premium</span></div></div>
-      </div>
-      <!-- Carte BLOCCATE — visibili solo per ospiti, nascoste quando loggato -->
-      <div id="locked-cards-section" style="display:contents;">
-      <div class="card"><div class="card-img g4"><div class="av blur">👩</div><div class="lock-over"><div class="lock-ico">🔒</div><div class="lock-lbl" data-i18n="lock_unlock">Sblocca con Premium</div></div></div><div class="card-body"><div class="card-name" data-i18n="card_hidden">••••, 31</div><div class="card-meta">📍 •••••</div><div class="card-tags"><span class="tag tag-r" data-i18n="tag_only_premium">Solo Premium</span></div></div></div>
-      <div class="card"><div class="card-img g5"><div class="av blur">👨</div><div class="lock-over"><div class="lock-ico">🔒</div><div class="lock-lbl">Sblocca con Premium</div></div></div><div class="card-body"><div class="card-name">••••, 38</div><div class="card-meta">📍 •••••</div><div class="card-tags"><span class="tag tag-r">Solo Premium</span></div></div></div>
-      <div class="card"><div class="card-img g6"><div class="av blur">👩</div><div class="lock-over"><div class="lock-ico">🔒</div><div class="lock-lbl">Sblocca con Premium</div></div></div><div class="card-body"><div class="card-name">••••, 25</div><div class="card-meta">📍 •••••</div><div class="card-tags"><span class="tag tag-r">Solo Premium</span></div></div></div>
-      </div>
-
-      <!-- Carte EXTRA — visibili solo quando loggato -->
-      <div id="logged-extra-cards" style="display:none;">
-      <div class="card" onclick="goto('annuncio')"><div class="card-img g4"><div class="av">👩</div><div class="dot-on"></div><div class="bdg bdg-verified">✓ Verificata</div></div><div class="card-body"><div class="card-name">Anna, 31 <span style="color:var(--red)">♀</span></div><div class="card-meta">📍 Napoli · Online ora</div><div class="card-tags"><span class="tag">Creativa</span><span class="tag">Sport</span></div></div></div>
-      <div class="card" onclick="goto('annuncio')"><div class="card-img g5"><div class="av">👨</div><div class="bdg bdg-verified">✓ Verificato</div></div><div class="card-body"><div class="card-name">Luca, 38 <span style="color:#6060ff">♂</span></div><div class="card-meta">📍 Torino · Offline</div><div class="card-tags"><span class="tag">Sincero</span><span class="tag">Viaggi</span></div></div></div>
-      <div class="card" onclick="goto('annuncio')"><div class="card-img g6"><div class="av">👩</div><div class="dot-on"></div><div class="bdg bdg-travel">✈️ In viaggio</div></div><div class="card-body"><div class="card-name">Mia, 25 <span style="color:var(--red2)">♀</span></div><div class="card-meta">📍 Londra → Roma</div><div class="card-tags"><span class="tag">Arte</span><span class="tag">Musica</span></div></div></div>
+      <div class="stats-bar">
+        <div class="stat"><div class="stat-n">2.4M+</div><div class="stat-l" data-i18n="stat_utenti">Utenti attivi</div></div>
+        <div class="stat"><div class="stat-n">140+</div><div class="stat-l" data-i18n="stat_paesi">Paesi</div></div>
+        <div class="stat"><div class="stat-n">98K</div><div class="stat-l" data-i18n="stat_online">Online ora</div></div>
+        <div class="stat"><div class="stat-n">4.8★</div><div class="stat-l" data-i18n="stat_rating">Valutazione</div></div>
       </div>
     </div>
-  </div>
-
-  <div class="prem-banner">
-    <div class="prem-inner">
-      <div class="prem-left">
-        <h3><span data-i18n="prem_title">Passa a</span> <span data-i18n="prem_name">Silk Dates Premium</span></h3>
-        <p data-i18n="prem_sub">Sblocca tutti i profili e inizia a chattare senza limiti</p>
-        <div class="pf-list">
-          <div class="pf"><span data-i18n="pfeat_unlimited">Profili illimitati</span></div><div class="pf" data-i18n="pf2">Messaggistica privata</div><div class="pf"><span data-i18n="pfeat_filters">Filtri avanzati</span></div><div class="pf" data-i18n="pf4">Chi visita il tuo profilo</div><div class="pf" data-i18n="pf5">Badge verificato</div><div class="pf" data-i18n="pf6">Modalità In viaggio</div>
+    <div class="search-section">
+      <div class="search-box">
+        <select class="s-select"><option>👤 Cerco…</option><option>Donna</option><option>Uomo</option><option>Coppia</option><option>Tutti</option></select>
+        <select class="s-select"><option>📍 Città</option><option>Roma</option><option>Milano</option><option>Parigi</option><option>Barcellona</option><option>Londra</option></select>
+        <select class="s-select"><option>🎂 Età</option><option>18–25</option><option>26–35</option><option>36–45</option><option>45+</option></select>
+        <select class="s-select"><option>⭐ Filtro</option><option>Solo verificati</option><option>Online ora</option><option>In viaggio</option></select>
+        <button class="btn-search"><span data-i18n="btn_search">🔍 Cerca</span></button>
+      </div>
+    </div>
+    <div class="tabs-row">
+      <div class="tab on" onclick="setTab(this)"><span data-i18n="tab_popular">🔥 Popolari</span></div>
+      <div class="tab" onclick="setTab(this)"><span data-i18n="tab_new">🆕 Nuovi</span></div>
+      <div class="tab" onclick="setTab(this)"><span data-i18n="tab_near">📍 Vicino a me</span></div>
+      <div class="tab" onclick="setTab(this)"><span data-i18n="tab_travelling">✈️ In viaggio</span></div>
+      <div class="tab" onclick="setTab(this)"><span data-i18n="tab_verified">✓ Verificati</span></div>
+    </div>
+    <div class="listings" id="listings-section">
+      <div class="listings-head">
+        <span class="listings-title" data-i18n="listings_title">Annunci recenti</span>
+        <span class="see-all" data-i18n="see_all">Vedi tutti →</span>
+      </div>
+      <div class="grid">
+        <div class="card" onclick="goto('annuncio')"><div class="card-img g1"><div class="av">👩</div><div class="dot-on"></div><div class="bdg bdg-verified">✓ Verificata</div></div><div class="card-body"><div class="card-name">Sofia, 27 <span style="color:var(--red)">♀</span></div><div class="card-meta">📍 Milano · Online ora</div><div class="card-tags"><span class="tag">Discreta</span><span class="tag">No drama</span></div></div></div>
+        <div class="card" onclick="goto('annuncio')"><div class="card-img g2"><div class="av">👨</div><div class="dot-on"></div><div class="bdg bdg-travel">✈️ In viaggio</div><div class="bdg bdg-verified">✓ Verificato</div></div><div class="card-body"><div class="card-name">Marco, 34 <span style="color:#6060ff">♂</span></div><div class="card-meta">📍 Roma → Barcellona</div><div class="card-tags"><span class="tag">Serio</span><span class="tag">Foto reali</span></div></div></div>
+        <div class="card" onclick="goto('annuncio')"><div class="card-img g3"><div class="av">👩</div><div class="bdg bdg-verified">✓ Verificata</div></div><div class="card-body"><div class="card-name">Léa, 29 <span style="color:var(--red2)">♀</span></div><div class="card-meta">📍 Parigi</div><div class="card-tags"><span class="tag">Open mind</span><span class="tag tag-r">⭐ Premium</span></div></div></div>
+        <div class="card"><div class="card-img g4"><div class="av blur">👩</div><div class="lock-over"><div class="lock-ico">🔒</div><div class="lock-lbl">Sblocca con Premium</div></div></div><div class="card-body"><div class="card-name">••••, 31</div><div class="card-meta">📍 •••••</div><div class="card-tags"><span class="tag tag-r">Solo Premium</span></div></div></div>
+        <div class="card"><div class="card-img g5"><div class="av blur">👨</div><div class="lock-over"><div class="lock-ico">🔒</div><div class="lock-lbl">Sblocca con Premium</div></div></div><div class="card-body"><div class="card-name">••••, 38</div><div class="card-meta">📍 •••••</div><div class="card-tags"><span class="tag tag-r">Solo Premium</span></div></div></div>
+        <div class="card"><div class="card-img g6"><div class="av blur">👩</div><div class="lock-over"><div class="lock-ico">🔒</div><div class="lock-lbl">Sblocca con Premium</div></div></div><div class="card-body"><div class="card-name">••••, 25</div><div class="card-meta">📍 •••••</div><div class="card-tags"><span class="tag tag-r">Solo Premium</span></div></div></div>
+      </div>
+    </div>
+    <div class="prem-banner">
+      <div class="prem-inner">
+        <div class="prem-left">
+          <h3><span data-i18n="prem_title">Passa a</span> <span data-i18n="prem_name">Silk Dates Premium</span></h3>
+          <p data-i18n="prem_sub">Sblocca tutti i profili e inizia a chattare senza limiti</p>
+          <div class="pf-list"><div class="pf">Profili illimitati</div><div class="pf">Messaggistica privata</div><div class="pf">Filtri avanzati</div><div class="pf">Chi visita il tuo profilo</div><div class="pf">Badge verificato</div></div>
         </div>
+        <button class="btn btn-primary" onclick="goto('premium')">🔥 Prova Premium</button>
       </div>
-      <button class="btn btn-primary" onclick="goto('premium')" data-i18n="prem_btn">🔥 Prova Premium</button>
     </div>
-  </div>
+  </div><!-- /guest-view -->
+
+  <!-- ══════════ TINDER MODE — solo utenti loggati ══════════ -->
+  <div id="tinder-view" style="display:none;flex:1;flex-direction:column;background:var(--bg);">
+    <div class="tinder-topbar">
+      <div class="tinder-greeting" id="tinder-greeting">👋 Ciao!</div>
+      <div class="tinder-filters">
+        <button class="tinder-filter-btn on" onclick="tinderFilter(this,'all')">Tutti</button>
+        <button class="tinder-filter-btn" onclick="tinderFilter(this,'online')">🟢 Online</button>
+        <button class="tinder-filter-btn" onclick="tinderFilter(this,'travel')">✈️ In viaggio</button>
+        <button class="tinder-filter-btn" onclick="tinderFilter(this,'verified')">✓ Verificati</button>
+      </div>
+    </div>
+    <div class="tinder-arena">
+      <div class="tinder-stack" id="tinder-stack"></div>
+      <div class="tinder-indicator like" id="ind-like">❤️ LIKE</div>
+      <div class="tinder-indicator nope" id="ind-nope">✗ NOPE</div>
+      <div class="tinder-indicator super" id="ind-super">⭐ SUPER</div>
+      <div class="tinder-empty" id="tinder-empty" style="display:none;">
+        <div style="font-size:52px;margin-bottom:16px;">🎉</div>
+        <div style="font-family:'Cormorant Garamond',serif;font-size:22px;font-weight:700;margin-bottom:8px;">Hai visto tutti!</div>
+        <div style="font-size:14px;color:var(--muted2);margin-bottom:24px;">Torna più tardi per nuovi profili</div>
+        <button class="btn btn-primary" onclick="tinderReset()">🔄 Ricarica profili</button>
+      </div>
+    </div>
+    <div class="tinder-actions">
+      <button class="tinder-btn tinder-back" onclick="tinderUndo()" title="Annulla">↩️</button>
+      <button class="tinder-btn tinder-nope" onclick="tinderSwipe('left')" title="Passa">✕</button>
+      <button class="tinder-btn tinder-super" onclick="tinderSwipe('up')" title="Super Like">⭐</button>
+      <button class="tinder-btn tinder-like" onclick="tinderSwipe('right')" title="Like">❤️</button>
+      <button class="tinder-btn tinder-msg" onclick="goto('messages')" title="Messaggio">💬</button>
+    </div>
+    <div class="tinder-stats">
+      <span id="tinder-count">0 di 0</span>
+      <span id="tinder-matches" style="color:var(--red);">❤️ 0 match</span>
+    </div>
+  </div><!-- /tinder-view -->
 
   <footer>
     <div class="age-warn"><span data-i18n="footer_age">🔞 Accesso riservato ai maggiorenni (18+)</span></div>
@@ -1796,36 +1952,277 @@ function updateNavForUser(user, nome=''){
   userArea.style.display = isLogged ? 'flex' : 'none';
   if(userName && isLogged) userName.textContent = nome || user.email?.split('@')[0] || '';
 
-  // Hero — mostra/nascondi bottoni
-  const guestBtns = document.getElementById('hero-guest-btns');
-  const userWelcome = document.getElementById('hero-user-welcome');
-  const userGreeting = document.getElementById('hero-user-greeting');
-  if(guestBtns) guestBtns.style.display = isLogged ? 'none' : 'flex';
-  if(userWelcome) userWelcome.style.display = isLogged ? 'block' : 'none';
-  if(userGreeting && isLogged){
+  // Guest view vs Tinder view
+  const guestView = document.getElementById('guest-view');
+  const tinderView = document.getElementById('tinder-view');
+  if(guestView) guestView.style.display = isLogged ? 'none' : '';
+  if(tinderView) tinderView.style.display = isLogged ? 'flex' : 'none';
+
+  if(isLogged){
+    // Saluto con ora del giorno
     const n = nome || user.email?.split('@')[0] || '';
     const ora = new Date().getHours();
     const saluto = ora < 12 ? 'Buongiorno' : ora < 18 ? 'Buon pomeriggio' : 'Buonasera';
-    userGreeting.textContent = saluto + ', ' + n + ' 👋';
+    const greetEl = document.getElementById('tinder-greeting');
+    if(greetEl) greetEl.textContent = saluto + ', ' + n + ' 👋';
+    // Avvia tinder
+    tinderInit();
   }
-
-  // Listings — mostra annunci reali se loggato, blocca se ospite
-  const lockedSection = document.getElementById('locked-cards-section');
-  const extraCards = document.getElementById('logged-extra-cards');
-  if(lockedSection) lockedSection.style.display = isLogged ? 'none' : 'contents';
-  if(extraCards) extraCards.style.display = isLogged ? 'contents' : 'none';
-
-  // Banner premium — nascondi se loggato (già dentro, vede gli annunci)
-  const premBanner = document.querySelector('.prem-banner');
-  if(premBanner) premBanner.style.display = isLogged ? 'none' : '';
-
-  // Se appena loggato, scorri agli annunci dopo un momento
-  if(isLogged) setTimeout(scrollToListings, 600);
 }
 
 function scrollToListings(){
   const el = document.getElementById('listings-section');
-  if(el) el.scrollIntoView({behavior:'smooth', block:'start'});
+  if(el) el.scrollIntoView({behavior:'smooth'});
+}
+
+// ══════════════════════════════════════════
+//  TINDER ENGINE
+// ══════════════════════════════════════════
+const tinderProfiles = [
+  { name:'Sofia', age:27, gender:'♀', color:'var(--red)', emoji:'👩', city:'Milano', status:'online', tags:['Discreta','No drama','Viaggi'], desc:'Milanese doc, amo il buon cibo e le conversazioni genuine. Cerco qualcuno senza filtri 😊', verified:true, travel:false, bg:'linear-gradient(145deg,#280d15,#180a1c)' },
+  { name:'Marco', age:34, gender:'♂', color:'#6060ff', emoji:'👨', city:'Roma → Barcellona', status:'online', tags:['Serio','Foto reali','Sport'], desc:'Sempre in viaggio per lavoro. Cerco compagnia sincera nelle mie città di passaggio ✈️', verified:true, travel:true, bg:'linear-gradient(145deg,#0c1826,#09111e)' },
+  { name:'Léa', age:29, gender:'♀', color:'var(--red2)', emoji:'👩', city:'Parigi', status:'offline', tags:['Open mind','Arte','Lettura'], desc:"Parisienne curieuse du monde. J'aime les rencontres authentiques sans prise de tête 🎨", verified:true, travel:false, bg:'linear-gradient(145deg,#1a180c,#100e09)' },
+  { name:'Anna', age:31, gender:'♀', color:'var(--red)', emoji:'👩', city:'Napoli', status:'online', tags:['Creativa','Yoga','Cucina'], desc:'Napoletana verace con la passione per la cucina e lo yoga. Senza drama e senza filtri 🌿', verified:true, travel:false, bg:'linear-gradient(145deg,#0c1a12,#091410)' },
+  { name:'Luca', age:38, gender:'♂', color:'#6060ff', emoji:'👨', city:'Torino', status:'offline', tags:['Sincero','Viaggi','Musica'], desc:'Ingegnere torinese, amante della montagna e dei concerti. Cerco qualcuno di genuino 🏔️', verified:false, travel:false, bg:'linear-gradient(145deg,#1a0c1a,#100910)' },
+  { name:'Mia', age:25, gender:'♀', color:'var(--red2)', emoji:'👩', city:'Londra → Roma', status:'online', tags:['Arte','Fotografia','Cibo'], desc:'Half Italian, half British. I love street photography and discovering hidden gems 📸', verified:true, travel:true, bg:'linear-gradient(145deg,#1a140c,#100c09)' },
+  { name:'Sara', age:33, gender:'♀', color:'var(--red)', emoji:'👩', city:'Bologna', status:'online', tags:['Cinema','Libri','Aperitivi'], desc:'Bolognese DOC. Lavoro nel mondo dell editoria e adoro il cinema d autore 🎬', verified:true, travel:false, bg:'linear-gradient(145deg,#280d15,#180a1c)' },
+  { name:'Alex', age:29, gender:'♂', color:'#6060ff', emoji:'👨', city:'Firenze', status:'online', tags:['Arte','Running','Viaggi'], desc:'Fiorentino, graphic designer. Corro tutte le mattine e viaggio ogni estate 🎨', verified:true, travel:false, bg:'linear-gradient(145deg,#0c1826,#09111e)' },
+];
+
+let tinderQueue = [];
+let tinderHistory = [];
+let tinderMatches = 0;
+let activeTinderCard = null;
+let tinderFilter_current = 'all';
+
+// Drag state
+let drag = { active:false, startX:0, startY:0, x:0, y:0 };
+
+function tinderInit(){
+  tinderQueue = [...tinderProfiles];
+  tinderHistory = [];
+  tinderMatches = 0;
+  renderTinderStack();
+  updateTinderStats();
+}
+
+function tinderFilter(btn, filter){
+  tinderFilter_current = filter;
+  document.querySelectorAll('.tinder-filter-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  tinderInit();
+}
+
+function filteredQueue(){
+  return tinderProfiles.filter(p=>{
+    if(tinderFilter_current==='online') return p.status==='online';
+    if(tinderFilter_current==='travel') return p.travel;
+    if(tinderFilter_current==='verified') return p.verified;
+    return true;
+  });
+}
+
+function renderTinderStack(){
+  const stack = document.getElementById('tinder-stack');
+  const emptyEl = document.getElementById('tinder-empty');
+  if(!stack) return;
+  stack.innerHTML = '';
+
+  tinderQueue = filteredQueue().filter(p => !tinderHistory.find(h=>h.name===p.name));
+
+  if(tinderQueue.length === 0){
+    stack.style.display = 'none';
+    if(emptyEl) emptyEl.style.display = 'flex';
+    return;
+  }
+  stack.style.display = '';
+  if(emptyEl) emptyEl.style.display = 'none';
+
+  // Render max 3 cards (stack illusion)
+  const visible = tinderQueue.slice(0, 3);
+  visible.forEach((p, i) => {
+    const card = buildTinderCard(p);
+    stack.appendChild(card);
+  });
+
+  // Attach drag to top card
+  activeTinderCard = stack.lastElementChild;
+  attachDrag(activeTinderCard);
+}
+
+function buildTinderCard(p){
+  const card = document.createElement('div');
+  card.className = 'tinder-card';
+  card.dataset.name = p.name;
+  card.innerHTML = `
+    <div class="tc-photo" style="background:${p.bg};">
+      <span style="font-size:120px;filter:drop-shadow(0 4px 20px rgba(0,0,0,0.4));">${p.emoji}</span>
+      <div class="tc-gradient"></div>
+      ${p.verified ? '<div class="tc-badge tc-badge-verified">✓ Verificat'+(p.gender==='♀'?'a':'o')+'</div>' : ''}
+      ${p.travel ? '<div class="tc-badge tc-badge-travel" style="left:auto;right:16px;">✈️ In viaggio</div>' : ''}
+      <div class="tc-info">
+        <div class="tc-name">
+          ${p.name}, ${p.age}
+          <span style="color:${p.color};font-size:20px;">${p.gender}</span>
+          ${p.status==='online' ? '<div class="tc-online"></div>' : ''}
+        </div>
+        <div class="tc-meta">📍 ${p.city}</div>
+        <div class="tc-tags">${p.tags.map(t=>`<span class="tc-tag">${t}</span>`).join('')}</div>
+        <div class="tc-desc">${p.desc}</div>
+      </div>
+    </div>`;
+  // Click to see profile
+  card.addEventListener('click', e=>{
+    if(Math.abs(drag.x) > 5 || Math.abs(drag.y) > 5) return; // was a drag
+    goto('annuncio');
+  });
+  return card;
+}
+
+function attachDrag(card){
+  if(!card) return;
+
+  const onStart = e => {
+    drag.active = true;
+    const pt = e.touches ? e.touches[0] : e;
+    drag.startX = pt.clientX;
+    drag.startY = pt.clientY;
+    drag.x = 0; drag.y = 0;
+    card.style.transition = 'none';
+  };
+  const onMove = e => {
+    if(!drag.active) return;
+    e.preventDefault();
+    const pt = e.touches ? e.touches[0] : e;
+    drag.x = pt.clientX - drag.startX;
+    drag.y = pt.clientY - drag.startY;
+    const rot = drag.x * 0.08;
+    card.style.transform = `translate(${drag.x}px, ${drag.y}px) rotate(${rot}deg)`;
+
+    // Indicators
+    const threshold = 60;
+    const like = document.getElementById('ind-like');
+    const nope = document.getElementById('ind-nope');
+    const sup = document.getElementById('ind-super');
+    if(like) like.style.opacity = drag.x > threshold ? Math.min((drag.x-threshold)/80, 1) : 0;
+    if(nope) nope.style.opacity = drag.x < -threshold ? Math.min((-drag.x-threshold)/80, 1) : 0;
+    if(sup) sup.style.opacity = drag.y < -threshold ? Math.min((-drag.y-threshold)/80, 1) : 0;
+  };
+  const onEnd = e => {
+    if(!drag.active) return;
+    drag.active = false;
+    card.style.transition = 'transform .3s ease';
+    hideIndicators();
+
+    const swipeThreshold = 100;
+    if(drag.x > swipeThreshold){ doSwipe(card, 'right'); }
+    else if(drag.x < -swipeThreshold){ doSwipe(card, 'left'); }
+    else if(drag.y < -swipeThreshold){ doSwipe(card, 'up'); }
+    else {
+      card.style.transform = '';
+      drag.x = 0; drag.y = 0;
+    }
+  };
+
+  card.addEventListener('mousedown', onStart);
+  card.addEventListener('touchstart', onStart, {passive:true});
+  document.addEventListener('mousemove', onMove);
+  document.addEventListener('touchmove', onMove, {passive:false});
+  document.addEventListener('mouseup', onEnd);
+  document.addEventListener('touchend', onEnd);
+}
+
+function hideIndicators(){
+  ['ind-like','ind-nope','ind-super'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.style.opacity = 0;
+  });
+}
+
+function doSwipe(card, dir){
+  if(!card) return;
+  const name = card.dataset.name;
+  const profile = tinderProfiles.find(p=>p.name===name);
+
+  // Animate out
+  let tx = 0, ty = 0;
+  if(dir==='right'){ tx = window.innerWidth * 1.5; tinderHistory.push({name, action:'like'}); }
+  else if(dir==='left'){ tx = -window.innerWidth * 1.5; tinderHistory.push({name, action:'nope'}); }
+  else if(dir==='up'){ ty = -window.innerHeight; tinderHistory.push({name, action:'super'}); }
+
+  card.style.transition = 'transform .4s ease, opacity .4s ease';
+  card.style.transform = `translate(${tx}px, ${ty}px) rotate(${tx*0.05}deg)`;
+  card.style.opacity = '0';
+
+  setTimeout(()=>{
+    card.remove();
+    if(dir==='right' || dir==='up'){
+      // Random match (30% chance like, 80% super)
+      const matchChance = dir==='up' ? 0.8 : 0.3;
+      if(Math.random() < matchChance){
+        tinderMatches++;
+        showMatchPopup(profile);
+      }
+    }
+    renderTinderStack();
+    updateTinderStats();
+  }, 400);
+}
+
+function tinderSwipe(dir){
+  const card = document.getElementById('tinder-stack')?.lastElementChild;
+  if(!card || card === document.getElementById('tinder-empty')) return;
+  // Show indicator briefly
+  const indId = dir==='right'?'ind-like':dir==='left'?'ind-nope':'ind-super';
+  const indEl = document.getElementById(indId);
+  if(indEl){ indEl.style.opacity='1'; setTimeout(()=>indEl.style.opacity='0', 300); }
+  doSwipe(card, dir);
+}
+
+function tinderUndo(){
+  if(!tinderHistory.length) return;
+  const last = tinderHistory.pop();
+  const profile = tinderProfiles.find(p=>p.name===last.name);
+  if(!profile) return;
+  if(last.action==='like' || last.action==='super') tinderMatches = Math.max(0, tinderMatches-1);
+  renderTinderStack();
+  updateTinderStats();
+  showToast('↩️ Annullato — rivedi ' + last.name);
+}
+
+function tinderReset(){
+  tinderHistory = [];
+  tinderMatches = 0;
+  tinderInit();
+  showToast('🔄 Profili ricaricati!');
+}
+
+function updateTinderStats(){
+  const total = filteredQueue().length;
+  const seen = tinderHistory.length;
+  const countEl = document.getElementById('tinder-count');
+  const matchEl = document.getElementById('tinder-matches');
+  if(countEl) countEl.textContent = seen + ' di ' + total + ' profili';
+  if(matchEl) matchEl.textContent = '❤️ ' + tinderMatches + ' match';
+}
+
+function showMatchPopup(profile){
+  const existing = document.querySelector('.match-popup');
+  if(existing) existing.remove();
+  const div = document.createElement('div');
+  div.className = 'match-popup';
+  div.innerHTML = `
+    <div class="match-box">
+      <div class="match-emoji">${profile?.emoji || '❤️'}</div>
+      <div class="match-title">È un Match! 🎉</div>
+      <div class="match-sub">${profile?.name || 'Qualcuno'} ha ricambiato il tuo interesse!<br>Inizia a chattare adesso.</div>
+      <div class="match-actions">
+        <button class="btn btn-outline" onclick="this.closest('.match-popup').remove()">Continua a cercare</button>
+        <button class="btn btn-primary" onclick="this.closest('.match-popup').remove();goto('messages')">💬 Scrivi</button>
+      </div>
+    </div>`;
+  document.body.appendChild(div);
+  div.addEventListener('click', e=>{ if(e.target===div) div.remove(); });
 }
 
 // ── RIPRISTINA SESSIONE AL CARICAMENTO ──

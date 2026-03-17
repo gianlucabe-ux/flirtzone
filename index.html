@@ -647,8 +647,17 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
           </div>
         </div>
       </div>
-      <button class="btn-sm btn-ghost" onclick="goto('auth')"><span data-i18n="nav_login"><span data-i18n="auth_login">Accedi</span></span></button>
-      <button class="btn-sm btn-fill" onclick="goto('auth')"><span><span data-i18n="auth_reg">Registrati</span></span></button>
+      <!-- Auth buttons — shown when logged out -->
+      <div id="nav-auth-btns" style="display:flex;gap:4px;">
+        <button class="btn-sm btn-ghost" onclick="goto('auth')"><span data-i18n="nav_login"><span data-i18n="auth_login">Accedi</span></span></button>
+        <button class="btn-sm btn-fill" onclick="goto('auth')"><span><span data-i18n="auth_reg">Registrati</span></span></button>
+      </div>
+      <!-- User area — shown when logged in -->
+      <div id="nav-user-area" style="display:none;align-items:center;gap:8px;">
+        <span id="nav-user-name" style="font-size:13px;color:var(--muted2);"></span>
+        <div style="width:34px;height:34px;border-radius:50%;background:var(--grad);display:flex;align-items:center;justify-content:center;font-size:16px;cursor:pointer;" onclick="goto('profile')">👤</div>
+        <button class="btn-sm btn-ghost" onclick="doLogout()" style="font-size:12px;">Esci</button>
+      </div>
     </div>
   </nav>
 
@@ -809,25 +818,29 @@ footer{background:var(--bg2);border-top:1px solid var(--border);padding:20px 28p
         </div>
         <div id="auth-reg">
           <div style="display:flex;gap:11px;">
-            <div class="form-group" style="flex:1;"><label class="form-label">Nome</label><input class="form-input" type="text" placeholder="Nome"></div>
-            <div class="form-group" style="flex:1;"><label class="form-label">Età</label><input class="form-input" type="number" placeholder="18+" min="18"></div>
+            <div class="form-group" style="flex:1;"><label class="form-label">Nome</label><input id="reg-nome" class="form-input" type="text" placeholder="Nome"></div>
+            <div class="form-group" style="flex:1;"><label class="form-label">Età</label><input id="reg-eta" class="form-input" type="number" placeholder="18+" min="18"></div>
           </div>
-          <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="tua@email.com"></div>
-          <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" placeholder="Min. 8 caratteri" data-i18n-placeholder="ph_pass"></div>
+          <div class="form-group"><label class="form-label">Email</label><input id="reg-email" class="form-input" type="email" placeholder="tua@email.com"></div>
+          <div class="form-group"><label class="form-label">Password</label><input id="reg-password" class="form-input" type="password" placeholder="Min. 8 caratteri" data-i18n-placeholder="ph_pass"></div>
           <div class="form-group"><label class="form-label">Sono</label><div class="gender-grid"><div class="gender-opt" onclick="selGender(this)">👩 Donna</div><div class="gender-opt" onclick="selGender(this)">👨 Uomo</div><div class="gender-opt" onclick="selGender(this)">🏳️‍🌈 Non-binary</div><div class="gender-opt" onclick="selGender(this)">👫 Coppia</div></div></div>
-          <div class="form-group"><label class="form-label">Città</label><input class="form-input" type="text" placeholder="La tua città" data-i18n-placeholder="ph_city"></div>
+          <div class="form-group"><label class="form-label">Città</label><input id="reg-citta" class="form-input" type="text" placeholder="La tua città" data-i18n-placeholder="ph_city"></div>
           <div class="age-check"><input type="checkbox" id="age18"><span>Confermo di avere almeno <strong>18 anni</strong> e accetto i <strong>Termini</strong> e la <strong>Privacy Policy</strong>.</span></div>
-          <button class="btn-auth" onclick="doRegister()">Crea account gratis →</button>
+          <!-- Error message -->
+          <div id="reg-error" style="display:none;background:rgba(217,43,58,0.1);border:1px solid rgba(217,43,58,0.3);border-radius:10px;padding:10px 14px;font-size:13px;color:#e07080;margin-bottom:12px;"></div>
+          <button class="btn-auth" id="reg-btn" onclick="doRegister()">Crea account gratis →</button>
           <div class="auth-divider">oppure</div>
-          <button class="btn-social">🌐 Continua con Google</button>
+          <button class="btn-social" onclick="doGoogleLogin()">🌐 Continua con Google</button>
         </div>
         <div id="auth-login" style="display:none;">
-          <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" placeholder="tua@email.com"></div>
-          <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" placeholder="Password" data-i18n-placeholder="ph_pass2"></div>
-          <button class="btn-auth" onclick="doLogin()">Accedi →</button>
+          <div class="form-group"><label class="form-label">Email</label><input id="login-email" class="form-input" type="email" placeholder="tua@email.com"></div>
+          <div class="form-group"><label class="form-label">Password</label><input id="login-password" class="form-input" type="password" placeholder="Password" data-i18n-placeholder="ph_pass2"></div>
+          <!-- Error message -->
+          <div id="login-error" style="display:none;background:rgba(217,43,58,0.1);border:1px solid rgba(217,43,58,0.3);border-radius:10px;padding:10px 14px;font-size:13px;color:#e07080;margin-bottom:12px;"></div>
+          <button class="btn-auth" id="login-btn" onclick="doLogin()">Accedi →</button>
           <div class="auth-divider">oppure</div>
-          <button class="btn-social">🌐 Accedi con Google</button>
-          <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:12px;cursor:pointer;">Password dimenticata?</p>
+          <button class="btn-social" onclick="doGoogleLogin()">🌐 Accedi con Google</button>
+          <p style="text-align:center;font-size:12px;color:var(--muted);margin-top:12px;cursor:pointer;" onclick="doForgotPassword()">Password dimenticata?</p>
         </div>
       </div>
     </div>
@@ -1456,14 +1469,230 @@ function switchAuth(mode){
   document.getElementById('tab-login').classList.toggle('on',!reg);
 }
 function selGender(el){document.querySelectorAll('.gender-opt').forEach(g=>g.classList.remove('sel'));el.classList.add('sel');}
-function doRegister(){
-  if(!document.getElementById('age18').checked){showToast('⚠️ Devi confermare di avere 18+ anni');return;}
-  showToast('✅ Account creato! Completa il tuo profilo');
-  setTimeout(()=>goto('onboarding'),1000);
+
+// ══════════════════════════════════════════
+//  SUPABASE AUTH — REGISTRAZIONE E LOGIN REALI
+// ══════════════════════════════════════════
+const SUPA_URL = 'https://nvnshvchusaszvgokcbx.supabase.co';
+const SUPA_KEY = 'sb_publishable_DuiJIgePULTAg2lnVRg_mg_RqgwwrE5';
+
+// Stato sessione corrente
+let currentUser = null;
+let currentSession = null;
+
+// Chiama Supabase REST API
+async function supaFetch(path, method='GET', body=null, token=null){
+  const headers = {
+    'Content-Type': 'application/json',
+    'apikey': SUPA_KEY,
+    'Authorization': `Bearer ${token || SUPA_KEY}`
+  };
+  const opts = { method, headers };
+  if(body) opts.body = JSON.stringify(body);
+  const res = await fetch(SUPA_URL + path, opts);
+  const data = await res.json();
+  return { ok: res.ok, status: res.status, data };
 }
 
-// ── ONBOARDING ──
-let onbCurrent = 1;
+// ── REGISTRAZIONE ──
+async function doRegister(){
+  if(!document.getElementById('age18').checked){
+    showToast('⚠️ Devi confermare di avere 18+ anni'); return;
+  }
+  const nome     = document.getElementById('reg-nome').value.trim();
+  const eta      = document.getElementById('reg-eta').value.trim();
+  const email    = document.getElementById('reg-email').value.trim();
+  const password = document.getElementById('reg-password').value;
+  const citta    = document.getElementById('reg-citta').value.trim();
+  const genere   = document.querySelector('.gender-opt.sel')?.textContent.trim() || '';
+
+  if(!nome){ showToast('⚠️ Inserisci il tuo nome'); return; }
+  if(!email){ showToast('⚠️ Inserisci la tua email'); return; }
+  if(password.length < 8){ showToast('⚠️ La password deve avere almeno 8 caratteri'); return; }
+  if(parseInt(eta) < 18){ showToast('⚠️ Devi avere almeno 18 anni'); return; }
+
+  // Mostra loading
+  const btn = document.getElementById('reg-btn');
+  const errDiv = document.getElementById('reg-error');
+  btn.textContent = '⏳ Registrazione in corso…';
+  btn.disabled = true;
+  errDiv.style.display = 'none';
+
+  try {
+    // 1. Crea utente su Supabase Auth
+    const { ok, data } = await supaFetch('/auth/v1/signup', 'POST', {
+      email, password,
+      data: { nome, eta: parseInt(eta), citta, genere }
+    });
+
+    if(!ok){
+      const msg = data.error_description || data.msg || data.message || 'Errore nella registrazione';
+      errDiv.textContent = '❌ ' + translateAuthError(msg);
+      errDiv.style.display = 'block';
+      btn.textContent = 'Crea account gratis →';
+      btn.disabled = false;
+      return;
+    }
+
+    // 2. Salva sessione
+    currentUser = data.user;
+    currentSession = data.session;
+    if(currentSession) localStorage.setItem('sd_session', JSON.stringify(currentSession));
+
+    // 3. Salva profilo nella tabella profiles (se esiste)
+    if(currentSession){
+      await supaFetch('/rest/v1/profiles', 'POST', {
+        id: currentUser.id,
+        nome, eta: parseInt(eta), citta, genere, email,
+        created_at: new Date().toISOString()
+      }, currentSession.access_token).catch(()=>{});
+    }
+
+    updateNavForUser(currentUser, nome);
+    showToast('🎉 Account creato! Benvenuto su Silk Dates!');
+    btn.textContent = 'Crea account gratis →';
+    btn.disabled = false;
+    setTimeout(()=>goto('onboarding'), 1000);
+
+  } catch(e){
+    errDiv.textContent = '❌ Errore di rete. Riprova.';
+    errDiv.style.display = 'block';
+    btn.textContent = 'Crea account gratis →';
+    btn.disabled = false;
+  }
+}
+
+// ── LOGIN ──
+async function doLogin(){
+  const email    = document.getElementById('login-email').value.trim();
+  const password = document.getElementById('login-password').value;
+  const btn      = document.getElementById('login-btn');
+  const errDiv   = document.getElementById('login-error');
+
+  if(!email || !password){ showToast('⚠️ Inserisci email e password'); return; }
+
+  btn.textContent = '⏳ Accesso in corso…';
+  btn.disabled = true;
+  errDiv.style.display = 'none';
+
+  try {
+    const { ok, data } = await supaFetch('/auth/v1/token?grant_type=password', 'POST', { email, password });
+
+    if(!ok){
+      const msg = data.error_description || data.msg || data.message || 'Credenziali non valide';
+      errDiv.textContent = '❌ ' + translateAuthError(msg);
+      errDiv.style.display = 'block';
+      btn.textContent = 'Accedi →';
+      btn.disabled = false;
+      return;
+    }
+
+    currentUser    = data.user;
+    currentSession = data;
+    localStorage.setItem('sd_session', JSON.stringify(data));
+
+    const nome = data.user?.user_metadata?.nome || email.split('@')[0];
+    updateNavForUser(data.user, nome);
+    showToast('✅ Bentornato su Silk Dates!');
+    btn.textContent = 'Accedi →';
+    btn.disabled = false;
+    setTimeout(()=>goto('home'), 800);
+
+  } catch(e){
+    errDiv.textContent = '❌ Errore di rete. Riprova.';
+    errDiv.style.display = 'block';
+    btn.textContent = 'Accedi →';
+    btn.disabled = false;
+  }
+}
+
+// ── LOGOUT ──
+async function doLogout(){
+  try {
+    if(currentSession?.access_token){
+      await supaFetch('/auth/v1/logout', 'POST', {}, currentSession.access_token);
+    }
+  } catch(e){}
+  currentUser = null;
+  currentSession = null;
+  localStorage.removeItem('sd_session');
+  updateNavForUser(null);
+  showToast('👋 Arrivederci!');
+  goto('home');
+}
+
+// ── GOOGLE LOGIN ──
+async function doGoogleLogin(){
+  showToast('🌐 Reindirizzamento a Google…');
+  const redirectUrl = window.location.href;
+  window.location.href = `${SUPA_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent(redirectUrl)}`;
+}
+
+// ── PASSWORD DIMENTICATA ──
+async function doForgotPassword(){
+  const email = document.getElementById('login-email').value.trim();
+  if(!email){ showToast('⚠️ Inserisci prima la tua email'); return; }
+  const { ok } = await supaFetch('/auth/v1/recover', 'POST', { email });
+  if(ok) showToast('📧 Email di recupero inviata!');
+  else showToast('❌ Email non trovata');
+}
+
+// ── AGGIORNA NAVBAR ──
+function updateNavForUser(user, nome=''){
+  const authBtns = document.getElementById('nav-auth-btns');
+  const userArea = document.getElementById('nav-user-area');
+  const userName = document.getElementById('nav-user-name');
+  if(!authBtns || !userArea) return;
+  if(user){
+    authBtns.style.display = 'none';
+    userArea.style.display = 'flex';
+    if(userName) userName.textContent = nome || user.email?.split('@')[0] || '';
+  } else {
+    authBtns.style.display = 'flex';
+    userArea.style.display = 'none';
+  }
+}
+
+// ── RIPRISTINA SESSIONE AL CARICAMENTO ──
+async function restoreSession(){
+  try {
+    const saved = localStorage.getItem('sd_session');
+    if(!saved) return;
+    const session = JSON.parse(saved);
+    if(!session?.access_token) return;
+
+    // Verifica che il token sia ancora valido
+    const { ok, data } = await supaFetch('/auth/v1/user', 'GET', null, session.access_token);
+    if(ok && data?.id){
+      currentUser    = data;
+      currentSession = session;
+      const nome = data.user_metadata?.nome || data.email?.split('@')[0] || '';
+      updateNavForUser(data, nome);
+    } else {
+      localStorage.removeItem('sd_session');
+    }
+  } catch(e){ localStorage.removeItem('sd_session'); }
+}
+
+// ── TRADUZIONE ERRORI AUTH ──
+function translateAuthError(msg){
+  const map = {
+    'Invalid login credentials': 'Email o password non corretti',
+    'Email not confirmed': 'Email non ancora confermata — controlla la tua casella',
+    'User already registered': 'Email già registrata — prova ad accedere',
+    'Password should be at least 6 characters': 'La password deve avere almeno 6 caratteri',
+    'Unable to validate email address': 'Email non valida',
+    'Signup requires a valid password': 'Inserisci una password valida',
+    'Email rate limit exceeded': 'Troppi tentativi, riprova tra poco',
+  };
+  for(const [k,v] of Object.entries(map)){
+    if(msg.toLowerCase().includes(k.toLowerCase())) return v;
+  }
+  return msg;
+}
+
+// Avvia ripristino sessione
+restoreSession();
 const onbTotal = 4;
 
 function onbShowStep(n){
@@ -1500,6 +1729,24 @@ function onbBack(step){
 function onbFinish(){
   const prefs = [...document.querySelectorAll('#pref-pills .pill.sel')].map(p=>p.textContent.trim());
   if(prefs.length===0){ showToast('⚠️ Seleziona almeno una preferenza'); return; }
+
+  const seeking = [...document.querySelectorAll('#seeking-pills .pill.sel')].map(p=>p.textContent.trim());
+  const age     = document.getElementById('onb-age')?.value;
+  const loc     = document.getElementById('onb-location')?.value;
+  const radius  = document.querySelector('#radius-pills .pill.sel')?.textContent.trim();
+
+  // Salva su Supabase se utente loggato
+  if(currentSession?.access_token && currentUser?.id){
+    supaFetch('/rest/v1/profiles?id=eq.'+currentUser.id, 'PATCH', {
+      eta: parseInt(age) || null,
+      citta: loc || null,
+      raggio: radius || null,
+      cosa_cerco: seeking.join(', '),
+      preferenze: prefs.join(', '),
+      onboarding_done: true
+    }, currentSession.access_token).catch(()=>{});
+  }
+
   showToast('🎉 Profilo completato! Benvenuto su Silk Dates!');
   setTimeout(()=>goto('home'),1200);
 }
@@ -1534,8 +1781,6 @@ function selMulti(el){
     el.classList.add('sel'); // almeno uno sempre selezionato
   }
 }
-function doLogin(){showToast('✅ Accesso effettuato!');setTimeout(()=>goto('home'),1000);}
-
 // ── PROFILE TABS ──
 function switchPTab(el,id){
   document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('on'));
